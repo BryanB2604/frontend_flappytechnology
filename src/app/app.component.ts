@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,14 @@ import { Component } from '@angular/core';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'frontend_FlappyTechnology';
+  title = 'FlappyTechnology';
+
+  showNav = true;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe(() => {
+      const currentUrl = this.router.url;
+      this.showNav = !['/login', '/register'].includes(currentUrl);
+    });
+  }
 }

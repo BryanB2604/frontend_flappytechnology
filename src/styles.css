@@ -1,1 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    --Dark-Blue: rgba(11, 31, 64);
+    --Blue-Vivid: rgba(0, 123, 255);
+    --White: rgba(255, 255, 255);
+    --Light_Gray: rgba(245, 245, 245);
+    --Soft_Black: rgba(26, 26, 26);
+    --Dark_Gray: rgba(102, 102, 102) 
+}
