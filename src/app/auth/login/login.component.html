@@ -1,1 +1,22 @@
-<p>login works!</p>
+<div class="container">
+  <img src="fondos/fondo.png" alt="fondo" class="fondo">
+
+  <div class="login-container">
+    <div class="login-card">
+      <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo">
+      <h2 class="titulo">Iniciar Sesión</h2>
+      <form #form="ngForm" (ngSubmit)="iniciarSesion(form)">
+        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required
+          #email="ngModel">
+
+        <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required
+          #password="ngModel">
+
+        <button type="submit" [disabled]="!form.valid">Entrar</button>
+        <button type="button" (click)="goToRegister()">Registrarse</button>
+      </form>
+
+      <div *ngIf="error" class="error-message">{{ error }}</div>
+    </div>
+  </div>
+</div>

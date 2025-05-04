@@ -10,14 +10,10 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
+  // Endpoints User
   // Obtener todos los usuarios
   getUser(): Observable<any> {
     return this.http.get(`${this.baseUrl}/usuarios/getallusuarios`);
-  }
-
-  // Obtener todos los productos
-  getProduct(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/productos/getAllProductos`);
   }
 
   // Login
@@ -27,4 +23,21 @@ export class ApiService {
       contrasena
     });
   }
+
+  // Crear Usuario
+  create_user(nombre: string, apellido: string, correo: string, contrasena: string, tipo_user: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/usuarios/createusuario`, {
+      nombre,
+      apellido,
+      correo,
+      contrasena,
+      tipo_user
+    });
+  }
+
+  // Obtener todos los productos
+  getProduct(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/productos/getAllProductos`);
+  }
+
 }

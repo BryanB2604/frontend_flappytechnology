@@ -6,12 +6,16 @@ import { HomeComponent } from './store/home/home.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { DashboardSuperAdminComponent } from './superadmin/dashboard/dashboard.component';
+import { DashboardUserComponent } from './user/dashboard/dashboard.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent }, 
   { path: 'register', component: RegisterComponent }, 
-  { path: 'admin', component: DashboardComponent } 
+  { path: 'admin', component: DashboardComponent }, 
+  { path: 'superadmin', component: DashboardSuperAdminComponent }, 
+  { path: 'user', component: DashboardUserComponent } 
 ];
 
 @NgModule({
