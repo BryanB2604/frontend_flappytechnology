@@ -35,9 +35,40 @@ export class ApiService {
     });
   }
 
-  // Obtener todos los productos
-  getProduct(): Observable<any> {
+   // Obtener todos los productos
+   getProduct(): Observable<any> {
     return this.http.get(`${this.baseUrl}/productos/getAllProductos`);
+  }
+
+  // Eliminar producto
+  searchProduct(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/productos/getProductoById/${id}`);
+  }
+
+  // Crear producto
+  createProduct(nombre: string, descripcion: string, valor_unitario: number, proveedor: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/productos/createProducto`, {
+      nombre,
+      descripcion,
+      valor_unitario,
+      proveedor
+    });
+  }
+
+  // Actualizar producto
+  updateProduct(id: number, nombre: string, descripcion: string, valor_unitario: number, proveedor: string): Observable<any> {
+    return this.http.put(`${this.baseUrl}/productos/updateProductoById/${id}`, {
+      nombre,
+      descripcion,
+      valor_unitario,
+      proveedor
+    });
+  }
+  
+
+  // Eliminar producto
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/productos/deleteProductoById/${id}`);
   }
 
 }

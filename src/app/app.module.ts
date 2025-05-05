@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms'; 
 import { provideHttpClient } from '@angular/common/http';  
+import { TreeTableModule } from 'primeng/treetable';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,6 +14,7 @@ import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { NavComponent } from './core/nav/nav.component';
 import { DashboardSuperAdminComponent } from './superadmin/dashboard/dashboard.component';
 import { DashboardUserComponent } from './user/dashboard/dashboard.component';
+import { SocketComponent } from './core/socket/socket.component';
 
 @NgModule({
   declarations: [
@@ -22,12 +25,15 @@ import { DashboardUserComponent } from './user/dashboard/dashboard.component';
     DashboardComponent,
     NavComponent,
     DashboardSuperAdminComponent,
-    DashboardUserComponent
+    DashboardUserComponent,
+    SocketComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    TreeTableModule
   ],
   providers: [
     provideHttpClient()
