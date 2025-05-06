@@ -5,38 +5,20 @@
     <div class="login-card">
       <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo">
       <h2 class="titulo">Registrarse</h2>
-      <form #form="ngForm" (ngSubmit)="crearUsuario(form)">
-        
-        <!-- Mensaje de error para nombre -->
-        <div *ngIf="nombre?.invalid && nombre?.touched">
-          <span class="error-message">El nombre es inválido. Solo se permiten letras.</span>
-          <span class="error-message">Ejemplo correcto: Juan Pérez</span>
-        </div>
-        <input type="text" [(ngModel)]="nombre" placeholder="Nombre" name="nombre" required pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ ]+" #nombre="ngModel">
 
-        <!-- Mensaje de error para apellido -->
-        <div *ngIf="apellido?.invalid && apellido?.touched">
-          <span class="error-message">El apellido es inválido. Solo se permiten letras.</span>
-          <span class="error-message">Ejemplo correcto: González</span>
-        </div>
-        <input type="text" [(ngModel)]="apellido" placeholder="Apellido" name="apellido" required pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ ]+" #apellido="ngModel">
-        
-        <!-- Mensaje de error para correo -->
-        <div *ngIf="correo?.invalid && correo?.touched">
-          <span class="error-message">El correo es inválido.</span>
-          <span class="error-message">Ejemplo correcto: correo&#64;gmail.com</span>
-        </div>
-        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required pattern="^[^ ]+@[^ ]+\.[a-z]{2,3}$" #correo="ngModel">
+      <form #form="ngForm" (ngSubmit)="crearUsuario()">
 
-        <!-- Mensaje de error para contraseña -->
-        <div *ngIf="contrasena?.invalid && contrasena?.touched">
-          <span class="error-message">La contraseña debe tener al menos 6 caracteres y solo puede contener letras y números.</span>
-          <span class="error-message">Ejemplo correcto: Contraseña123</span>
-        </div>
-        <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required pattern="^[A-Za-z0-9]{2,}$" #contrasena="ngModel">
+        <input type="text" [(ngModel)]="nombre" placeholder="Nombre" name="nombre" required>
+
+        <input type="text" [(ngModel)]="apellido" placeholder="Apellido" name="apellido" required>
+
+        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$">
+
+        <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required>
 
         <button type="submit" [disabled]="!form.valid">Registrarse</button>
-        <button type="button" (click)="goToLogin()">Volver al login</button>        
+        <button type="button" (click)="goToLogin()">Volver al login</button>
+
       </form>
 
       <div *ngIf="error" class="error-message">{{ error }}</div>

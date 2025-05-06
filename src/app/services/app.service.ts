@@ -25,14 +25,9 @@ export class ApiService {
   }
 
   // Crear Usuario
-  create_user(nombre: string, apellido: string, correo: string, contrasena: string, tipo_user: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/usuarios/createusuario`, {
-      nombre,
-      apellido,
-      correo,
-      contrasena,
-      tipo_user
-    });
+  create_user(nombre: string, apellido: string, correo: string, contrasena: string, tipo_user: number) {
+    const body = { nombre, apellido, correo, contrasena, tipo_user };
+    return this.http.post<any>(`${this.baseUrl}/usuarios/createusuario`, body);
   }
 
    // Obtener todos los productos
