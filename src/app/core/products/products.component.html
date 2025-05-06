@@ -1,82 +1,82 @@
 
 <div class="filtros">
-  <h2 (click)="toggleFilterOptions()">Filtros</h2>
-  <div class="btn-filtros" *ngIf="filterOptionsVisible">
+<h2 (click)="toggleFilterOptions()">Filtros</h2>
+<div class="btn-filtros" *ngIf="filterOptionsVisible">
     <button (click)="selectFilter('crear')">Crear Producto</button>
     <button (click)="selectFilter('editar')">Editar Producto</button>
     <button (click)="selectFilter('eliminar')">Eliminar Producto</button>
     <button (click)="selectFilter('buscar')">Buscar Producto</button>
-  </div>
 </div>
-  
+</div>
+
 <div *ngIf="selectedFilter === 'crear'" class="section-form">
-  <h2>Crear Producto</h2>
-  <form [formGroup]="createForm" (ngSubmit)="createProduct()" class="form-group">
+<h2>Crear Producto</h2>
+<form [formGroup]="createForm" (ngSubmit)="createProduct()" class="form-group">
     <input type="text" formControlName="nombre" placeholder="Nombre" />
     <input type="text" formControlName="descripcion" placeholder="Descripción" />
     <input type="number" formControlName="valor_unitario" placeholder="Valor Unitario" />
     <input type="text" formControlName="proveedor" placeholder="Proveedor" />
     <button type="submit">Crear</button>
-  </form>
+</form>
 </div>
-  
+
 <div *ngIf="selectedFilter === 'editar'" class="section-form">
     <h2>Editar Producto</h2>
     <form [formGroup]="editForm" (ngSubmit)="updateProduct()" class="form-group">
-      <input type="number" formControlName="id_prod" placeholder="ID del Producto" />
-      <input type="text" formControlName="nombre" placeholder="Nuevo Nombre" />
-      <input type="text" formControlName="descripcion" placeholder="Nueva Descripción" />
-      <input type="number" formControlName="valor_unitario" placeholder="Nuevo Valor Unitario" />
-      <input type="text" formControlName="proveedor" placeholder="Nuevo Proveedor" />
-      <button type="submit">Actualizar</button>
+    <input type="number" formControlName="id_prod" placeholder="ID del Producto" />
+    <input type="text" formControlName="nombre" placeholder="Nuevo Nombre" />
+    <input type="text" formControlName="descripcion" placeholder="Nueva Descripción" />
+    <input type="number" formControlName="valor_unitario" placeholder="Nuevo Valor Unitario" />
+    <input type="text" formControlName="proveedor" placeholder="Nuevo Proveedor" />
+    <button type="submit">Actualizar</button>
     </form>
 </div>
 
 <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
     <h2>Eliminar Producto</h2>
     <form [formGroup]="deleteForm" (ngSubmit)="deleteProduct(deleteForm.value.id_prod)" class="form-group">
-      <input type="number" formControlName="id_prod" placeholder="ID del Producto a Eliminar" />
-      <button type="submit">Eliminar</button>
+    <input type="number" formControlName="id_prod" placeholder="ID del Producto a Eliminar" />
+    <button type="submit">Eliminar</button>
     </form>
 </div>
 
 <div *ngIf="selectedFilter === 'buscar'" class="section-form">
-  <h2>Buscar Producto</h2>
-  <form [formGroup]="buscarForm" (ngSubmit)="buscarProductoPorId(buscarForm.value.id_prod)" class="form-group">
+<h2>Buscar Producto</h2>
+<form [formGroup]="buscarForm" (ngSubmit)="buscarProductoPorId(buscarForm.value.id_prod)" class="form-group">
     <input type="number" formControlName="id_prod" placeholder="ID del Producto a Buscar" />
     <button type="submit">Buscar</button>
-  </form>
+</form>
 
-  <div *ngIf="productoEncontrado">
+<div *ngIf="productoEncontrado">
     <div class="section-form">
-      <table>
+    <table>
         <thead>
-          <tr>
+        <tr>
             <th>ID Producto</th>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Valor Unitario</th>
             <th>Proveedor</th>
             <th>Imagen</th>
-          </tr>
+        </tr>
         </thead>
         <tbody>
-          <tr>
+        <tr>
             <td>{{ search.id_prod }}</td>
             <td>{{ search.nom_prod }}</td>
             <td>{{ search.descripcion }}</td>
             <td>{{ search.valor_unitario | currency:'COP' }}</td>
             <td>{{ search.proveedor }}</td>
             <td>{{ search.img }}</td>
-          </tr>
+        </tr>
         </tbody>
-      </table>
+    </table>
     </div>
-  </div>
+</div>
 
-  <div *ngIf="error && !productoEncontrado">
+<div *ngIf="error && !productoEncontrado">
     <p class="mensaje-error">{{ error }}</p>
-  </div>
+</div>
 </div>
 
 <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
@@ -85,33 +85,33 @@
 <div class="section-form">
     <h2>Productos</h2>
     <table>
-      <thead>
+    <thead>
         <tr>
-          <th>ID Producto</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Valor Unitario</th>
-          <th>Proveedor</th>
-          <!-- <th>ID Stock</th>
-          <th>Cantidad Disponible</th>
-          <th>Cantidad Reservada</th>
-          <th>Hora Actualizacion</th>
-          <th>Ultima actualizacion</th> -->
+        <th>ID Producto</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Valor Unitario</th>
+        <th>Proveedor</th>
+        <!-- <th>ID Stock</th>
+        <th>Cantidad Disponible</th>
+        <th>Cantidad Reservada</th>
+        <th>Hora Actualizacion</th>
+        <th>Ultima actualizacion</th> -->
         </tr>
-      </thead>
-      <tbody>
+    </thead>
+    <tbody>
         <tr *ngFor="let prod of products">
-          <td>{{ prod.id_prod }}</td>
-          <td>{{ prod.nom_prod }}</td>
-          <td>{{ prod.descripcion }}</td>
-          <td>{{ prod.valor_unitario | currency:'COP' }}</td>
-          <td>{{ prod.proveedor }}</td>
-          <!-- <td>{{ prod.id_stock }}</td>
-          <td>{{ prod.cantidad_disponible }}</td>
-          <td>{{ prod.cantidad_reservada }}</td>
-          <td>{{ prod.hora_actualizacion}}</td>
-          <td>{{ prod.ultima_actualizacion }}</td> -->
+        <td>{{ prod.id_prod }}</td>
+        <td>{{ prod.nom_prod }}</td>
+        <td>{{ prod.descripcion }}</td>
+        <td>{{ prod.valor_unitario | currency:'COP' }}</td>
+        <td>{{ prod.proveedor }}</td>
+        <!-- <td>{{ prod.id_stock }}</td>
+        <td>{{ prod.cantidad_disponible }}</td>
+        <td>{{ prod.cantidad_reservada }}</td>
+        <td>{{ prod.hora_actualizacion}}</td>
+        <td>{{ prod.ultima_actualizacion }}</td> -->
         </tr>
-      </tbody>
+    </tbody>
     </table>
 </div>

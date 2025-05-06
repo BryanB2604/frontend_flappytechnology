@@ -1,0 +1,31 @@
+.option {
+    display: flex;
+    font-size:calc(var(--font-size) + 100%);
+    justify-content: space-around;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    background: var(--Blue-Vivid);
+  }
+  
+  .option div {
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    color: white; 
+  }
+  
+  .option div.activo {
+    background: #007bff;
+    font-weight: bold;
+  }
+  
+  .option div.texto-blanco {
+    color: white;
+  }
+  
+  .option div:hover {
+    background: rgba(0, 123, 255, 0.8); 
+  }
+  

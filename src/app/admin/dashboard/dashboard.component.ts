@@ -8,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class DashboardComponent {
 
+  vistaSeleccionada: 'productos' | 'ventas' = 'productos';
+
+  seleccionarVista(vista: 'productos' | 'ventas') {
+    this.vistaSeleccionada = vista;
+  }
+
 }

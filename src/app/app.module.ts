@@ -15,6 +15,9 @@ import { NavComponent } from './core/nav/nav.component';
 import { DashboardSuperAdminComponent } from './superadmin/dashboard/dashboard.component';
 import { DashboardUserComponent } from './user/dashboard/dashboard.component';
 import { SocketComponent } from './core/socket/socket.component';
+import { ProductsComponent } from './core/products/products.component';
+import { UsersComponent } from './core/users/users.component';
+import { SalesComponent } from './core/sales/sales.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { SocketComponent } from './core/socket/socket.component';
     NavComponent,
     DashboardSuperAdminComponent,
     DashboardUserComponent,
-    SocketComponent
+    SocketComponent,
+    ProductsComponent,
+    UsersComponent,
+    SalesComponent
   ],
   imports: [
     BrowserModule,

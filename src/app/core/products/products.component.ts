@@ -4,12 +4,13 @@ import { TreeNode } from 'primeng/api';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-socket',
+  selector: 'app-products',
   standalone: false,
-  templateUrl: './socket.component.html',
-  styleUrls: ['./socket.component.css']
+  templateUrl: './products.component.html',
+  styleUrl: './products.component.css'
 })
-export class SocketComponent implements OnInit {
+export class ProductsComponent {
+
   files: TreeNode[] = [];
   products: any[] = [];
   search: any = {};
@@ -203,4 +204,5 @@ export class SocketComponent implements OnInit {
   selectFilter(filter: string): void {
     this.selectedFilter = filter;
   }
+
 }

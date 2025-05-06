@@ -1,0 +1,127 @@
+<div class="filtros">
+    <h2 (click)="toggleFilterOptions()">Filtros</h2>
+    <div class="btn-filtros" *ngIf="filterOptionsVisible">
+      <button (click)="selectFilter('crear')">Crear Venta</button>
+      <button (click)="selectFilter('editar')">Editar Venta</button>
+      <button (click)="selectFilter('eliminar')">Eliminar Venta</button>
+      <button (click)="selectFilter('buscar')">Buscar Venta</button>
+    </div>
+  </div>
+  
+  <div *ngIf="selectedFilter === 'crear'" class="section-form">
+    <h2>Crear Venta</h2>
+    <form [formGroup]="createForm" (ngSubmit)="createSale()" class="form-group">
+      <input type="number" formControlName="fk_user" placeholder="Usuario" required />
+      <input type="number" formControlName="fk_prod" placeholder="Producto" required />
+      <input type="number" formControlName="fk_estado" placeholder="Estado" required />
+      <input type="date" formControlName="fecha" required />
+      <input type="time" formControlName="hora" required />
+      <input type="number" formControlName="cantidad" placeholder="Cantidad" required />
+      <input type="number" formControlName="total" placeholder="Total" step="0.01" required />
+      <input type="text" formControlName="cod_compra" placeholder="Código de Compra" required />
+      <button type="submit">Crear</button>
+    </form>
+  </div>
+  
+  <div *ngIf="selectedFilter === 'editar'" class="section-form">
+    <h2>Editar Venta</h2>
+    <form [formGroup]="editForm" (ngSubmit)="updateSale()" class="form-group">
+      <input type="number" formControlName="id_venta" placeholder="ID Venta" required />
+      <input type="number" formControlName="fk_user" placeholder="Usuario" />
+      <input type="number" formControlName="fk_prod" placeholder="Producto" />
+      <input type="number" formControlName="fk_estado" placeholder="Estado" />
+      <input type="date" formControlName="fecha" />
+      <input type="time" formControlName="hora" />
+      <input type="number" formControlName="cantidad" placeholder="Cantidad" />
+      <input type="number" formControlName="total" placeholder="Total" step="0.01" />
+      <input type="text" formControlName="cod_compra" placeholder="Código de Compra" />
+      <button type="submit">Actualizar</button>
+    </form>
+  </div>
+  
+  <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
+    <h2>Eliminar Venta</h2>
+    <form [formGroup]="deleteForm" (ngSubmit)="deleteSale(deleteForm.value.id_venta)" class="form-group">
+      <input type="number" formControlName="id_venta" placeholder="ID de la Venta a Eliminar" required />
+      <button type="submit">Eliminar</button>
+    </form>
+  </div>
+  
+  <div *ngIf="selectedFilter === 'buscar'" class="section-form">
+    <h2>Buscar Venta</h2>
+    <form [formGroup]="searchForm" (ngSubmit)="searchSaleById(searchForm.value.id_venta)" class="form-group">
+      <input type="number" formControlName="id_venta" placeholder="ID de la Venta a Buscar" required />
+      <button type="submit">Buscar</button>
+    </form>
+  
+    <div *ngIf="saleFound" class="section-form">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Producto</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Código Compra</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ search.id_venta }}</td>
+            <td>{{ search.fk_user }}</td>
+            <td>{{ search.fk_prod }}</td>
+            <td>{{ search.fk_estado }}</td>
+            <td>{{ search.fecha }}</td>
+            <td>{{ search.hora }}</td>
+            <td>{{ search.cantidad }}</td>
+            <td>{{ search.total }}</td>
+            <td>{{ search.cod_compra }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div *ngIf="error && !saleFound">
+      <p class="mensaje-error">{{ error }}</p>
+    </div>
+  </div>
+  
+  <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
+  <div *ngIf="error" class="mensaje-error">{{ error }}</div>
+  
+  <div class="section-form">
+    <h2>Ventas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario</th>
+          <th>Producto</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Cantidad</th>
+          <th>Total</th>
+          <th>Código Compra</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sale of sales">
+          <td>{{ sale.id_venta }}</td>
+          <td>{{ sale.fk_user }}</td>
+          <td>{{ sale.fk_prod }}</td>
+          <td>{{ sale.fk_estado }}</td>
+          <td>{{ sale.fecha }}</td>
+          <td>{{ sale.hora }}</td>
+          <td>{{ sale.cantidad }}</td>
+          <td>{{ sale.total }}</td>
+          <td>{{ sale.cod_compra }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

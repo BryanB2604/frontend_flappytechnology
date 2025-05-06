@@ -1,1 +1,23 @@
-<app-socket></app-socket>
+<div class="option">
+    <div 
+        (click)="seleccionarVista('productos')" 
+        [class.activo]="vistaSeleccionada === 'productos'"
+        [class.texto-blanco]="vistaSeleccionada === 'productos'">
+        Productos
+    </div>
+    <div 
+        (click)="seleccionarVista('ventas')" 
+        [class.activo]="vistaSeleccionada === 'ventas'"
+        [class.texto-blanco]="vistaSeleccionada === 'ventas'">
+        Ventas
+    </div>
+</div>
+
+<div *ngIf="vistaSeleccionada === 'productos'">
+    <app-products></app-products>
+</div>
+
+<div *ngIf="vistaSeleccionada === 'ventas'">
+    <app-sales></app-sales>
+</div>
+  
