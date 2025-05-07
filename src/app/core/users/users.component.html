@@ -1,1 +1,94 @@
-<p>users works!</p>
+<div class="filtros">
+    <h2 (click)="toggleFilterOptions()">Filtros</h2>
+    <div class="btn-filtros" *ngIf="filterOptionsVisible">
+      <button (click)="selectFilter('editar')">Editar Usuario</button>
+      <button (click)="selectFilter('eliminar')">Eliminar Usuario</button>
+      <button (click)="selectFilter('buscar')">Buscar Usuario</button>
+    </div>
+  </div>
+  
+  <div *ngIf="selectedFilter === 'editar'" class="section-form">
+    <h2>Editar Usuario</h2>
+    <form [formGroup]="editForm" (ngSubmit)="updateUser()" class="form-group">
+      <input type="number" formControlName="id_user" placeholder="ID del Usuario" />
+      <input type="text" formControlName="nombre" placeholder="Nombre" />
+      <input type="text" formControlName="apellido" placeholder="Apellido" />
+      <input type="email" formControlName="correo" placeholder="Correo" />
+      <input type="password" formControlName="contrasena" placeholder="Contraseña" />
+      <input type="number" formControlName="tipo_user" placeholder="Tipo de Usuario" />
+      <button type="submit">Actualizar</button>
+    </form>
+  </div>
+  
+  <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
+    <h2>Eliminar Usuario</h2>
+    <form [formGroup]="deleteForm" (ngSubmit)="deleteUser(deleteForm.value.id_user)" class="form-group">
+      <input type="number" formControlName="id_user" placeholder="ID del Usuario a Eliminar" />
+      <button type="submit">Eliminar</button>
+    </form>
+  </div>
+  
+  <div *ngIf="selectedFilter === 'buscar'" class="section-form">
+    <h2>Buscar Usuario</h2>
+    <form [formGroup]="buscarForm" (ngSubmit)="buscarUsuarioPorId(buscarForm.value.id_user)" class="form-group">
+      <input type="number" formControlName="id_user" placeholder="ID del Usuario a Buscar" />
+      <button type="submit">Buscar</button>
+    </form>
+  
+    <div *ngIf="usuarioEncontrado">
+      <div class="section-form">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Correo</th>
+              <th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ search.id_user }}</td>
+              <td>{{ search.nombre }}</td>
+              <td>{{ search.apellido }}</td>
+              <td>{{ search.correo }}</td>
+              <td>{{ search.tipo_user }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <div *ngIf="error && !usuarioEncontrado">
+      <p class="mensaje-error">{{ error }}</p>
+    </div>
+  </div>
+  
+  <!-- <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
+  <div *ngIf="error" class="mensaje-error">{{ error }}</div> -->
+  
+  <div class="section-form">
+    <h2>Usuarios</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Correo</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users">
+          <td>{{ u.id_user }}</td>
+          <td>{{ u.nombre }}</td>
+          <td>{{ u.apellido }}</td>
+          <td>{{ u.correo }}</td>
+          <td>{{ u.tipo_user }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

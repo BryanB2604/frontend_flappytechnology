@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/app.service'; 
 import { Router } from '@angular/router';
 
-
 export interface Product {
   id_prod: number;
   nom_prod: string;

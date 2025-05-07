@@ -30,12 +30,28 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/usuarios/getallusuarios`);
   }
 
+  // Eliminar User
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/usuarios/deleteusuariobyid/${id}`);
+  }
+
+  // Buscat producto
+  searchUser(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/usuarios/getusuariobyid/${id}`);
+  }
+
+  // Actualizar User
+  updateUser(id: number, nombre: string, apellido: string, correo: string, contrasena: string, tipo_user: number): Observable<any> {
+    const body = { nombre, apellido, correo, contrasena, tipo_user};
+    return this.http.put(`${this.baseUrl}/usuarios/updateusuariobyid/${id}`,body);
+  }
+
   // Obtener todos los productos
    getProduct(): Observable<any> {
     return this.http.get(`${this.baseUrl}/productos/getAllProductos`);
   }
 
-  // Obtener todos los productos
+  // Obtener todos los productos del front
   getProductFront(): Observable<any> {
     return this.http.get(`${this.baseUrl}/productos/getallProductosToFront`);
   }
@@ -84,10 +100,30 @@ export class ApiService {
     return this.http.put(`${this.baseUrl}/ventas/updateVentaById/${id}`,body);
   }
   
-
   // Eliminar venta
   deleteSales(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/ventas/deleteVentaById/${id}`);
+  }
+
+  // Obtener todos las socket
+  getStock(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/stock/getAllStock`);
+  }
+
+  // Buscar Ventas
+  searchStock(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/stock/getStockById/${id}`);
+  }
+
+  // Crear venta
+  createStock(id: number, fk_prod: number, cantidad_total: number, cantidad_disponible: number, cantidad_reservada: number,ultima_actualizacion: string, hora_actualizacion: string ): Observable<any> {
+    const body = { id, fk_prod, cantidad_total, cantidad_disponible, cantidad_reservada,ultima_actualizacion, hora_actualizacion};
+    return this.http.post(`${this.baseUrl}/stock/createStock`, body);
+  }
+
+  // Eliminar venta
+  deleteStock(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/stock/deleteStockById/${id}`);
   }
 
 }

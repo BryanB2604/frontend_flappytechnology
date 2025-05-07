@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/app.service';
-import { TreeNode } from 'primeng/api';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -10,197 +9,120 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./socket.component.css']
 })
 export class SocketComponent implements OnInit {
-  files: TreeNode[] = [];
-  products: any[] = [];
-  search: any = {};
-
-  createForm!: FormGroup;
-  editForm!: FormGroup;
+  stockList: any[] = [];
+  searchResult: any = {};
+  stockForm!: FormGroup;
+  searchForm!: FormGroup;  // Asegúrate de declarar searchForm aquí
   deleteForm!: FormGroup;
-  buscarForm!: FormGroup;
-
   error: string | undefined;
   mensaje: string | undefined;
+  stockEncontrado: boolean = false;
 
-  filterOptionsVisible: boolean = false; 
-  selectedFilter: string = ''; 
-  productoEncontrado: boolean = false;
+  // Variables para filtros y vistas
+  filterOptionsVisible = false;
+  selectedFilter: string = '';
 
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.getProduct();
     this.initForms();
+    this.getStock();
   }
 
   initForms(): void {
-    this.createForm = this.fb.group({
-      nombre: [''],
-      descripcion: [''],
-      valor_unitario: [0],
-      proveedor: ['']
+    this.stockForm = this.fb.group({
+      id: [0],
+      fk_prod: [0],
+      cantidad_total: [0],
+      cantidad_disponible: [0],
+      cantidad_reservada: [0],
+      ultima_actualizacion: [''],
+      hora_actualizacion: ['']
     });
 
-    this.editForm = this.fb.group({
-      id_prod: [0],
-      nombre: [''],
-      descripcion: [''],
-      valor_unitario: [0],
-      proveedor: ['']
-    });
-
-    this.deleteForm = this.fb.group({
-      id_prod: [0]
-    });
-
-    this.buscarForm = this.fb.group({
-      id_prod: [0]
-    });
-  }
-
-  getProduct(): void {
-    this.api.getProduct().subscribe({
-      next: (res) => {
-        this.products = res.data;
-        console.log(this.products)
-      },
-      error: (err) => console.error('Error al obtener productos', err)
-    });
-  }
-
-  createProduct(): void {
-    const form = this.createForm.value;
-  
-    if (!form.nombre || !form.descripcion || form.valor_unitario <= 0 || !form.proveedor) {
-      this.error = 'Todos los campos son obligatorios.';
-      this.mensaje = '';
-      return;
-    }
-  
-    const nombreDuplicado = this.products.some(p =>
-      p.nom_prod.trim().toLowerCase() === form.nombre.trim().toLowerCase()
-    );
-  
-    if (nombreDuplicado) {
-      this.error = 'Ya existe un producto con ese nombre.';
-      this.mensaje = '';
-      return;
-    }
-  
-    this.api.createProduct(
-      form.nombre,
-      form.descripcion,
-      form.valor_unitario,
-      form.proveedor
-    ).subscribe({
-      next: () => {
-        this.getProduct();
-        this.createForm.reset();
-        this.error = '';
-        this.mensaje = 'Producto creado exitosamente.';
-      },
-      error: (err) => {
-        console.error('Error al crear producto', err);
-        this.error = 'Error al crear el producto.';
-        this.mensaje = '';
-      }
-    });
-  }  
-
-  updateProduct(): void {
-    const form = this.editForm.value;
-    const productoExiste = this.products.find(p => p.id_prod === form.id_prod);
-
-    if (!productoExiste) {
-      this.error = `No se encontró el producto con ID ${form.id_prod}.`;
-      this.mensaje = '';
-      return;
-    }
-
-    const nombreDuplicado = this.products.some(
-      p => p.nom_prod.trim().toLowerCase() === form.nombre.trim().toLowerCase() && p.id_prod !== form.id_prod
-    );
-
-    if (nombreDuplicado) {
-      this.error = 'Ya existe otro producto con ese nombre.';
-      this.mensaje = '';
-      return;
-    }
-
-    if (confirm('¿Estás seguro de actualizar este producto?')){
-
-      this.api.updateProduct(form.id_prod, form.nombre, form.descripcion, form.valor_unitario, form.proveedor).subscribe({
-        next: () => {
-          this.getProduct();
-          this.editForm.reset();
-          this.error = '';
-        },
-        error: (err) => {
-          console.error('Error al actualizar producto', err);
-          this.error = 'Error al actualizar el producto.';
-          this.mensaje = '';
-        }
-      });
-
-    }
-  }
-
-  deleteProduct(id: number): void {
-    const productoExiste = this.products.find(p => p.id_prod === id);
-
-    if (!productoExiste) {
-      this.error = `No se encontró el producto con ID ${id}.`;
-      this.mensaje = '';
-      return;
-    }
-
-    if (confirm('¿Estás seguro de eliminar este producto?')) {
-      this.api.deleteProduct(id).subscribe({
-        next: () => {
-          this.getProduct();
-          this.deleteForm.reset();
-          this.error = '';
-        },
-        error: (err) => {
-          console.error('Error al eliminar producto', err);
-          this.error = 'Error al eliminar el producto.';
-          this.mensaje = '';
-        }
-      });
-    }
-  }
-
-  buscarProductoPorId(id: number): void {
-    this.api.searchProduct(id).subscribe({
-      next: (res) => {
-        if (res && res.data) {
-          this.search = res.data;
-          this.productoEncontrado = true;
-          this.error = '';
-        } else {
-          this.search = {};
-          this.productoEncontrado = false;
-          this.error = `Producto con ID ${id} no encontrado.`;
-        }
-      },
-      error: (err) => {
-        console.error('Error al buscar producto', err);
-        this.search = {};
-        this.productoEncontrado = false;
-        this.error = 'Ocurrió un error al buscar el producto.';
-      }
-    });
+    this.searchForm = this.fb.group({ id: [0] });  // Asegúrate de inicializar searchForm aquí
+    this.deleteForm = this.fb.group({ id: [0] });
   }
 
   toggleFilterOptions(): void {
     this.filterOptionsVisible = !this.filterOptionsVisible;
-  
-    if (!this.filterOptionsVisible) {
-      this.selectedFilter = '';
-    }
   }
 
   selectFilter(filter: string): void {
     this.selectedFilter = filter;
+    this.mensaje = '';
+    this.error = '';
+    this.stockEncontrado = false;
+  }
+
+  getStock(): void {
+    this.api.getStock().subscribe({
+      next: (res) => this.stockList = res.data,
+      error: (err) => console.error('Error al obtener stock', err)
+    });
+  }
+
+  createStock(): void {
+    const form = this.stockForm.value;
+    this.api.createStock(
+      form.id,
+      form.fk_prod,
+      form.cantidad_total,
+      form.cantidad_disponible,
+      form.cantidad_reservada,
+      form.ultima_actualizacion,
+      form.hora_actualizacion
+    ).subscribe({
+      next: () => {
+        this.getStock();
+        this.stockForm.reset();
+        this.mensaje = 'Stock creado exitosamente.';
+        this.error = '';
+      },
+      error: (err) => {
+        console.error('Error al crear stock', err);
+        this.error = 'Error al crear el stock';
+        this.mensaje = '';
+      }
+    });
+  }
+
+  searchStock(): void {
+    const id = this.searchForm.value.id;
+    this.api.searchStock(id).subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.searchResult = res.data;
+          this.stockEncontrado = true;
+          this.error = '';
+        } else {
+          this.searchResult = {};
+          this.stockEncontrado = false;
+          this.error = `Stock con ID ${id} no encontrado.`;
+        }
+      },
+      error: (err) => {
+        console.error('Error al buscar stock', err);
+        this.error = 'Ocurrió un error al buscar el stock';
+        this.stockEncontrado = false;
+      }
+    });
+  }
+
+  deleteStock(): void {
+    const id = this.deleteForm.value.id;
+    this.api.deleteStock(id).subscribe({
+      next: () => {
+        this.getStock();
+        this.deleteForm.reset();
+        this.mensaje = 'Stock eliminado exitosamente';
+        this.error = '';
+      },
+      error: (err) => {
+        console.error('Error al eliminar stock', err);
+        this.error = 'Error al eliminar el stock';
+        this.mensaje = '';
+      }
+    });
   }
 }

@@ -18,6 +18,7 @@ import { SocketComponent } from './core/socket/socket.component';
 import { ProductsComponent } from './core/products/products.component';
 import { UsersComponent } from './core/users/users.component';
 import { SalesComponent } from './core/sales/sales.component';
+import { GeneralComponent } from './core/general/general.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { SalesComponent } from './core/sales/sales.component';
     SocketComponent,
     ProductsComponent,
     UsersComponent,
-    SalesComponent
+    SalesComponent,
+    GeneralComponent
   ],
   imports: [
     BrowserModule,

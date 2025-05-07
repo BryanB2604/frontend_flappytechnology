@@ -1,0 +1,33 @@
+<div class="section-form">
+    <h2>Productos</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Producto</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Valor Unitario</th>
+                <th>Proveedor</th>
+                <th>ID Stock</th>
+                <th>Cantidad Disponible</th>
+                <th>Cantidad Reservada</th>
+                <th>Hora Actualizacion</th>
+                <th>Ultima actualizacion</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let prod of products">
+                <td>{{ prod.id_prod }}</td>
+                <td>{{ prod.nom_prod }}</td>
+                <td>{{ prod.descripcion }}</td>
+                <td>{{ prod.valor_unitario | currency:'COP' }}</td>
+                <td>{{ prod.proveedor }}</td>
+                <td>{{ prod.id_stock }}</td>
+                <td>{{ prod.cantidad_disponible }}</td>
+                <td>{{ prod.cantidad_reservada }}</td>
+                <td>{{ prod.hora_actualizacion}}</td>
+                <td>{{ prod.ultima_actualizacion }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

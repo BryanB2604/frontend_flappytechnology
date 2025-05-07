@@ -1,117 +1,96 @@
-
 <div class="filtros">
-  <h2 (click)="toggleFilterOptions()">Filtros</h2>
+  <h2 (click)="toggleFilterOptions()">Gestion del Stock</h2>
   <div class="btn-filtros" *ngIf="filterOptionsVisible">
-    <button (click)="selectFilter('crear')">Crear Producto</button>
-    <button (click)="selectFilter('editar')">Editar Producto</button>
-    <button (click)="selectFilter('eliminar')">Eliminar Producto</button>
-    <button (click)="selectFilter('buscar')">Buscar Producto</button>
+    <button (click)="selectFilter('crear')">Crear Stock</button>
+    <button (click)="selectFilter('eliminar')">Eliminar Stock</button>
+    <button (click)="selectFilter('buscar')">Buscar Stock</button>
   </div>
 </div>
-  
+
 <div *ngIf="selectedFilter === 'crear'" class="section-form">
-  <h2>Crear Producto</h2>
-  <form [formGroup]="createForm" (ngSubmit)="createProduct()" class="form-group">
-    <input type="text" formControlName="nombre" placeholder="Nombre" />
-    <input type="text" formControlName="descripcion" placeholder="Descripción" />
-    <input type="number" formControlName="valor_unitario" placeholder="Valor Unitario" />
-    <input type="text" formControlName="proveedor" placeholder="Proveedor" />
+  <h2>Crear Stock</h2>
+  <form [formGroup]="stockForm" (ngSubmit)="createStock()" class="form-group">
+    <input type="number" formControlName="id" placeholder="ID Stock" />
+    <input type="number" formControlName="fk_prod" placeholder="ID Producto" />
+    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" />
+    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" />
+    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" />
+    <input type="date" formControlName="ultima_actualizacion" />
+    <input type="time" formControlName="hora_actualizacion" />
     <button type="submit">Crear</button>
   </form>
 </div>
-  
-<div *ngIf="selectedFilter === 'editar'" class="section-form">
-    <h2>Editar Producto</h2>
-    <form [formGroup]="editForm" (ngSubmit)="updateProduct()" class="form-group">
-      <input type="number" formControlName="id_prod" placeholder="ID del Producto" />
-      <input type="text" formControlName="nombre" placeholder="Nuevo Nombre" />
-      <input type="text" formControlName="descripcion" placeholder="Nueva Descripción" />
-      <input type="number" formControlName="valor_unitario" placeholder="Nuevo Valor Unitario" />
-      <input type="text" formControlName="proveedor" placeholder="Nuevo Proveedor" />
-      <button type="submit">Actualizar</button>
-    </form>
-</div>
 
 <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
-    <h2>Eliminar Producto</h2>
-    <form [formGroup]="deleteForm" (ngSubmit)="deleteProduct(deleteForm.value.id_prod)" class="form-group">
-      <input type="number" formControlName="id_prod" placeholder="ID del Producto a Eliminar" />
-      <button type="submit">Eliminar</button>
-    </form>
+  <h2>Eliminar Stock</h2>
+  <form [formGroup]="deleteForm" (ngSubmit)="deleteStock()" class="form-group">
+    <input type="number" formControlName="id" placeholder="ID del Stock a Eliminar" />
+    <button type="submit">Eliminar</button>
+  </form>
 </div>
 
 <div *ngIf="selectedFilter === 'buscar'" class="section-form">
-  <h2>Buscar Producto</h2>
-  <form [formGroup]="buscarForm" (ngSubmit)="buscarProductoPorId(buscarForm.value.id_prod)" class="form-group">
-    <input type="number" formControlName="id_prod" placeholder="ID del Producto a Buscar" />
+  <h2>Buscar Stock</h2>
+  <form [formGroup]="searchForm" (ngSubmit)="searchStock()" class="form-group">
+    <input type="number" formControlName="id" placeholder="ID del Stock a Buscar" />
     <button type="submit">Buscar</button>
   </form>
 
-  <div *ngIf="productoEncontrado">
-    <div class="section-form">
-      <table>
-        <thead>
-          <tr>
-            <th>ID Producto</th>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Valor Unitario</th>
-            <th>Proveedor</th>
-            <th>Imagen</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ search.id_prod }}</td>
-            <td>{{ search.nom_prod }}</td>
-            <td>{{ search.descripcion }}</td>
-            <td>{{ search.valor_unitario | currency:'COP' }}</td>
-            <td>{{ search.proveedor }}</td>
-            <td>{{ search.img }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div *ngIf="error && !productoEncontrado">
-    <p class="mensaje-error">{{ error }}</p>
-  </div>
-</div>
-
-<div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
-<div *ngIf="error" class="mensaje-error">{{ error }}</div>
-
-<div class="section-form">
-    <h2>Productos</h2>
+  <div *ngIf="stockEncontrado" class="section-form">
     <table>
       <thead>
         <tr>
+          <th>ID</th>
           <th>ID Producto</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Valor Unitario</th>
-          <th>Proveedor</th>
-          <!-- <th>ID Stock</th>
-          <th>Cantidad Disponible</th>
-          <th>Cantidad Reservada</th>
-          <th>Hora Actualizacion</th>
-          <th>Ultima actualizacion</th> -->
+          <th>Total</th>
+          <th>Disponible</th>
+          <th>Reservado</th>
+          <th>Última Actualización</th>
+          <th>Hora</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let prod of products">
-          <td>{{ prod.id_prod }}</td>
-          <td>{{ prod.nom_prod }}</td>
-          <td>{{ prod.descripcion }}</td>
-          <td>{{ prod.valor_unitario | currency:'COP' }}</td>
-          <td>{{ prod.proveedor }}</td>
-          <!-- <td>{{ prod.id_stock }}</td>
-          <td>{{ prod.cantidad_disponible }}</td>
-          <td>{{ prod.cantidad_reservada }}</td>
-          <td>{{ prod.hora_actualizacion}}</td>
-          <td>{{ prod.ultima_actualizacion }}</td> -->
+        <tr>
+          <td>{{ searchResult.id_stock }}</td>
+          <td>{{ searchResult.fk_prod }}</td>
+          <td>{{ searchResult.cantidad_total }}</td>
+          <td>{{ searchResult.cantidad_disponible }}</td>
+          <td>{{ searchResult.cantidad_reservada }}</td>
+          <td>{{ searchResult.ultima_actualizacion }}</td>
+          <td>{{ searchResult.hora_actualizacion }}</td>
         </tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+<!-- <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
+<div *ngIf="error" class="mensaje-error">{{ error }}</div> -->
+
+<div class="section-form">
+  <h2>Stock</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>ID Producto</th>
+        <th>Total</th>
+        <th>Disponible</th>
+        <th>Reservado</th>
+        <th>Última Actualización</th>
+        <th>Hora</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let stock of stockList">
+        <td>{{ stock.id_stock }}</td>
+        <td>{{ stock.fk_prod }}</td>
+        <td>{{ stock.cantidad_total }}</td>
+        <td>{{ stock.cantidad_disponible }}</td>
+        <td>{{ stock.cantidad_reservada }}</td>
+        <td>{{ stock.ultima_actualizacion }}</td>
+        <td>{{ stock.hora_actualizacion }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
