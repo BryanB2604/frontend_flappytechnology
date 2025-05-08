@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
   }
 
   getProduct() {
-    this.api.getProduct().subscribe({
+    this.api.getProductFront().subscribe({
       next: (res) => {
         this.products = res.data;
         console.log('Productos cargados:', this.products);
