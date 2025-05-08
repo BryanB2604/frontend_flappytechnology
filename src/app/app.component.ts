@@ -15,7 +15,7 @@ export class AppComponent {
   constructor(private router: Router) {
     this.router.events.subscribe(() => {
       const currentUrl = this.router.url;
-      this.showNav = !['/login', '/register'].includes(currentUrl);
+      this.showNav = !['/login', '/register', '/admin', '/superadmin'].includes(currentUrl);
     });
   }
 }

@@ -1,5 +1,5 @@
 <div class="filtros">
-    <h2 (click)="toggleFilterOptions()">Filtros</h2>
+    <h2 (click)="toggleFilterOptions()">Gestion de ventas</h2>
     <div class="btn-filtros" *ngIf="filterOptionsVisible">
       <button (click)="selectFilter('crear')">Crear Venta</button>
       <button (click)="selectFilter('editar')">Editar Venta</button>
@@ -118,7 +118,7 @@
           <td>{{ sale.fecha }}</td>
           <td>{{ sale.hora }}</td>
           <td>{{ sale.cantidad }}</td>
-          <td>{{ sale.total }}</td>
+          <td>{{ sale.costo_total }}</td>
           <td>{{ sale.cod_compra }}</td>
         </tr>
       </tbody>

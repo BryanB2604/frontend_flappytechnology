@@ -4,6 +4,7 @@
     width: 100%;
     height: 80%;
     --font-size: 100%;
+    overflow: hidden;
 }
 
 .title {
@@ -17,11 +18,10 @@
 
 .product {
     display: flex;
-    padding: 1%;
-    flex-wrap: wrap;
+    padding: 0.5%;
     height: 100%;
-    justify-content: space-around;
     background: var(--White);
+    flex-wrap: wrap;
 }
 
 .card {
@@ -70,4 +70,24 @@
     color: white;
     border-radius: 15px;
     cursor: pointer;
+}
+
+.header {
+    padding: 0 2%;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.fa-cart-shopping {
+    font-size: calc(var(--font-size) + 80%);
+    background: var(--Soft_Black);
+    color: var(--White);
+    padding: 1%;
+    border-radius: 50%;
+}
+
+.fa-cart-shopping:hover {
+    background: var(--Blue-Vivid);
 }

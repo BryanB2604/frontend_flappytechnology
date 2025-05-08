@@ -19,6 +19,7 @@ import { ProductsComponent } from './core/products/products.component';
 import { UsersComponent } from './core/users/users.component';
 import { SalesComponent } from './core/sales/sales.component';
 import { GeneralComponent } from './core/general/general.component';
+import { NavAdminComponent } from './core/nav-admin/nav-admin.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { GeneralComponent } from './core/general/general.component';
     ProductsComponent,
     UsersComponent,
     SalesComponent,
-    GeneralComponent
+    GeneralComponent,
+    NavAdminComponent
   ],
   imports: [
     BrowserModule,

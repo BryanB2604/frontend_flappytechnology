@@ -2,3 +2,216 @@
     width: 100%;
     height: 100%;
 }
+
+
+::ng-deep .p-treetable {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #ffffff;
+    padding: 1rem;
+    margin-top: 2rem;
+    table-layout: fixed;
+}
+
+::ng-deep .p-treetable table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+::ng-deep .p-treetable thead th,
+::ng-deep .p-treetable tbody td {
+    padding: 1rem;
+    font-size: 1rem;
+    text-align: center;
+    vertical-align: middle;
+    word-break: break-word;
+}
+
+::ng-deep .p-treetable thead th {
+    background-color: #0B1F40;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+::ng-deep .p-treetable tbody tr:nth-child(even) {
+    background-color: #f5f7fa;
+}
+
+::ng-deep .p-treetable .p-treetable-toggler {
+    margin-right: 8px;
+    color: var(--Blue-Vivid);
+}
+
+::ng-deep .p-treetable .p-paginator {
+    background-color: #f5f5f5;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    justify-content: center;
+}
+
+::ng-deep .p-treetable .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background-color: var(--Blue-Vivid);
+    color: #fff;
+    border-radius: 6px;
+}
+
+/* Ancho mayor para columna de descripción */
+::ng-deep .p-treetable td:nth-child(3),
+::ng-deep .p-treetable th:nth-child(3) {
+    width: 30%;
+}
+
+.filtros {
+    padding: 0 3%;
+}
+
+.filtros h2 {
+    width: 15%;
+    display: flex;
+    background: var(--Blue-Vivid);
+    padding: 3%;
+    color: white;
+    border-radius: 15px;
+    align-items: center;
+    cursor: pointer;
+    justify-content: center;
+    font-size: 120%;
+}
+
+.btn-filtros {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn-filtros button {
+    display: flex;
+    justify-content: space-around;
+    font-size: 100%;
+    border-radius: 15px;
+}
+
+.section-form {
+    max-width: 80%;
+    margin: 1rem auto;
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section-form h2 {
+    font-size: 1.3rem;
+    color: #0B1F40;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    text-align: center;
+}
+
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group input {
+    flex: 1 1 200px;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group button {
+    padding: 0.75rem 1.25rem;
+    background-color: var(--Blue-Vivid);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-group button:hover {
+    background-color: var(--Blue-Vivid);
+}
+
+.form-group button[type="button"] {
+    background-color: #6c757d;
+}
+
+.form-group button[type="button"]:hover {
+    background-color: #5a6268;
+}
+
+.mensaje-success {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.mensaje-error {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.section-form table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    display: block;
+    overflow-x: auto;
+}
+
+.section-form thead {
+    background-color: #0B1F40;
+    color: #ffffff;
+}
+
+.section-form thead th {
+    padding: 1rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.05rem;
+    min-width: 120px;
+}
+
+.section-form tbody td {
+    padding: 0.9rem;
+    text-align: center;
+    font-size: 0.95rem;
+    vertical-align: middle;
+    word-break: break-word;
+}
+
+.section-form tbody tr:nth-child(even) {
+    background-color: #f7f9fc;
+}
+
+.section-form tbody tr:hover {
+    background-color: #e9f1ff;
+    transition: background-color 0.3s ease;
+}
+
+.section-form table td:nth-child(3),
+.section-form table th:nth-child(3) {
+    min-width: 250px;
+}

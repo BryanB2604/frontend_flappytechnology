@@ -73,12 +73,8 @@ export class UsersComponent {
         next: () => {
           this.getUsers();
           this.editForm.reset();
-          this.error = '';
-          this.mensaje = 'Usuario actualizado correctamente.';
         },
         error: (err) => {
-          console.error('Error al actualizar usuario', err);
-          this.error = 'Error al actualizar el usuario.';
           this.mensaje = '';
         }
       });
@@ -99,12 +95,8 @@ export class UsersComponent {
         next: () => {
           this.getUsers();
           this.deleteForm.reset();
-          this.error = '';
-          this.mensaje = 'Usuario eliminado correctamente.';
         },
         error: (err) => {
-          console.error('Error al eliminar usuario', err);
-          this.error = 'Error al eliminar el usuario.';
           this.mensaje = '';
         }
       });

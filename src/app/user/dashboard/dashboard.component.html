@@ -1,17 +1,22 @@
+
+
 <div class="container">
+  <div class="header">
     <div class="title">Productos</div>
-    <div class="product">
-      <div class="card" *ngFor="let product of products">
-        <div class="card_img">
-          <img [src]="'productos/' + product.img + '.png'" alt="{{ product.nom_prod }}" />
-        </div>
-        <div class="card_info">
-          <div>{{ product.nom_prod }}</div>
-          <div>${{ product.valor_unitario }}</div>
-        </div>
-        <div class="btn-buy">
-          <button class="button-buy">Agregar al carrito</button>
-        </div>
+    <i class="fa-solid fa-cart-shopping"></i>
+  </div>
+  <div class="product">
+    <div class="card" *ngFor="let product of products">
+      <div class="card_img">
+        <img [src]="'productos/' + product.img + '.png'" alt="{{ product.nom_prod }}" />
+      </div>
+      <div class="card_info">
+        <div>{{ product.nom_prod }}</div>
+        <div>${{ product.valor_unitario }}</div>
+      </div>
+      <div class="btn-buy">
+        <button class="button-buy">Agregar al carrito</button>
       </div>
     </div>
   </div>
+</div>

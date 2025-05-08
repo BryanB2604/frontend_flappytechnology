@@ -3,7 +3,7 @@
 
   <div class="login-container">
     <div class="login-card">
-      <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo">
+      <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo" (click)="gotHome()">
       <h2 class="titulo">Iniciar Sesión</h2>
       <form #form="ngForm" (ngSubmit)="iniciarSesion(form)">
         <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required

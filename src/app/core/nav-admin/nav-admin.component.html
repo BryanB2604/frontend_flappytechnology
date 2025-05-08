@@ -1,0 +1,43 @@
+<nav class="nav">
+  <div routerLink="">
+    <img src="logo/logo_white.png" alt="logo" class="logo_nav" />
+  </div>
+
+  <div class="user-icon-container">
+    <i class="fa-solid fa-user" (click)="toggleInfoUsuario()"></i>
+
+    <div *ngIf="mostrarInfo" class="user-popup">
+      <p><strong>Nombre:</strong> {{ usuario?.nombre }} {{ usuario?.apellido }}</p>
+      <p><strong>Email:</strong> {{ usuario?.correo }}</p>
+      <p><strong>ID:</strong> {{ usuario?.id_user }}</p>
+      <p><strong>Tipo de usuario:</strong> {{ usuario?.tipo_user }}</p>
+
+      <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
+
+      <div class="gestion-buttons">
+        <button class="action-btn" (click)="toggleActualizar()">Actualizar usuario</button>
+        <button class="action-btn" (click)="toggleEliminar()">Eliminar usuario</button>
+      </div>
+
+      <div *ngIf="mostrarActualizar" class="form-container">
+        <h4>Actualizar Usuario</h4>
+        <form [formGroup]="editForm" (ngSubmit)="updateUser()">
+          <input formControlName="id_user" type="number" placeholder="ID" required />
+          <input formControlName="nombre" type="text" placeholder="Nombre" required />
+          <input formControlName="apellido" type="text" placeholder="Apellido" required />
+          <input formControlName="correo" type="email" placeholder="Correo" required />
+          <input formControlName="contrasena" type="password" placeholder="Contraseña" required />
+          <button type="submit" class="update-btn">Actualizar</button>
+        </form>
+      </div>
+
+      <div *ngIf="mostrarEliminar" class="form-container">
+        <h4>Eliminar Usuario</h4>
+        <form [formGroup]="deleteForm" (ngSubmit)="deleteUser()">
+          <input formControlName="id_user" type="number" placeholder="ID de usuario" required />
+          <button type="submit" class="delete-btn">Eliminar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</nav>

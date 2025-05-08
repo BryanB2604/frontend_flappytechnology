@@ -1,0 +1,96 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #003366;
+  padding: 10px 20px;
+  color: white;
+  position: relative;
+}
+
+.logo_nav {
+  height: 40px;
+}
+
+.user-icon-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.fa-user {
+  font-size: 24px;
+  color: white;
+}
+
+.user-popup {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #f0f8ff;
+  color: #003366;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  width: 300px;
+  z-index: 1000;
+}
+
+.logout-btn,
+.action-btn,
+.update-btn,
+.delete-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-btn {
+  background-color: #e60000;
+  color: white;
+}
+
+.action-btn {
+  background-color: #0066cc;
+  color: white;
+}
+
+.form-container {
+  margin-top: 10px;
+  background-color: #e8f4ff;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.update-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.mensaje-success {
+  margin-top: 10px;
+  color: green;
+  font-weight: bold;
+}
+
+.mensaje-error {
+  margin-top: 10px;
+  color: red;
+  font-weight: bold;
+}
