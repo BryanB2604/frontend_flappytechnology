@@ -1,10 +1,9 @@
-
-
 <div class="container">
   <div class="header">
     <div class="title">Productos</div>
-    <i class="fa-solid fa-cart-shopping"></i>
+    <i class="fa-solid fa-cart-shopping" (click)="toggleCarrito()"></i>
   </div>
+
   <div class="product">
     <div class="card" *ngFor="let product of products">
       <div class="card_img">
@@ -15,8 +14,45 @@
         <div>${{ product.valor_unitario }}</div>
       </div>
       <div class="btn-buy">
-        <button class="button-buy">Agregar al carrito</button>
+        <button class="button-buy" (click)="openModal(product)">Agregar al carrito</button>
       </div>
     </div>
   </div>
 </div>
+
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <h2>Agregar al carrito</h2>
+    <p><strong>Producto:</strong> {{ selectedProduct?.nom_prod }}</p>
+    <label for="cantidad">Cantidad:</label>
+    <input id="cantidad" type="number" [(ngModel)]="cantidadElegida" min="1" [max]="selectedProduct?.cantidad_disponible / 2"/>
+    <div class="modal-buttons">
+      <button (click)="addToCart()">Añadir</button>
+      <button (click)="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="carrito-overlay" *ngIf="mostrarCarrito">
+  <div class="carrito-modal">
+    <h3>Carrito de compras</h3>
+    <div *ngFor="let item of carrito; let i = index" class="carrito-item">
+      <p><strong>{{ item.nom_prod }}</strong></p>
+      <p>Precio unitario: ${{ item.valor_unitario }}</p>
+      <label>Cantidad:</label>
+      <input type="number" [(ngModel)]="item.elegido" (ngModelChange)="actualizarCantidad(i, item.elegido)" min="1"/>
+      <button (click)="removeFromCart(i)">Eliminar</button>
+    </div>
+    <div class="total-section">
+      <p>Total: <strong>${{ calcularTotal() }}</strong></p>
+    </div>
+    <button (click)="reservar()">Reservar</button>
+  </div>
+</div>
+
+<div class="confirm-reserve" *ngIf="codigoCompra">
+  <p>Código generado: <strong>{{ codigoCompra }}</strong></p>
+  <p>¿Deseas confirmar esta compra?</p>
+  <button (click)="confirmarCompra()">Confirmar compra</button>
+</div>
+

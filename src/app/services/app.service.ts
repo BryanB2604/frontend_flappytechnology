@@ -126,4 +126,14 @@ export class ApiService {
     return this.http.delete(`${this.baseUrl}/stock/deleteStockById/${id}`);
   }
 
+  // socket
+  postReserva(data: any) {
+    return this.http.post(`${this.baseUrl}/stock/reservarProductos`, data);
+  }
+
+  confirmReserve(code: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/ventas/confirmarVenta/${code}`, {});
+  }
+  
+
 }
