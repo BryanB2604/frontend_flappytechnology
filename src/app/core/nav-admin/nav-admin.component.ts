@@ -37,23 +37,21 @@ export class NavAdminComponent implements OnInit {
       switch (this.usuario.tipo_user) {
         case 3:
           if (!this.router.url.includes('superadmin')) {
-            this.router.navigate(['/superadmin']);
+            this.cerrarSesion();
           }
           break;
         case 2:
           if (!this.router.url.includes('admin')) {
-            this.router.navigate(['/admin']);
+            this.cerrarSesion();
           }
           break;
         case 1:
           if (!this.router.url.includes('user')) {
-            this.router.navigate(['/user']);
+            this.cerrarSesion();
           }
           break;
         default:
-          localStorage.removeItem('usuario');
-          location.reload();
-          this.router.navigate(['/']);
+          this.cerrarSesion();
           break;
       }
     } else {
