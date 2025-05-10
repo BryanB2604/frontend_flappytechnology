@@ -3,7 +3,7 @@
 
   <div class="login-container">
     <div class="login-card">
-      <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo">
+      <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo"  (click)="gotHome()">
       <h2 class="titulo">Registrarse</h2>
 
       <form #form="ngForm" (ngSubmit)="crearUsuario()">
@@ -12,7 +12,7 @@
 
         <input type="text" [(ngModel)]="apellido" placeholder="Apellido" name="apellido" required>
 
-        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required>
+        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
 
         <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required>
 
