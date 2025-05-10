@@ -55,7 +55,7 @@ export class NavAdminComponent implements OnInit {
           break;
       }
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate(['']);
     }
 
     this.getUsers();
@@ -177,6 +177,6 @@ export class NavAdminComponent implements OnInit {
   cerrarSesion(): void {
     localStorage.removeItem('usuario');
     location.reload();
-    this.router.navigate(['/']);
+    this.router.navigate(['']);
   }
 }
