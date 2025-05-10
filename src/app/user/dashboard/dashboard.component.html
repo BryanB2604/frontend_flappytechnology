@@ -1,3 +1,5 @@
+<app-nav-admin></app-nav-admin>
+
 <div class="container">
   <div class="header">
     <div class="title">Productos</div>
@@ -25,7 +27,10 @@
     <h2>Agregar al carrito</h2>
     <p><strong>Producto:</strong> {{ selectedProduct?.nom_prod }}</p>
     <label for="cantidad">Cantidad:</label>
-    <input id="cantidad" type="number" [(ngModel)]="cantidadElegida" min="1" [max]="selectedProduct?.cantidad_disponible / 2"/>
+    <input id="cantidad" type="number" [(ngModel)]="cantidadElegida" min="1" [max]="selectedProduct?.cantidad_disponible" />
+    <p *ngIf="cantidadElegida > selectedProduct?.cantidad_disponible" class="error-message">
+      ¡Cantidad máxima: {{ selectedProduct?.cantidad_disponible }}!
+    </p>
     <div class="modal-buttons">
       <button (click)="addToCart()">Añadir</button>
       <button (click)="closeModal()">Cancelar</button>
@@ -35,13 +40,21 @@
 
 <div class="carrito-overlay" *ngIf="mostrarCarrito">
   <div class="carrito-modal">
+    <button class="close-btn" (click)="cerrarCarrito()">×</button>
+
     <h3>Carrito de compras</h3>
     <div *ngFor="let item of carrito; let i = index" class="carrito-item">
       <p><strong>{{ item.nom_prod }}</strong></p>
       <p>Precio unitario: ${{ item.valor_unitario }}</p>
       <label>Cantidad:</label>
-      <input type="number" [(ngModel)]="item.elegido" (ngModelChange)="actualizarCantidad(i, item.elegido)" min="1"/>
-      <button (click)="removeFromCart(i)">Eliminar</button>
+      <input type="number" [(ngModel)]="item.elegido" 
+             (ngModelChange)="actualizarCantidad(i, item.elegido)" 
+             [max]="item.cantidad_disponible" min="1" />
+      <p *ngIf="item.elegido > item.cantidad_disponible" class="error-message">
+        ¡Cantidad seleccionada es de {{ item.cantidad_disponible }}!
+      </p>
+      <p>Subtotal: ${{ item.valor_unitario * item.elegido }}</p>
+      <button class="btm-delete" (click)="removeFromCart(i)">Eliminar</button>
     </div>
     <div class="total-section">
       <p>Total: <strong>${{ calcularTotal() }}</strong></p>
@@ -55,4 +68,3 @@
   <p>¿Deseas confirmar esta compra?</p>
   <button (click)="confirmarCompra()">Confirmar compra</button>
 </div>
-

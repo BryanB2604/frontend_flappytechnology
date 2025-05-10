@@ -53,7 +53,6 @@ export class RegisterComponent {
       error: (err) => {
         console.error('Error al registrar usuario:', err);
         
-        // Mostrar mensaje claro al usuario
         if (err.error?.msg) {
           this.error = err.error.msg;
         } else {

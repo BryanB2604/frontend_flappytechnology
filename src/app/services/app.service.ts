@@ -64,12 +64,12 @@ export class ApiService {
   // Crear producto
   createProduct(nombre: string, descripcion: string, valor_unitario: number, proveedor: string): Observable<any> {
     const body = { nombre, descripcion, valor_unitario, proveedor};
-    return this.http.post(`${this.baseUrl}/productos/createProducto`, body);
+    return this.http.post(`${this.baseUrl}/productos/createProductoConStock`, body);
   }
 
   // Actualizar producto
-  updateProduct(id: number, nombre: string, descripcion: string, valor_unitario: number, proveedor: string): Observable<any> {
-    const body = { nombre, descripcion, valor_unitario, proveedor};
+  updateProduct(id: number, nombre: string, descripcion: string, valor_unitario: number, proveedor: string, img: string): Observable<any> {
+    const body = { nombre, descripcion, valor_unitario, proveedor, img};
     return this.http.put(`${this.baseUrl}/productos/updateProductoById/${id}`,body);
   }
 
@@ -135,5 +135,4 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/ventas/confirmarVenta/${code}`, {});
   }
   
-
 }

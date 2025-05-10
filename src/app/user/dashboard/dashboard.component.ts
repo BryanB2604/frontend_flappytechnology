@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardUserComponent implements OnInit {
-
   products: any[] = [];
   carrito: any[] = [];
   user: any;
@@ -33,13 +32,15 @@ export class DashboardUserComponent implements OnInit {
       next: (res) => {
         this.products = res.data;
       },
-      error: (err) => {}
+      error: (err) => {
+        console.error('Error al obtener productos:', err);
+      }
     });
   }
 
   openModal(product: any) {
     this.selectedProduct = product;
-    this.cantidadElegida = 1;
+    this.cantidadElegida = product?.cantidad_disponible || 1;
     this.showModal = true;
   }
 
@@ -50,15 +51,32 @@ export class DashboardUserComponent implements OnInit {
 
   addToCart() {
     if (this.cantidadElegida > 0 && this.selectedProduct) {
-      const productoCarrito = {
-        id_user: this.user.id_user,
-        id_prod: this.selectedProduct.id_prod,
-        id_stock: this.selectedProduct.id_stock,
-        valor_unitario: this.selectedProduct.valor_unitario,
-        elegido: this.cantidadElegida,
-        nom_prod: this.selectedProduct.nom_prod
-      };
-      this.carrito.push(productoCarrito);
+      if (this.cantidadElegida > this.selectedProduct.cantidad_disponible) {
+        alert(`La cantidad seleccionada supera el stock disponible (${this.selectedProduct.cantidad_disponible}).`);
+        return;
+      }
+
+      const index = this.carrito.findIndex(item =>
+        item.id_prod === this.selectedProduct.id_prod &&
+        item.id_stock === this.selectedProduct.id_stock
+      );
+
+      if (index !== -1) {
+        const nuevaCantidad = this.carrito[index].elegido + this.cantidadElegida;
+        this.carrito[index].elegido = Math.min(nuevaCantidad, this.selectedProduct.cantidad_disponible);
+      } else {
+        const productoCarrito = {
+          id_user: this.user.id_user,
+          id_prod: this.selectedProduct.id_prod,
+          id_stock: this.selectedProduct.id_stock,
+          valor_unitario: this.selectedProduct.valor_unitario,
+          elegido: this.cantidadElegida,
+          nom_prod: this.selectedProduct.nom_prod,
+          cantidad_disponible: this.selectedProduct.cantidad_disponible
+        };
+        this.carrito.push(productoCarrito);
+      }
+
       this.closeModal();
     }
   }
@@ -72,8 +90,13 @@ export class DashboardUserComponent implements OnInit {
   }
 
   actualizarCantidad(index: number, nuevaCantidad: number) {
-    if (nuevaCantidad > 0) {
-      this.carrito[index].elegido = nuevaCantidad;
+    const item = this.carrito[index];
+    if (nuevaCantidad < 1) {
+      item.elegido = 1;
+    } else if (nuevaCantidad > item.cantidad_disponible) {
+      item.elegido = item.cantidad_disponible;
+    } else {
+      item.elegido = nuevaCantidad;
     }
   }
 
@@ -99,7 +122,8 @@ export class DashboardUserComponent implements OnInit {
         }
       },
       error: (err) => {
-        alert('Error al reservar productos');
+        alert('Error al reservar productos.');
+        console.error(err);
       }
     });
   }
@@ -121,7 +145,12 @@ export class DashboardUserComponent implements OnInit {
       },
       error: (err) => {
         alert('Error al confirmar la compra.');
+        console.error(err);
       }
     });
+  }
+
+  cerrarCarrito() {
+    this.mostrarCarrito = false;
   }
 }

@@ -9,7 +9,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
 
   files: TreeNode[] = [];
   products: any[] = [];
@@ -39,7 +39,8 @@ export class ProductsComponent {
       nombre: [''],
       descripcion: [''],
       valor_unitario: [0],
-      proveedor: ['']
+      proveedor: [''],
+      img: ['']
     });
 
     this.editForm = this.fb.group({
@@ -63,7 +64,7 @@ export class ProductsComponent {
     this.api.getProduct().subscribe({
       next: (res) => {
         this.products = res.data;
-        console.log(this.products)
+        console.log(this.products);
       },
       error: (err) => console.error('Error al obtener productos', err)
     });
@@ -71,23 +72,23 @@ export class ProductsComponent {
 
   createProduct(): void {
     const form = this.createForm.value;
-  
+
     if (!form.nombre || !form.descripcion || form.valor_unitario <= 0 || !form.proveedor) {
       this.error = 'Todos los campos son obligatorios.';
       this.mensaje = '';
       return;
     }
-  
+
     const nombreDuplicado = this.products.some(p =>
-      p.nom_prod.trim().toLowerCase() === form.nombre.trim().toLowerCase()
+      (p.nom_prod || '').trim().toLowerCase() === form.nombre.trim().toLowerCase()
     );
-  
+
     if (nombreDuplicado) {
       this.error = 'Ya existe un producto con ese nombre.';
       this.mensaje = '';
       return;
     }
-  
+
     this.api.createProduct(
       form.nombre,
       form.descripcion,
@@ -106,7 +107,7 @@ export class ProductsComponent {
         this.mensaje = '';
       }
     });
-  }  
+  }
 
   updateProduct(): void {
     const form = this.editForm.value;
@@ -119,7 +120,7 @@ export class ProductsComponent {
     }
 
     const nombreDuplicado = this.products.some(
-      p => p.nom_prod.trim().toLowerCase() === form.nombre.trim().toLowerCase() && p.id_prod !== form.id_prod
+      p => (p.nom_prod || '').trim().toLowerCase() === form.nombre.trim().toLowerCase() && p.id_prod !== form.id_prod
     );
 
     if (nombreDuplicado) {
@@ -128,9 +129,15 @@ export class ProductsComponent {
       return;
     }
 
-    if (confirm('¿Estás seguro de actualizar este producto?')){
-
-      this.api.updateProduct(form.id_prod, form.nombre, form.descripcion, form.valor_unitario, form.proveedor).subscribe({
+    if (confirm('¿Estás seguro de actualizar este producto?')) {
+      this.api.updateProduct(
+        form.id_prod,
+        form.nombre,
+        form.descripcion,
+        form.valor_unitario,
+        form.proveedor,
+        productoExiste.img // reutilizar imagen si ya existe
+      ).subscribe({
         next: () => {
           this.getProduct();
           this.editForm.reset();
@@ -142,7 +149,6 @@ export class ProductsComponent {
           this.mensaje = '';
         }
       });
-
     }
   }
 
@@ -195,7 +201,7 @@ export class ProductsComponent {
 
   toggleFilterOptions(): void {
     this.filterOptionsVisible = !this.filterOptionsVisible;
-  
+
     if (!this.filterOptionsVisible) {
       this.selectedFilter = '';
     }
