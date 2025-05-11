@@ -51,9 +51,7 @@ export class NavAdminComponent implements OnInit {
           }
           break;
         default:
-          localStorage.removeItem('usuario');
-          location.reload();
-          this.router.navigate(['/']);
+          this.cerrarSesion();
           break;
       }
     } else {
