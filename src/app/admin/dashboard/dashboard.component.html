@@ -2,24 +2,46 @@
 
 <div class="option">
     <div 
-        (click)="seleccionarVista('productos')" 
-        [class.activo]="vistaSeleccionada === 'productos'"
-        [class.texto-blanco]="vistaSeleccionada === 'productos'">
-        Productos
+      (click)="seleccionarVista('general')" 
+      [class.activo]="vistaSeleccionada === 'general'" 
+      [class.texto-blanco]="vistaSeleccionada === 'general'">
+      General
     </div>
     <div 
-        (click)="seleccionarVista('ventas')" 
-        [class.activo]="vistaSeleccionada === 'ventas'"
-        [class.texto-blanco]="vistaSeleccionada === 'ventas'">
-        Ventas
+      (click)="seleccionarVista('productos')" 
+      [class.activo]="vistaSeleccionada === 'productos'" 
+      [class.texto-blanco]="vistaSeleccionada === 'productos'">
+      Productos
     </div>
-</div>
+    <div 
+      (click)="seleccionarVista('ventas')" 
+      [class.activo]="vistaSeleccionada === 'ventas'" 
+      [class.texto-blanco]="vistaSeleccionada === 'ventas'">
+      Ventas
+    </div>
+    <div 
+      (click)="seleccionarVista('socket')" 
+      [class.activo]="vistaSeleccionada === 'socket'" 
+      [class.texto-blanco]="vistaSeleccionada === 'socket'">
+      socket
+    </div>
+  </div>
 
-<div *ngIf="vistaSeleccionada === 'productos'">
+  <div *ngIf="vistaSeleccionada === 'general'">
+    <app-general></app-general>
+  </div>
+  
+  <div *ngIf="vistaSeleccionada === 'productos'">
     <app-products></app-products>
-</div>
-
-<div *ngIf="vistaSeleccionada === 'ventas'">
+  </div>
+  
+  <div *ngIf="vistaSeleccionada === 'ventas'">
     <app-sales></app-sales>
-</div>
+  </div>
+
+  <div *ngIf="vistaSeleccionada === 'socket'">
+    <app-socket></app-socket>
+  </div>
+
+  
   

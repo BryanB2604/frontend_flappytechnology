@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   selector: 'app-dashboard',
   standalone: false,
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardUserComponent implements OnInit {
   products: any[] = [];
@@ -78,6 +78,7 @@ export class DashboardUserComponent implements OnInit {
       }
 
       this.closeModal();
+      this.checkCarrito();
     }
   }
 
@@ -98,10 +99,13 @@ export class DashboardUserComponent implements OnInit {
     } else {
       item.elegido = nuevaCantidad;
     }
+
+    this.checkCarrito();
   }
 
   removeFromCart(index: number) {
     this.carrito.splice(index, 1);
+    this.checkCarrito();
   }
 
   reservar() {
@@ -152,5 +156,37 @@ export class DashboardUserComponent implements OnInit {
 
   cerrarCarrito() {
     this.mostrarCarrito = false;
+  }
+
+  validarCantidad() {
+    if (this.cantidadElegida.toString().length > 3) {
+      this.cantidadElegida = Number(this.cantidadElegida.toString().slice(0, 3));
+    }
+
+    if (this.cantidadElegida > this.selectedProduct?.cantidad_disponible) {
+      this.cantidadElegida = this.selectedProduct?.cantidad_disponible;
+    }
+
+    if (this.cantidadElegida < 1) {
+      this.cantidadElegida = 1;
+    }
+  }
+
+  validarCantidadCarrito(index: number) {
+    const item = this.carrito[index];
+
+    if (item.elegido > item.cantidad_disponible) {
+      item.elegido = item.cantidad_disponible;
+    }
+
+    if (item.elegido < 1) {
+      item.elegido = 1;
+    }
+  }
+
+  checkCarrito() {
+    if (this.carrito.length === 0) {
+      this.mostrarCarrito = false;
+    }
   }
 }
