@@ -30,6 +30,36 @@ export class NavAdminComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    const data = localStorage.getItem('usuario');
+    if (data) {
+      this.usuario = JSON.parse(data);
+
+      switch (this.usuario.tipo_user) {
+        case 3:
+          if (!this.router.url.includes('superadmin')) {
+            this.router.navigate(['/superadmin']);
+          }
+          break;
+        case 2:
+          if (!this.router.url.includes('admin')) {
+            this.router.navigate(['/admin']);
+          }
+          break;
+        case 1:
+          if (!this.router.url.includes('user')) {
+            this.router.navigate(['/user']);
+          }
+          break;
+        default:
+          localStorage.removeItem('usuario');
+          location.reload();
+          this.router.navigate(['/']);
+          break;
+      }
+    } else {
+      this.router.navigate(['/']);
+    }
+
     this.getUsers();
     this.initForms();
   }
@@ -148,7 +178,7 @@ export class NavAdminComponent implements OnInit {
 
   cerrarSesion(): void {
     localStorage.removeItem('usuario');
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 
 }
