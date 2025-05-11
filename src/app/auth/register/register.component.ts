@@ -67,7 +67,7 @@ export class RegisterComponent {
   }
 
   gotHome() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['']);
   }
 
 }
