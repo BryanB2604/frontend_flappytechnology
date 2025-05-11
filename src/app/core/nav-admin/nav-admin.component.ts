@@ -30,34 +30,6 @@ export class NavAdminComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const data = localStorage.getItem('usuario');
-    if (data) {
-      this.usuario = JSON.parse(data);
-
-      switch (this.usuario.tipo_user) {
-        case 3:
-          if (!this.router.url.includes('superadmin')) {
-            this.cerrarSesion();
-          }
-          break;
-        case 2:
-          if (!this.router.url.includes('admin')) {
-            this.cerrarSesion();
-          }
-          break;
-        case 1:
-          if (!this.router.url.includes('user')) {
-            this.cerrarSesion();
-          }
-          break;
-        default:
-          this.cerrarSesion();
-          break;
-      }
-    } else {
-      this.router.navigate(['']);
-    }
-
     this.getUsers();
     this.initForms();
   }
