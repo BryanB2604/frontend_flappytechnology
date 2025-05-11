@@ -210,3 +210,8 @@
 .section-form table th:nth-child(3) {
     min-width: 250px;
 }
+
+.input-error {
+  border: 2px solid red;
+  background-color: #ffe6e6;
+}

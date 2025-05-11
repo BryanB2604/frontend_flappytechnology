@@ -12,13 +12,12 @@ export class SocketComponent implements OnInit {
   stockList: any[] = [];
   searchResult: any = {};
   stockForm!: FormGroup;
-  searchForm!: FormGroup;  // Asegúrate de declarar searchForm aquí
+  searchForm!: FormGroup;
   deleteForm!: FormGroup;
   error: string | undefined;
   mensaje: string | undefined;
   stockEncontrado: boolean = false;
 
-  // Variables para filtros y vistas
   filterOptionsVisible = false;
   selectedFilter: string = '';
 
@@ -40,7 +39,7 @@ export class SocketComponent implements OnInit {
       hora_actualizacion: ['']
     });
 
-    this.searchForm = this.fb.group({ id: [0] });  // Asegúrate de inicializar searchForm aquí
+    this.searchForm = this.fb.group({ id: [0] });
     this.deleteForm = this.fb.group({ id: [0] });
   }
 
@@ -86,6 +85,43 @@ export class SocketComponent implements OnInit {
       }
     });
   }
+
+  updateStock(): void {
+    const form = this.stockForm.value;
+
+    const stockExiste = this.stockList.find(s => s.id_stock === form.id);  
+    
+    if (!stockExiste) {
+      this.error = `No se encontró el stock con ID ${form.id}.`;
+      this.mensaje = '';
+      return;
+    }
+
+    if (confirm('¿Estás seguro de actualizar este stock?')) {
+      this.api.updateStock(
+        form.id,  
+        form.fk_prod,
+        form.cantidad_total,
+        form.cantidad_disponible,
+        form.cantidad_reservada,
+        form.ultima_actualizacion,
+        form.hora_actualizacion
+      ).subscribe({
+        next: () => {
+          this.getStock();  
+          this.stockForm.reset();
+          this.error = '';
+          this.mensaje = 'Stock actualizado exitosamente.';
+        },
+        error: (err) => {
+          console.error('Error al actualizar stock', err);
+          this.error = 'Error al actualizar el stock.';
+          this.mensaje = '';
+        }
+      });
+    }
+  }
+
 
   searchStock(): void {
     const id = this.searchForm.value.id;

@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class ApiService {
   private baseUrl = 'https://back-node-flappytechnology-production.up.railway.app';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Endpoints User
   // Login
@@ -50,12 +50,12 @@ export class ApiService {
 
   // Actualizar User
   updateUser(id: number, nombre: string, apellido: string, correo: string, contrasena: string, tipo_user: number): Observable<any> {
-    const body = { nombre, apellido, correo, contrasena, tipo_user};
-    return this.http.put(`${this.baseUrl}/usuarios/updateusuariobyid/${id}`,body);
+    const body = { nombre, apellido, correo, contrasena, tipo_user };
+    return this.http.put(`${this.baseUrl}/usuarios/updateusuariobyid/${id}`, body);
   }
 
   // Obtener todos los productos
-   getProduct(): Observable<any> {
+  getProduct(): Observable<any> {
     return this.http.get(`${this.baseUrl}/productos/getAllProductos`);
   }
 
@@ -71,14 +71,14 @@ export class ApiService {
 
   // Crear producto
   createProduct(nombre: string, descripcion: string, valor_unitario: number, proveedor: string): Observable<any> {
-    const body = { nombre, descripcion, valor_unitario, proveedor};
+    const body = { nombre, descripcion, valor_unitario, proveedor };
     return this.http.post(`${this.baseUrl}/productos/createProductoConStock`, body);
   }
 
   // Actualizar producto
   updateProduct(id: number, nombre: string, descripcion: string, valor_unitario: number, proveedor: string, img: string): Observable<any> {
-    const body = { nombre, descripcion, valor_unitario, proveedor, img};
-    return this.http.put(`${this.baseUrl}/productos/updateProductoById/${id}`,body);
+    const body = { nombre, descripcion, valor_unitario, proveedor, img };
+    return this.http.put(`${this.baseUrl}/productos/updateProductoById/${id}`, body);
   }
 
   // Eliminar producto
@@ -98,16 +98,16 @@ export class ApiService {
 
   // Crear venta
   createSales(fk_user: number, fk_prod: number, fk_estado: number, fecha: string, hora: string, cantidad: number, total: number, cod_compra: string): Observable<any> {
-    const body = { fk_user, fk_prod, fk_estado, fecha, hora, cantidad, total, cod_compra};
+    const body = { fk_user, fk_prod, fk_estado, fecha, hora, cantidad, total, cod_compra };
     return this.http.post(`${this.baseUrl}/ventas/createVenta`, body);
   }
 
   // Actualizar Venta
   updateSales(id: number, fk_user: number, fk_prod: number, fk_estado: number, fecha: string, hora: string, cantidad: number, total: number, cod_compra: string): Observable<any> {
-    const body = { fk_user, fk_prod, fk_estado, fecha, hora, cantidad, total, cod_compra};
-    return this.http.put(`${this.baseUrl}/ventas/updateVentaById/${id}`,body);
+    const body = { fk_user, fk_prod, fk_estado, fecha, hora, cantidad, total, cod_compra };
+    return this.http.put(`${this.baseUrl}/ventas/updateVentaById/${id}`, body);
   }
-  
+
   // Eliminar venta
   deleteSales(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/ventas/deleteVentaById/${id}`);
@@ -124,14 +124,27 @@ export class ApiService {
   }
 
   // Crear venta
-  createStock(id: number, fk_prod: number, cantidad_total: number, cantidad_disponible: number, cantidad_reservada: number,ultima_actualizacion: string, hora_actualizacion: string ): Observable<any> {
-    const body = { id, fk_prod, cantidad_total, cantidad_disponible, cantidad_reservada,ultima_actualizacion, hora_actualizacion};
+  createStock(id: number, fk_prod: number, cantidad_total: number, cantidad_disponible: number, cantidad_reservada: number, ultima_actualizacion: string, hora_actualizacion: string): Observable<any> {
+    const body = { id, fk_prod, cantidad_total, cantidad_disponible, cantidad_reservada, ultima_actualizacion, hora_actualizacion };
     return this.http.post(`${this.baseUrl}/stock/createStock`, body);
   }
 
   // Eliminar venta
   deleteStock(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/stock/deleteStockById/${id}`);
+  }
+
+  // Actualizae 
+  updateStock(id: number, fk_prod: number, cantidad_total: number, cantidad_disponible: number, cantidad_reservada: number,ultima_actualizacion: string,hora_actualizacion: string): Observable<any> {
+    const body = {
+      fk_prod,
+      cantidad_total,
+      cantidad_disponible,
+      cantidad_reservada,
+      ultima_actualizacion,
+      hora_actualizacion
+    };
+    return this.http.put(`${this.baseUrl}/stock/updateStockById/${id}`, body);
   }
 
   // socket
@@ -142,5 +155,5 @@ export class ApiService {
   confirmReserve(code: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/ventas/confirmarVenta/${code}`, {});
   }
-  
+
 }

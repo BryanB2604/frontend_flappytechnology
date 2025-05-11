@@ -10,15 +10,49 @@
   <div *ngIf="selectedFilter === 'editar'" class="section-form">
     <h2>Editar Usuario</h2>
     <form [formGroup]="editForm" (ngSubmit)="updateUser()" class="form-group">
-      <input type="number" formControlName="id_user" placeholder="ID del Usuario" />
-      <input type="text" formControlName="nombre" placeholder="Nombre" />
-      <input type="text" formControlName="apellido" placeholder="Apellido" />
-      <input type="email" formControlName="correo" placeholder="Correo" />
-      <input type="password" formControlName="contrasena" placeholder="Contraseña" />
-      <input type="number" formControlName="tipo_user" placeholder="Tipo de Usuario" />
-      <button type="submit">Actualizar</button>
+      <input type="number" formControlName="id_user" placeholder="ID del Usuario" required
+        [ngClass]="{'input-error': editForm.get('id_user')?.invalid && editForm.get('id_user')?.touched}">
+      <div *ngIf="editForm.get('id_user')?.invalid && editForm.get('id_user')?.touched" class="mensaje-error">
+        ID inválido.
+      </div>
+
+      <input type="text" formControlName="nombre" placeholder="Nombre" maxlength="30"
+        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$" required
+        [ngClass]="{'input-error': editForm.get('nombre')?.invalid && editForm.get('nombre')?.touched}">
+      <div *ngIf="editForm.get('nombre')?.invalid && editForm.get('nombre')?.touched" class="mensaje-error">
+        Nombre inválido. Solo letras, máximo 30 caracteres.
+      </div>
+
+      <input type="text" formControlName="apellido" placeholder="Apellido" maxlength="30"
+        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$" required
+        [ngClass]="{'input-error': editForm.get('apellido')?.invalid && editForm.get('apellido')?.touched}">
+      <div *ngIf="editForm.get('apellido')?.invalid && editForm.get('apellido')?.touched" class="mensaje-error">
+        Apellido inválido. Solo letras, máximo 30 caracteres.
+      </div>
+
+      <input type="email" formControlName="correo" placeholder="Correo electrónico"
+        pattern="^[a-zA-Z0-9]{4,}@[a-zA-Z0-9-]{4,}\.(com|org|net|edu|gov|info|es|co)$" required
+        [ngClass]="{'input-error': editForm.get('correo')?.invalid && editForm.get('correo')?.touched}">
+      <div *ngIf="editForm.get('correo')?.invalid && editForm.get('correo')?.touched" class="mensaje-error">
+        Correo inválido. Debe tener un formato válido y sin caracteres especiales.
+      </div>
+
+      <input type="password" formControlName="contrasena" placeholder="Contraseña" minlength="4" required
+        [ngClass]="{'input-error': editForm.get('contrasena')?.invalid && editForm.get('contrasena')?.touched}">
+      <div *ngIf="editForm.get('contrasena')?.invalid && editForm.get('contrasena')?.touched" class="mensaje-error">
+        Contraseña inválida. Mínimo 4 caracteres.
+      </div>
+
+      <input type="number" formControlName="tipo_user" placeholder="Tipo de Usuario" required
+        [ngClass]="{'input-error': editForm.get('tipo_user')?.invalid && editForm.get('tipo_user')?.touched}">
+      <div *ngIf="editForm.get('tipo_user')?.invalid && editForm.get('tipo_user')?.touched" class="mensaje-error">
+        Tipo de usuario inválido.
+      </div>
+
+      <button type="submit" [disabled]="editForm.invalid">Actualizar</button>
     </form>
   </div>
+
   
   <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
     <h2>Eliminar Usuario</h2>

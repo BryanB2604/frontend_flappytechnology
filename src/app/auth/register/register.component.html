@@ -3,18 +3,25 @@
 
   <div class="login-container">
     <div class="login-card">
-      <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo"  (click)="gotHome()">
+      <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo" (click)="gotHome()">
       <h2 class="titulo">Registrarse</h2>
 
       <form #form="ngForm" (ngSubmit)="crearUsuario()">
 
-        <input type="text" [(ngModel)]="nombre" placeholder="Nombre" name="nombre" required>
+        <input type="text" [(ngModel)]="nombre" placeholder="Nombre" name="nombre" required maxlength="30"
+          pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
+          title="Solo letras, sin caracteres especiales. Máximo 30 caracteres.">
 
-        <input type="text" [(ngModel)]="apellido" placeholder="Apellido" name="apellido" required>
+        <input type="text" [(ngModel)]="apellido" placeholder="Apellido" name="apellido" required maxlength="30"
+          pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
+          title="Solo letras, sin caracteres especiales. Máximo 30 caracteres.">
 
-        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
+        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required
+          pattern="^[a-zA-Z0-9]{4,}@[a-zA-Z0-9-]{4,}\.(com|org|net|edu|gov|info|es|co)$"
+          title="El correo debe estar sin caracteres especiales. Solo se permiten dominios válidos como .com, .org, etc.">
 
-        <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required>
+        <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required minlength="4"
+          title="Mínimo 4 caracteres.">
 
         <button type="submit" [disabled]="!form.valid">Registrarse</button>
         <button type="button" (click)="goToLogin()">Volver al login</button>

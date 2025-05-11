@@ -197,7 +197,7 @@ export class ProductsComponent implements OnInit {
         this.error = 'Ocurrió un error al buscar el producto.';
       }
     });
-  }
+}
 
   toggleFilterOptions(): void {
     this.filterOptionsVisible = !this.filterOptionsVisible;
