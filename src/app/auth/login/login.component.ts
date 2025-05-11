@@ -52,7 +52,7 @@ export class LoginComponent {
   }
 
   gotHome() {
-    this.router.navigate(['']);
+    this.router.navigate(['/home']);
   }
 
 }
