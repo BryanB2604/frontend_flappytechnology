@@ -5,18 +5,30 @@
     <div class="login-card">
       <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo" (click)="gotHome()">
       <h2 class="titulo">Iniciar Sesión</h2>
+
       <form #form="ngForm" (ngSubmit)="iniciarSesion(form)">
-        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required
-          #email="ngModel">
-
-        <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required
-          #password="ngModel">
-
+        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required #email="ngModel">
+        <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required #password="ngModel">
         <button type="submit" [disabled]="!form.valid">Entrar</button>
         <button type="button" (click)="goToRegister()">Registrarse</button>
       </form>
 
+      <a (click)="mostrarModalRecuperacion = true" class="olvido-link">¿Olvidaste tu contraseña?</a>
+
       <div *ngIf="error" class="error-message">{{ error }}</div>
+    </div>
+  </div>
+
+  <!-- Modal de recuperación -->
+  <div class="modal-recuperacion" *ngIf="mostrarModalRecuperacion">
+    <div class="modal-contenido">
+      <h3>Recuperar contraseña</h3>
+      <input type="email" [(ngModel)]="correoRecuperacion" placeholder="Ingresa tu correo" name="correoRecuperacion" />
+      <button (click)="enviarRecuperacion()">Enviar</button>
+      <button class="cerrar" (click)="mostrarModalRecuperacion = false">Cerrar</button>
+
+      <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
+      <div class="error" *ngIf="errorRecuperacion">{{ errorRecuperacion }}</div>
     </div>
   </div>
 </div>

@@ -35,7 +35,15 @@ export class ApiService {
     return this.http.delete(`${this.baseUrl}/usuarios/deleteusuariobyid/${id}`);
   }
 
-  // Buscat producto
+  solicitarRecuperacion(data: { email: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/solicitar-recuperacion`, data);
+  }
+
+  resetearContrasena(data: { token: string, nuevaContrasena: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/resetear-contrasena`, data);
+  }
+
+  // Buscar producto
   searchUser(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/usuarios/getusuariobyid/${id}`);
   }

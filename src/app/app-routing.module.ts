@@ -8,6 +8,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { DashboardSuperAdminComponent } from './superadmin/dashboard/dashboard.component';
 import { DashboardUserComponent } from './user/dashboard/dashboard.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent }, 
   { path: 'admin', component: DashboardComponent }, 
   { path: 'superadmin', component: DashboardSuperAdminComponent }, 
-  { path: 'user', component: DashboardUserComponent } 
+  { path: 'user', component: DashboardUserComponent },
+  { path: 'reset-password', component: ResetPasswordComponent }
 ];
 
 @NgModule({
