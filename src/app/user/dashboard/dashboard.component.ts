@@ -12,6 +12,8 @@ export class DashboardUserComponent implements OnInit {
   products: any[] = [];
   carrito: any[] = [];
   user: any;
+  busqueda: string = '';
+  mostrarProductoNoEncontrado: boolean = false;
 
   showModal = false;
   selectedProduct: any = null;
@@ -188,5 +190,29 @@ export class DashboardUserComponent implements OnInit {
     if (this.carrito.length === 0) {
       this.mostrarCarrito = false;
     }
+  }
+
+  buscarProducto() {
+    const nombreBuscado = this.busqueda.trim().toLowerCase();
+
+    if (!nombreBuscado) {
+      alert('Ingresa un nombre para buscar.');
+      return;
+    }
+
+    const productoEncontrado = this.products.find(product =>
+      product.nom_prod.toLowerCase().includes(nombreBuscado)
+    );
+
+    if (productoEncontrado) {
+      this.openModal(productoEncontrado);
+    } else {
+      this.mostrarProductoNoEncontrado = true;
+      setTimeout(() => {
+        this.mostrarProductoNoEncontrado = false;
+      }, 3000); 
+    }
+
+    this.busqueda = '';
   }
 }

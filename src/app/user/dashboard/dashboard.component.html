@@ -3,6 +3,16 @@
 <div class="container">
   <div class="header">
     <div class="title">Productos</div>
+
+    <div class="search-container">
+      <input type="text" [(ngModel)]="busqueda" (keyup.enter)="buscarProducto()"
+        placeholder="Buscar producto por nombre" />
+      <button (click)="buscarProducto()">Buscar</button>
+    </div>
+
+    <div class="alerta-no-encontrado" *ngIf="mostrarProductoNoEncontrado">
+      Producto no encontrado.
+    </div>
     <i class="fa-solid fa-cart-shopping" (click)="toggleCarrito()"></i>
   </div>
 
@@ -25,67 +35,60 @@
 <div class="modal" *ngIf="showModal">
   <div class="modal-content">
     <h2>Agregar al carrito</h2>
-    <div class="modal" *ngIf="showModal">
-      <div class="modal-content">
-        <h2>Agregar al carrito</h2>
-        <div class="modal-body">
-          <div class="modal-img-container">
-            <img [src]="'productos/' + selectedProduct?.img + '.png'" alt="{{ selectedProduct?.nom_prod }}" class="modal-img" />
-          </div>
-          <div class="modal-info">
-            <p><strong>Producto:</strong> {{ selectedProduct?.nom_prod }}</p>
-            <p><strong>Descripción:</strong> {{ selectedProduct?.descripcion }}</p>
-            <label for="cantidad">Cantidad:</label>
-            <input id="cantidad"
-                  type="number"
-                  [(ngModel)]="cantidadElegida"
-                  [min]="0"
-                  [max]="selectedProduct?.cantidad_disponible"
-                  (input)="validarCantidad()"
-                  maxlength="3"
-                  oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)" />
-            <p *ngIf="cantidadElegida > selectedProduct?.cantidad_disponible" class="error-message">
-              ¡Cantidad máxima: {{ selectedProduct?.cantidad_disponible }}!
-            </p>
-            <div class="modal-buttons">
-              <button (click)="addToCart()">Añadir</button>
-              <button (click)="closeModal()">Cancelar</button>
-            </div>
-          </div>
+    <div class="modal-body">
+      <div class="modal-img-container">
+        <img [src]="'productos/' + selectedProduct?.img + '.png'" alt="{{ selectedProduct?.nom_prod }}"
+          class="modal-img" />
+      </div>
+      <div class="modal-info">
+        <p><strong>Producto:</strong> {{ selectedProduct?.nom_prod }}</p>
+        <p><strong>Descripción:</strong> {{ selectedProduct?.descripcion }}</p>
+
+        <label for="cantidad">Cantidad:</label>
+        <input id="cantidad" type="number" [(ngModel)]="cantidadElegida" [min]="1"
+          [max]="selectedProduct?.cantidad_disponible" (input)="validarCantidad()" maxlength="3"
+          oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)" />
+
+        <p *ngIf="cantidadElegida > selectedProduct?.cantidad_disponible" class="error-message">
+          ¡Cantidad máxima: {{ selectedProduct?.cantidad_disponible }}!
+        </p>
+
+        <div class="modal-buttons">
+          <button (click)="addToCart()">Añadir</button>
+          <button (click)="closeModal()">Cancelar</button>
         </div>
       </div>
     </div>
-
   </div>
 </div>
-
 
 <div class="carrito-overlay" *ngIf="mostrarCarrito">
   <div class="carrito-modal">
     <button class="close-btn" (click)="cerrarCarrito()">×</button>
 
     <h3>Carrito de compras</h3>
+
     <div *ngFor="let item of carrito; let i = index" class="carrito-item">
       <p><strong>{{ item.nom_prod }}</strong></p>
       <p>Precio unitario: ${{ item.valor_unitario }}</p>
+
       <label>Cantidad:</label>
-      <input id="cantidad"
-             type="number"
-             [(ngModel)]="item.elegido"
-             [min]="1"
-             [max]="item.cantidad_disponible"
-             (input)="validarCantidadCarrito(i)"
-             maxlength="3"
-             oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)" />
+      <input type="number" [(ngModel)]="item.elegido" [min]="1" [max]="item.cantidad_disponible"
+        (input)="validarCantidadCarrito(i)" maxlength="3"
+        oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)" />
+
       <p *ngIf="item.elegido > item.cantidad_disponible" class="error-message">
         ¡Cantidad seleccionada es de {{ item.cantidad_disponible }}!
       </p>
+
       <p>Subtotal: ${{ item.valor_unitario * item.elegido }}</p>
       <button class="btm-delete" (click)="removeFromCart(i)">Eliminar</button>
     </div>
+
     <div class="total-section">
       <p>Total: <strong>${{ calcularTotal() }}</strong></p>
     </div>
+
     <button (click)="reservar()">Reservar</button>
   </div>
 </div>

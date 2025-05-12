@@ -59,11 +59,6 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/productos/getAllProductos`);
   }
 
-  // Obtener todos los productos del front
-  getProductFront(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/productos/getallProductosToFront`);
-  }
-
   // Buscat producto
   searchProduct(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/productos/getProductoById/${id}`);
@@ -86,6 +81,23 @@ export class ApiService {
     return this.http.delete(`${this.baseUrl}/productos/deleteProductoById/${id}`);
   }
 
+  // Obtener todos los productos del front
+  getProductFront(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/productos/getallProductosToFront`);
+  }
+
+  // Crear producto
+  createProductSocket(nombre: string, descripcion: string, valor_unitario: number, proveedor: string, img: string, cantidad_total: number, cantidad_disponible: number, cantidad_reservada: number, ultima_actualizacion: string, hora_actualizacion: string): Observable<any> {
+    const body = { nombre, descripcion, valor_unitario, proveedor, img, cantidad_total, cantidad_disponible, cantidad_reservada, ultima_actualizacion, hora_actualizacion };
+    return this.http.post(`${this.baseUrl}/productos/createProductoConStock`, body);
+  }
+
+  // Actualizar producto
+  updateProductSocket(id_prod: number,nombre: string, descripcion: string, valor_unitario: number, proveedor: string, img: string, cantidad_total: number, id_stock:number): Observable<any> {
+    const body = {id_prod, nombre, descripcion, valor_unitario, proveedor, img, cantidad_total, id_stock};
+    return this.http.put(`${this.baseUrl}/productos/updateProductoById/${id_stock}`, body);
+  }
+  
   // Obtener todos las ventas
   getSales(): Observable<any> {
     return this.http.get(`${this.baseUrl}/ventas/getAllVentas`);
@@ -118,23 +130,23 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/stock/getAllStock`);
   }
 
-  // Buscar Ventas
+  // Buscar socket
   searchStock(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/stock/getStockById/${id}`);
   }
 
-  // Crear venta
+  // Crear socket
   createStock(id: number, fk_prod: number, cantidad_total: number, cantidad_disponible: number, cantidad_reservada: number, ultima_actualizacion: string, hora_actualizacion: string): Observable<any> {
     const body = { id, fk_prod, cantidad_total, cantidad_disponible, cantidad_reservada, ultima_actualizacion, hora_actualizacion };
     return this.http.post(`${this.baseUrl}/stock/createStock`, body);
   }
 
-  // Eliminar venta
+  // Eliminar socket
   deleteStock(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/stock/deleteStockById/${id}`);
   }
 
-  // Actualizae 
+  // Actualizae  venta
   updateStock(id: number, fk_prod: number, cantidad_total: number, cantidad_disponible: number, cantidad_reservada: number,ultima_actualizacion: string,hora_actualizacion: string): Observable<any> {
     const body = {
       fk_prod,

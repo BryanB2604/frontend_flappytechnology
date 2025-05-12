@@ -10,3 +10,59 @@ body {
     --Soft_Black: rgba(26, 26, 26);
     --Dark_Gray: rgba(102, 102, 102) 
 }
+
+/* Personalizar el scroll en el contenedor .container */
+.container::-webkit-scrollbar {
+  width: 8px; /* Tamaño del scrollbar */
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: #007bff; /* Color del pulgar (la parte movible del scroll) */
+  border-radius: 10px; /* Bordes redondeados */
+}
+
+.container::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Color del track (fondo del scrollbar) */
+}
+
+/* Personalizar el scroll en el contenedor .product */
+.product::-webkit-scrollbar {
+  width: 8px;
+}
+
+.product::-webkit-scrollbar-thumb {
+  background-color: #28a745;
+  border-radius: 10px;
+}
+
+.product::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Personalizar el scroll en el carrito */
+.carrito-overlay::-webkit-scrollbar {
+  width: 8px;
+}
+
+.carrito-overlay::-webkit-scrollbar-thumb {
+  background-color: #ff6347;
+  border-radius: 10px;
+}
+
+.carrito-overlay::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Personalizar el scroll en el modal */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: #6c757d;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
