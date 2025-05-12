@@ -17,7 +17,7 @@ export class DashboardUserComponent implements OnInit {
 
   showModal = false;
   selectedProduct: any = null;
-  cantidadElegida: number = 1;
+  cantidadElegida = this.selectedProduct?.cantidad_disponible || 1;
   codigoCompra: string | null = null;
   mostrarCarrito = false;
 

@@ -47,7 +47,7 @@
         <label for="cantidad">Cantidad:</label>
         <input id="cantidad" type="number" [(ngModel)]="cantidadElegida" [min]="1"
           [max]="selectedProduct?.cantidad_disponible" (input)="validarCantidad()" maxlength="3"
-          oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)" />
+          [value]="cantidadElegida || 1" />
 
         <p *ngIf="cantidadElegida > selectedProduct?.cantidad_disponible" class="error-message">
           ¡Cantidad máxima: {{ selectedProduct?.cantidad_disponible }}!

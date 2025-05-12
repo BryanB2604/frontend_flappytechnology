@@ -16,7 +16,7 @@
 
       <div class="gestion-buttons">
         <button class="action-btn" (click)="toggleActualizar()">Actualizar usuario</button>
-        <button class="action-btn" (click)="toggleEliminar()">Eliminar usuario</button>
+        <!-- <button class="action-btn" (click)="toggleEliminar()">Eliminar usuario</button> -->
       </div>
 
       <div *ngIf="mostrarActualizar" class="form-container">
@@ -31,13 +31,13 @@
         </form>
       </div>
 
-      <div *ngIf="mostrarEliminar" class="form-container">
+      <!-- <div *ngIf="mostrarEliminar" class="form-container">
         <h4>Eliminar Usuario</h4>
         <form [formGroup]="deleteForm" (ngSubmit)="deleteUser()">
           <input formControlName="id_user" type="number" placeholder="ID de usuario" required />
           <button type="submit" class="delete-btn">Eliminar</button>
         </form>
-      </div>
+      </div> -->
     </div>
   </div>
 </nav>
