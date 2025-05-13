@@ -16,6 +16,8 @@ export class GeneralComponent implements OnInit {
   error?: string;
   filterOptionsVisible = false;
   selectedFilter: string = '';
+  mensajeVisible: boolean = false;
+  errorVisible: boolean = false;
 
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
@@ -61,7 +63,7 @@ export class GeneralComponent implements OnInit {
         console.log(this.products);
       },
       error: () => {
-        this.error = 'Error al obtener productos.';
+        this.showErrorMessage('Error al obtener productos.');
       },
     });
   }
@@ -92,14 +94,12 @@ export class GeneralComponent implements OnInit {
         )
         .subscribe({
           next: (data) => {
-            this.mensaje = data.msg;
+            this.showSuccessMessage(data.msg);
             this.createForm.reset();
             this.getProduct();
-            this.error = '';
           },
           error: (err) => {
-            this.error = err.error.msg;
-            this.mensaje = '';
+            this.showErrorMessage(err.error.msg);
           },
         });
     }
@@ -121,16 +121,32 @@ export class GeneralComponent implements OnInit {
         )
         .subscribe({
           next: (data) => {
-            this.mensaje = data.msg;
+            this.showSuccessMessage(data.msg);
             this.editForm.reset();
             this.getProduct();
-            this.error = '';
           },
           error: (err) => {
-            this.error = err.error.msg;
-            this.mensaje = '';
+            this.showErrorMessage(err.error.msg);
           },
         });
     }
+  }
+
+  showSuccessMessage(mensaje: string): void {
+    this.mensaje = mensaje;
+    this.mensajeVisible = true;
+    setTimeout(() => {
+      this.mensajeVisible = false;
+      this.mensaje = '';
+    }, 3000);
+  }
+
+  showErrorMessage(error: string): void {
+    this.error = error;
+    this.errorVisible = true;
+    setTimeout(() => {
+      this.errorVisible = false;
+      this.error = '';
+    }, 3000);
   }
 }

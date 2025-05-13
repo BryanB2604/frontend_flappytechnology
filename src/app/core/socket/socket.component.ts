@@ -20,6 +20,8 @@ export class SocketComponent implements OnInit {
 
   filterOptionsVisible = false;
   selectedFilter: string = '';
+  mensajeVisible: boolean | undefined;
+  errorVisible: boolean | undefined;
 
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
@@ -30,7 +32,7 @@ export class SocketComponent implements OnInit {
 
   initForms(): void {
     this.stockForm = this.fb.group({
-      id: [0],
+      id: 0,
       fk_prod: [0],
       cantidad_total: [0],
       cantidad_disponible: [0],
@@ -45,13 +47,26 @@ export class SocketComponent implements OnInit {
 
   toggleFilterOptions(): void {
     this.filterOptionsVisible = !this.filterOptionsVisible;
+
+    if (!this.filterOptionsVisible) {
+      this.selectedFilter = '';
+      this.resetFormsYMensajes();
+    }
   }
 
   selectFilter(filter: string): void {
     this.selectedFilter = filter;
-    this.mensaje = '';
+    this.resetFormsYMensajes();
+  }
+
+  resetFormsYMensajes(): void {
+    this.stockForm.reset();
+    this.searchForm.reset();
+    this.deleteForm.reset();
     this.error = '';
+    this.mensaje = '';
     this.stockEncontrado = false;
+    this.searchResult = {};
   }
 
   getStock(): void {
@@ -63,7 +78,9 @@ export class SocketComponent implements OnInit {
 
   createStock(): void {
     const form = this.stockForm.value;
-    this.api.createStock(
+    if (confirm('¿Estás seguro de crear este stock?')) {
+
+      this.api.createStock(
       form.id,
       form.fk_prod,
       form.cantidad_total,
@@ -84,6 +101,8 @@ export class SocketComponent implements OnInit {
         this.mensaje = '';
       }
     });
+
+    }
   }
 
   updateStock(): void {
@@ -122,7 +141,6 @@ export class SocketComponent implements OnInit {
     }
   }
 
-
   searchStock(): void {
     const id = this.searchForm.value.id;
     this.api.searchStock(id).subscribe({
@@ -147,7 +165,9 @@ export class SocketComponent implements OnInit {
 
   deleteStock(): void {
     const id = this.deleteForm.value.id;
-    this.api.deleteStock(id).subscribe({
+
+    if (confirm('¿Estás seguro de eliminar este stock?')) {
+      this.api.deleteStock(id).subscribe({
       next: () => {
         this.getStock();
         this.deleteForm.reset();
@@ -160,5 +180,20 @@ export class SocketComponent implements OnInit {
         this.mensaje = '';
       }
     });
+    }
+  }
+
+  showSuccessMessage(mensaje: string) {
+    this.mensaje = mensaje;
+    setTimeout(() => {
+      this.mensaje = '';  
+    }, 3000); 
+  }
+
+  showErrorMessage(error: string) {
+    this.error = error;
+    setTimeout(() => {
+      this.error = '';  
+    }, 3000); 
   }
 }

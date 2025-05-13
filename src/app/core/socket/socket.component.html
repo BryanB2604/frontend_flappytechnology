@@ -1,60 +1,83 @@
 <div class="filtros">
   <h2 (click)="toggleFilterOptions()">Gestión de Stock</h2>
   <div class="btn-filtros" *ngIf="filterOptionsVisible">
-    <button (click)="selectFilter('crear')">Crear Stock</button>
-    <button (click)="selectFilter('eliminar')">Eliminar Stock</button>
-    <button (click)="selectFilter('buscar')">Buscar Stock</button>
-    <button (click)="selectFilter('actualizar')">Actualizar Stock</button>
+    <button (click)="selectFilter('crear')" [ngClass]="{ 'active-btn': selectedFilter === 'crear' }">Crear Stock</button>
+    <button (click)="selectFilter('eliminar')" [ngClass]="{ 'active-btn': selectedFilter === 'eliminar' }">Eliminar Stock</button>
+    <button (click)="selectFilter('buscar')" [ngClass]="{ 'active-btn': selectedFilter === 'buscar' }">Buscar Stock</button>
+    <button (click)="selectFilter('actualizar')" [ngClass]="{ 'active-btn': selectedFilter === 'actualizar' }">Actualizar Stock</button>
   </div>
 </div>
 
-<!-- Crear Stock -->
 <div *ngIf="selectedFilter === 'crear'" class="section-form">
   <h2>Crear Stock</h2>
   <form [formGroup]="stockForm" (ngSubmit)="createStock()" class="form-group">
-    <input type="number" formControlName="id" placeholder="ID Stock" min="1" required />
-    <input type="number" formControlName="fk_prod" placeholder="ID Producto" min="1" required />
-    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" min="0" required />
-    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" min="0" required />
-    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" min="0" required />
+    <input type="number" formControlName="fk_prod" placeholder="ID Producto" min="1" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
+    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
+    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
+    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
     <input type="date" formControlName="ultima_actualizacion" required />
     <input type="time" formControlName="hora_actualizacion" required />
     <button type="submit" [disabled]="stockForm.invalid">Crear</button>
   </form>
+  <div *ngIf="mensaje" class="mensaje-success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="error" class="mensaje-error">
+    {{ error }}
+  </div>
 </div>
 
-<!-- Actualizar Stock -->
 <div *ngIf="selectedFilter === 'actualizar'" class="section-form">
   <h2>Actualizar Stock</h2>
   <form [formGroup]="stockForm" (ngSubmit)="updateStock()" class="form-group">
-    <input type="number" formControlName="id" placeholder="ID" required min="0">
-    <input type="number" formControlName="fk_prod" placeholder="ID Producto" required min="0">
-    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" required min="0">
-    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" required min="0">
-    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" required min="0">
+    <input type="number" formControlName="id" placeholder="ID" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
+    <input type="number" formControlName="fk_prod" placeholder="ID Producto" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
+    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
+    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
+    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
     <input type="date" formControlName="ultima_actualizacion" placeholder="Última Actualización" required>
     <input type="time" formControlName="hora_actualizacion" placeholder="Hora de Actualización" required>
     <button type="submit" [disabled]="stockForm.invalid">Actualizar</button>
   </form>
-  <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
-  <div *ngIf="error" class="mensaje-error">{{ error }}</div>
+  <div *ngIf="mensaje" class="mensaje-success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="error" class="mensaje-error">
+    {{ error }}
+  </div>
 </div>
 
 <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
   <h2>Eliminar Stock</h2>
   <form [formGroup]="deleteForm" (ngSubmit)="deleteStock()" class="form-group">
-    <input type="number" formControlName="id" placeholder="ID del Stock a Eliminar" min="1" required />
+    <input type="number" formControlName="id" placeholder="ID del Stock a Eliminar" min="1" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
     <button type="submit" [disabled]="deleteForm.invalid">Eliminar</button>
   </form>
+  <div *ngIf="mensaje" class="mensaje-success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="error" class="mensaje-error">
+    {{ error }}
+  </div>
 </div>
 
-<!-- Buscar Stock -->
 <div *ngIf="selectedFilter === 'buscar'" class="section-form">
   <h2>Buscar Stock</h2>
   <form [formGroup]="searchForm" (ngSubmit)="searchStock()" class="form-group">
-    <input type="number" formControlName="id" placeholder="ID del Stock a Buscar" min="1" required />
+    <input type="number" formControlName="id" placeholder="ID del Stock a Buscar" min="1" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
     <button type="submit" [disabled]="searchForm.invalid">Buscar</button>
   </form>
+
+  <div *ngIf="mensaje" class="mensaje-success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="error" class="mensaje-error">
+    {{ error }}
+  </div>
 
   <div *ngIf="stockEncontrado" class="section-form">
     <h2>Stock Encontrado</h2>

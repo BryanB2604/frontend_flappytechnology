@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ApiService } from '../../services/app.service';
+
 @Component({
   selector: 'app-users',
   standalone: false,
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
-export class UsersComponent {
+export class UsersComponent implements OnInit {
 
   users: any[] = [];
   search: any = {};
@@ -16,12 +17,14 @@ export class UsersComponent {
   deleteForm!: FormGroup;
   buscarForm!: FormGroup;
 
-  error: string | undefined;
-  mensaje: string | undefined;
+  error: string = '';
+  mensaje: string = '';
 
   filterOptionsVisible: boolean = false;
   selectedFilter: string = '';
   usuarioEncontrado: boolean = false;
+  mensajeVisible: boolean = false;
+  errorVisible: boolean = false;
 
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
@@ -54,7 +57,10 @@ export class UsersComponent {
       next: (res) => {
         this.users = res.data;
       },
-      error: (err) => console.error('Error al obtener usuarios', err)
+      error: (err) => {
+        console.error('Error al obtener usuarios', err);
+        this.showErrorMessage('Error al obtener los usuarios.');
+      }
     });
   }
 
@@ -63,19 +69,27 @@ export class UsersComponent {
     const userExiste = this.users.find(u => u.id_user === form.id_user);
 
     if (!userExiste) {
-      this.error = `No se encontró el usuario con ID ${form.id_user}.`;
-      this.mensaje = '';
+      this.showErrorMessage(`No se encontró el usuario con ID ${form.id_user}.`);
       return;
     }
 
     if (confirm('¿Estás seguro de actualizar este usuario?')) {
-      this.api.updateUser(form.id_user, form.nombre, form.apellido, form.correo, form.contrasena, form.tipo_user).subscribe({
+      this.api.updateUser(
+        form.id_user,
+        form.nombre,
+        form.apellido,
+        form.correo,
+        form.contrasena,
+        form.tipo_user
+      ).subscribe({
         next: () => {
           this.getUsers();
           this.editForm.reset();
+          this.showSuccessMessage('Usuario actualizado exitosamente.');
         },
         error: (err) => {
-          this.mensaje = '';
+          console.error('Error al actualizar usuario', err);
+          this.showErrorMessage('Error al actualizar el usuario.');
         }
       });
     }
@@ -85,8 +99,7 @@ export class UsersComponent {
     const userExiste = this.users.find(u => u.id_user === id);
 
     if (!userExiste) {
-      this.error = `No se encontró el usuario con ID ${id}.`;
-      this.mensaje = '';
+      this.showErrorMessage(`No se encontró el usuario con ID ${id}.`);
       return;
     }
 
@@ -95,9 +108,11 @@ export class UsersComponent {
         next: () => {
           this.getUsers();
           this.deleteForm.reset();
+          this.showSuccessMessage('Usuario eliminado correctamente.');
         },
         error: (err) => {
-          this.mensaje = '';
+          console.error('Error al eliminar usuario', err);
+          this.showErrorMessage('Error al eliminar el usuario.');
         }
       });
     }
@@ -113,14 +128,14 @@ export class UsersComponent {
         } else {
           this.search = {};
           this.usuarioEncontrado = false;
-          this.error = `Usuario con ID ${id} no encontrado.`;
+          this.showErrorMessage(`Usuario con ID ${id} no encontrado.`);
         }
       },
       error: (err) => {
         console.error('Error al buscar usuario', err);
         this.search = {};
         this.usuarioEncontrado = false;
-        this.error = 'Ocurrió un error al buscar el usuario.';
+        this.showErrorMessage('Ocurrió un error al buscar el usuario.');
       }
     });
   }
@@ -134,5 +149,23 @@ export class UsersComponent {
 
   selectFilter(filter: string): void {
     this.selectedFilter = filter;
+  }
+
+  showSuccessMessage(mensaje: string): void {
+    this.mensaje = mensaje;
+    this.mensajeVisible = true;
+    setTimeout(() => {
+      this.mensajeVisible = false;
+      this.mensaje = '';
+    }, 3000);
+  }
+
+  showErrorMessage(error: string): void {
+    this.error = error;
+    this.errorVisible = true;
+    setTimeout(() => {
+      this.errorVisible = false;
+      this.error = '';
+    }, 3000);
   }
 }

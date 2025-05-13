@@ -26,6 +26,8 @@ export class ProductsComponent implements OnInit {
   filterOptionsVisible: boolean = false; 
   selectedFilter: string = ''; 
   productoEncontrado: boolean = false;
+  mensajeVisible: boolean = false;
+  errorVisible: boolean = false;
 
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
@@ -66,7 +68,10 @@ export class ProductsComponent implements OnInit {
         this.products = res.data;
         console.log(this.products);
       },
-      error: (err) => console.error('Error al obtener productos', err)
+      error: (err) => {
+        console.error('Error al obtener productos', err);
+        this.showErrorMessage('Error al obtener los productos.');
+      }
     });
   }
 
@@ -74,8 +79,7 @@ export class ProductsComponent implements OnInit {
     const form = this.createForm.value;
 
     if (!form.nombre || !form.descripcion || form.valor_unitario <= 0 || !form.proveedor) {
-      this.error = 'Todos los campos son obligatorios.';
-      this.mensaje = '';
+      this.showErrorMessage('Todos los campos son obligatorios.');
       return;
     }
 
@@ -84,8 +88,7 @@ export class ProductsComponent implements OnInit {
     );
 
     if (nombreDuplicado) {
-      this.error = 'Ya existe un producto con ese nombre.';
-      this.mensaje = '';
+      this.showErrorMessage('Ya existe un producto con ese nombre.');
       return;
     }
 
@@ -98,13 +101,11 @@ export class ProductsComponent implements OnInit {
       next: () => {
         this.getProduct();
         this.createForm.reset();
-        this.error = '';
-        this.mensaje = 'Producto creado exitosamente.';
+        this.showSuccessMessage('Producto creado exitosamente.');
       },
       error: (err) => {
         console.error('Error al crear producto', err);
-        this.error = 'Error al crear el producto.';
-        this.mensaje = '';
+        this.showErrorMessage('Error al crear el producto.');
       }
     });
   }
@@ -114,8 +115,7 @@ export class ProductsComponent implements OnInit {
     const productoExiste = this.products.find(p => p.id_prod === form.id_prod);
 
     if (!productoExiste) {
-      this.error = `No se encontró el producto con ID ${form.id_prod}.`;
-      this.mensaje = '';
+      this.showErrorMessage(`No se encontró el producto con ID ${form.id_prod}.`);
       return;
     }
 
@@ -124,8 +124,7 @@ export class ProductsComponent implements OnInit {
     );
 
     if (nombreDuplicado) {
-      this.error = 'Ya existe otro producto con ese nombre.';
-      this.mensaje = '';
+      this.showErrorMessage('Ya existe otro producto con ese nombre.');
       return;
     }
 
@@ -136,17 +135,16 @@ export class ProductsComponent implements OnInit {
         form.descripcion,
         form.valor_unitario,
         form.proveedor,
-        productoExiste.img // reutilizar imagen si ya existe
+        productoExiste.img
       ).subscribe({
         next: () => {
           this.getProduct();
           this.editForm.reset();
-          this.error = '';
+          this.showSuccessMessage('Producto actualizado exitosamente.');
         },
         error: (err) => {
           console.error('Error al actualizar producto', err);
-          this.error = 'Error al actualizar el producto.';
-          this.mensaje = '';
+          this.showErrorMessage('Error al actualizar el producto.');
         }
       });
     }
@@ -156,8 +154,7 @@ export class ProductsComponent implements OnInit {
     const productoExiste = this.products.find(p => p.id_prod === id);
 
     if (!productoExiste) {
-      this.error = `No se encontró el producto con ID ${id}.`;
-      this.mensaje = '';
+      this.showErrorMessage(`No se encontró el producto con ID ${id}.`);
       return;
     }
 
@@ -166,12 +163,11 @@ export class ProductsComponent implements OnInit {
         next: () => {
           this.getProduct();
           this.deleteForm.reset();
-          this.error = '';
+          this.showSuccessMessage('Producto eliminado correctamente.');
         },
         error: (err) => {
           console.error('Error al eliminar producto', err);
-          this.error = 'Error al eliminar el producto.';
-          this.mensaje = '';
+          this.showErrorMessage('Error al eliminar el producto.');
         }
       });
     }
@@ -187,21 +183,20 @@ export class ProductsComponent implements OnInit {
         } else {
           this.search = {};
           this.productoEncontrado = false;
-          this.error = `Producto con ID ${id} no encontrado.`;
+          this.showErrorMessage(`Producto con ID ${id} no encontrado.`);
         }
       },
       error: (err) => {
         console.error('Error al buscar producto', err);
         this.search = {};
         this.productoEncontrado = false;
-        this.error = 'Ocurrió un error al buscar el producto.';
+        this.showErrorMessage('Ocurrió un error al buscar el producto.');
       }
     });
-}
+  }
 
   toggleFilterOptions(): void {
     this.filterOptionsVisible = !this.filterOptionsVisible;
-
     if (!this.filterOptionsVisible) {
       this.selectedFilter = '';
     }
@@ -211,4 +206,21 @@ export class ProductsComponent implements OnInit {
     this.selectedFilter = filter;
   }
 
+  showSuccessMessage(mensaje: string): void {
+    this.mensaje = mensaje;
+    this.mensajeVisible = true;
+    setTimeout(() => {
+      this.mensajeVisible = false;
+      this.mensaje = '';
+    }, 3000);
+  }
+
+  showErrorMessage(error: string): void {
+    this.error = error;
+    this.errorVisible = true;
+    setTimeout(() => {
+      this.errorVisible = false;
+      this.error = '';
+    }, 3000);
+  }
 }

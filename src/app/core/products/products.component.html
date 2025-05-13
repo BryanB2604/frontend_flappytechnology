@@ -27,7 +27,7 @@
 
     <input type="number" formControlName="valor_unitario" placeholder="Valor Unitario"
       [ngClass]="{'input-error': createForm.get('valor_unitario')?.invalid && createForm.get('valor_unitario')?.touched}"
-      required min="0">
+      required min="0" max="99999" oninput="this.value=this.value.slice(0,5)">
     <div *ngIf="createForm.get('valor_unitario')?.invalid && createForm.get('valor_unitario')?.touched" class="mensaje-error">
       Solo números positivos.
     </div>
@@ -41,6 +41,13 @@
 
     <button type="submit" [disabled]="createForm.invalid">Crear</button>
   </form>
+  <div *ngIf="mensaje" class="mensaje-success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="error" class="mensaje-error">
+    {{ error }}
+  </div>
 </div>
 
 <div *ngIf="selectedFilter === 'editar'" class="section-form">
@@ -48,7 +55,7 @@
   <form [formGroup]="editForm" (ngSubmit)="updateProduct()" class="form-group">
     <input type="number" formControlName="id_prod" placeholder="ID del Producto"
       [ngClass]="{'input-error': editForm.get('id_prod')?.invalid && editForm.get('id_prod')?.touched}"
-      required min="1">
+      required min="1" max="99999" oninput="this.value=this.value.slice(0,5)">
     <div *ngIf="editForm.get('id_prod')?.invalid && editForm.get('id_prod')?.touched" class="mensaje-error">
       ID inválido (mayor a 0).
     </div>
@@ -69,7 +76,7 @@
 
     <input type="number" formControlName="valor_unitario" placeholder="Nuevo Valor Unitario"
       [ngClass]="{'input-error': editForm.get('valor_unitario')?.invalid && editForm.get('valor_unitario')?.touched}"
-      required min="0">
+      required min="0" max="99999" oninput="this.value=this.value.slice(0,5)">
     <div *ngIf="editForm.get('valor_unitario')?.invalid && editForm.get('valor_unitario')?.touched" class="mensaje-error">
       Valor inválido.
     </div>
@@ -83,6 +90,13 @@
 
     <button type="submit" [disabled]="editForm.invalid">Actualizar</button>
   </form>
+  <div *ngIf="mensaje" class="mensaje-success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="error" class="mensaje-error">
+    {{ error }}
+  </div>
 </div>
 
 <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
@@ -90,12 +104,19 @@
   <form [formGroup]="deleteForm" (ngSubmit)="deleteProduct(deleteForm.value.id_prod)" class="form-group">
     <input type="number" formControlName="id_prod" placeholder="ID del Producto a Eliminar"
       [ngClass]="{'input-error': deleteForm.get('id_prod')?.invalid && deleteForm.get('id_prod')?.touched}"
-      required min="1">
+      required min="1" max="99999" oninput="this.value=this.value.slice(0,5)">
     <div *ngIf="deleteForm.get('id_prod')?.invalid && deleteForm.get('id_prod')?.touched" class="mensaje-error">
       ID inválido.
     </div>
     <button type="submit" [disabled]="deleteForm.invalid">Eliminar</button>
   </form>
+  <div *ngIf="mensaje" class="mensaje-success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="error" class="mensaje-error">
+    {{ error }}
+  </div>
 </div>
 
 <div *ngIf="selectedFilter === 'buscar'" class="section-form">
@@ -103,7 +124,7 @@
   <form [formGroup]="buscarForm" (ngSubmit)="buscarProductoPorId(buscarForm.value.id_prod)" class="form-group">
     <input type="number" formControlName="id_prod" placeholder="ID del Producto a Buscar"
       [ngClass]="{'input-error': buscarForm.get('id_prod')?.invalid && buscarForm.get('id_prod')?.touched}"
-      required min="1">
+      required min="1" max="99999" oninput="this.value=this.value.slice(0,5)">
     <div *ngIf="buscarForm.get('id_prod')?.invalid && buscarForm.get('id_prod')?.touched" class="mensaje-error">
       ID inválido.
     </div>
@@ -136,8 +157,12 @@
     </div>
   </div>
 
-  <div *ngIf="error && !productoEncontrado">
-    <p class="mensaje-error">{{ error }}</p>
+  <div *ngIf="mensaje" class="mensaje-success">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="error" class="mensaje-error">
+    {{ error }}
   </div>
 </div>
 

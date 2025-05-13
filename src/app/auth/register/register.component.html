@@ -16,9 +16,10 @@
           pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
           title="Solo letras, sin caracteres especiales. Máximo 30 caracteres.">
 
-        <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico" name="email" required
-          pattern="^[a-zA-Z0-9]{4,}@[a-zA-Z0-9-]{4,}\.(com|org|net|edu|gov|info|es|co)$"
-          title="El correo debe estar sin caracteres especiales. Solo se permiten dominios válidos como .com, .org, etc.">
+        <input formControlName="correo" type="email" placeholder="Correo electrónico" required 
+          maxlength="20" 
+          pattern="^[a-zA-Z0-9]{4,}@(gmail\.com|yahoo\.com|hotmail\.com|[a-zA-Z0-9-]{4,}\.(com|org|net|edu|gov|info|es|co\.(edu|gov)))$" 
+          title="El correo debe ser válido. Gmail, Yahoo y Hotmail deben terminar en .com. Otros dominios pueden ser .com, .edu.co, .gov.co, etc. No más de 20 caracteres." />
 
         <input type="password" [(ngModel)]="contrasena" placeholder="Contraseña" name="password" required minlength="4"
           title="Mínimo 4 caracteres.">

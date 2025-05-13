@@ -24,6 +24,8 @@ export class SalesComponent implements OnInit {
 
   filterOptionsVisible = false;
   selectedFilter = '';
+  mensajeVisible: boolean | undefined;
+  errorVisible: boolean | undefined;
 
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
@@ -69,19 +71,19 @@ export class SalesComponent implements OnInit {
 
   createSale(): void {
     const f = this.createForm.value;
-    this.api.createSales(f.fk_user, f.fk_prod, f.fk_estado, f.fecha, f.hora, f.cantidad, f.total, f.cod_compra)
+    if (confirm('¿Crear esta venta?')) {
+      this.api.createSales(f.fk_user, f.fk_prod, f.fk_estado, f.fecha, f.hora, f.cantidad, f.total, f.cod_compra)
       .subscribe({
         next: () => {
           this.loadSales();
           this.createForm.reset();
-          this.mensaje = 'Venta creada exitosamente.';
-          this.error = '';
+          this.showSuccessMessage('Venta creada exitosamente.');
         },
         error: () => {
-          this.error = 'Error al crear la venta.';
-          this.mensaje = '';
+          this.showErrorMessage('Error al crear la venta.');
         }
       });
+    }
   }
 
   updateSale(): void {
@@ -92,12 +94,10 @@ export class SalesComponent implements OnInit {
           next: () => {
             this.loadSales();
             this.editForm.reset();
-            this.mensaje = 'Venta actualizada.';
-            this.error = '';
+            this.showSuccessMessage('Venta actualizada.');
           },
           error: () => {
-            this.error = 'Error al actualizar la venta.';
-            this.mensaje = '';
+            this.showErrorMessage('Error al actualizar la venta.');
           }
         });
     }
@@ -109,12 +109,10 @@ export class SalesComponent implements OnInit {
         next: () => {
           this.loadSales();
           this.deleteForm.reset();
-          this.mensaje = 'Venta eliminada.';
-          this.error = '';
+          this.showSuccessMessage('Venta eliminada.');
         },
         error: () => {
-          this.error = 'Error al eliminar la venta.';
-          this.mensaje = '';
+          this.showErrorMessage('Error al eliminar la venta.');
         }
       });
     }
@@ -129,11 +127,11 @@ export class SalesComponent implements OnInit {
           this.error = '';
         } else {
           this.saleFound = false;
-          this.error = `Venta con ID ${id} no encontrada.`;
+          this.showErrorMessage(`Venta con ID ${id} no encontrada.`);
         }
       },
       error: () => {
-        this.error = 'Error al buscar la venta.';
+        this.showErrorMessage('Error al buscar la venta.');
         this.saleFound = false;
       }
     });
@@ -148,4 +146,21 @@ export class SalesComponent implements OnInit {
     this.selectedFilter = filter;
   }
 
+  showSuccessMessage(mensaje: string) {
+    this.mensaje = mensaje;
+    this.mensajeVisible = true;
+    setTimeout(() => {
+      this.mensajeVisible = false;  
+      this.mensaje = ''; 
+    }, 3000); 
+  }
+
+  showErrorMessage(error: string) {
+    this.error = error;
+    this.errorVisible = true;
+    setTimeout(() => {
+      this.errorVisible = false;
+      this.error = '';  
+    }, 3000); 
+  }
 }
