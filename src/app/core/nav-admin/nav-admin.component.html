@@ -33,8 +33,8 @@
             title="Solo letras, sin caracteres especiales. Máximo 30 caracteres." />
 
           <input formControlName="correo" type="email" placeholder="Correo electrónico" required 
-            maxlength="20" 
-            pattern="^[a-zA-Z0-9]{4,}@(gmail\.com|yahoo\.com|hotmail\.com|[a-zA-Z0-9-]{4,}\.(com|org|net|edu|gov|info|es|co\.(edu|gov)))$" 
+            maxlength="40"
+            pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|ecci\.edu\.co)$"
             title="El correo debe ser válido. Gmail, Yahoo y Hotmail deben terminar en .com. Otros dominios pueden ser .com, .edu.co, .gov.co, etc. No más de 20 caracteres." />
 
           <input formControlName="contrasena" type="password" placeholder="Contraseña" required minlength="4" 

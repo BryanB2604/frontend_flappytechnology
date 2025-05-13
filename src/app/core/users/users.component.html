@@ -31,8 +31,8 @@
       Apellido inválido. Solo letras, máximo 30 caracteres.
     </div>
 
-    <input type="email" formControlName="correo" placeholder="Correo electrónico" maxlength="20" 
-      pattern="^[a-zA-Z0-9]{4,}@(gmail\.com|yahoo\.com|hotmail\.com|[a-zA-Z0-9-]{4,}\.(com|org|net|edu|gov|info|es|co\.(edu|gov)))$" 
+    <input type="email" formControlName="correo" placeholder="Correo electrónico" maxlength="40"
+          pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|ecci\.edu\.co)$"
       [ngClass]="{'input-error': editForm.get('correo')?.invalid && editForm.get('correo')?.touched}">
     <div *ngIf="editForm.get('correo')?.invalid && editForm.get('correo')?.touched" class="mensaje-error">
       Correo inválido. Debe tener un formato válido y sin caracteres especiales.

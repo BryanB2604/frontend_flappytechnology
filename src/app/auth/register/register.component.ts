@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/app.service'; 
 import { Router } from '@angular/router';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 export interface User {
   id_user: number;
@@ -15,51 +16,43 @@ export interface User {
   selector: 'app-register',
   standalone: false,
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrls: ['./register.component.css']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 
-  nombre: string = '';
-  apellido: string = '';
-  correo: string = '';
-  contrasena: string = '';
-  tipo_user: number = 1;
+  registerForm!: FormGroup;
   error: string = '';
-  users: User[] = []; 
 
   constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit() {
-    this.getUser();
-  }
-
-  getUser() {
-    this.api.getUser().subscribe({
-      next: (res) => {
-        this.users = res.data;
-        console.log('user:', this.users);
-      },
-      error: (err) => {
-        console.error('Error al obtener user', err);
-      }
+    this.registerForm = new FormGroup({
+      nombre: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]),
+      apellido: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]),
+      correo: new FormControl('', [
+        Validators.required,
+        Validators.email,
+        Validators.pattern('^[a-zA-Z0-9._%+-]+@(gmail\\.com|yahoo\\.com|hotmail\\.com|ecci\\.edu\\.co)$')
+      ]),
+      contrasena: new FormControl('', [Validators.required, Validators.minLength(4)]),
     });
   }
 
   crearUsuario() {
-    this.api.create_user(this.nombre, this.apellido, this.correo, this.contrasena, this.tipo_user).subscribe({
-      next: () => {
-        this.router.navigate(['/login']); 
-      },
-      error: (err) => {
-        console.error('Error al registrar usuario:', err);
-        
-        if (err.error?.msg) {
-          this.error = err.error.msg;
-        } else {
-          this.error = 'Error al registrar usuario. Inténtalo de nuevo.';
+    if (this.registerForm?.valid) {
+      const { nombre, apellido, correo, contrasena } = this.registerForm.value;
+      this.api.create_user(nombre, apellido, correo, contrasena, 1).subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          console.error('Error al registrar usuario:', err);
+          this.error = err.error?.msg || 'Error al registrar usuario. Inténtalo de nuevo.';
         }
-      }
-    });
+      });
+    } else {
+      this.error = 'Por favor completa todos los campos correctamente.';
+    }
   }
 
   goToLogin() {
