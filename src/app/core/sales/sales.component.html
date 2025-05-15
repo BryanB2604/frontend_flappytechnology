@@ -1,4 +1,4 @@
-<div class="filtros">
+<!-- <div class="filtros">
   <h2 (click)="toggleFilterOptions()">Gestión de Ventas</h2>
   <div class="btn-filtros" *ngIf="filterOptionsVisible">
     <button (click)="selectFilter('crear')">Crear Venta</button>
@@ -8,7 +8,6 @@
   </div>
 </div>
 
-<!-- Crear Venta -->
 <div *ngIf="selectedFilter === 'crear'" class="section-form">
   <h2>Crear Venta</h2>
   <form [formGroup]="createForm" (ngSubmit)="createSale()" class="form-group">
@@ -113,7 +112,7 @@
   <div *ngIf="error && !saleFound">
     <p class="mensaje-error">{{ error }}</p>
   </div>
-</div>
+</div> -->
 
 <div class="section-form">
   <h2>Ventas</h2>

@@ -21,8 +21,10 @@
           pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|ecci\.edu\.co)$"
           title="El correo debe ser válido y pertenecer a los dominios: @gmail.com, @yahoo.com, @hotmail.com o @ecci.edu.co" />
 
-        <input formControlName="contrasena" type="password" placeholder="Contraseña" required minlength="4"
-          title="Mínimo 4 caracteres.">
+       <input formControlName="contrasena" type="password" placeholder="Contraseña" required
+          pattern="^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$"
+          title="Debe tener al menos 6 caracteres, una mayúscula y un carácter especial." />
+
 
         <button type="submit" [disabled]="!registerForm.valid">Registrarse</button>
 

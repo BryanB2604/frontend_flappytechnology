@@ -168,4 +168,8 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/ventas/confirmarVenta/${code}`, {});
   }
 
+  cancelarReserve(code: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/ventas/cancelarVenta/${code}`, {});
+  }
+
 }

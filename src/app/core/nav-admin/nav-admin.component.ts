@@ -137,6 +137,7 @@ export class NavAdminComponent implements OnInit {
         next: () => {
           this.getUsers();
           this.editForm.reset();
+          this.mostrarActualizar = false; // ✅ Cierra el formulario al actualizar
           this.error = '';
           this.mensaje = 'Usuario actualizado correctamente.';
         },

@@ -17,7 +17,7 @@ export class DashboardUserComponent implements OnInit {
 
   showModal = false;
   selectedProduct: any = null;
-  cantidadElegida = this.selectedProduct?.cantidad_disponible || 1;
+  cantidadElegida = 1;
   codigoCompra: string | null = null;
   mostrarCarrito = false;
 
@@ -42,7 +42,7 @@ export class DashboardUserComponent implements OnInit {
 
   openModal(product: any) {
     this.selectedProduct = product;
-    this.cantidadElegida = product?.cantidad_disponible || 1;
+    this.cantidadElegida = 1;
     this.showModal = true;
   }
 
@@ -51,37 +51,39 @@ export class DashboardUserComponent implements OnInit {
     this.showModal = false;
   }
 
+  validarCantidadModal() {
+    if (!this.selectedProduct) return;
+    if (this.cantidadElegida < 1) this.cantidadElegida = 1;
+    if (this.cantidadElegida > this.selectedProduct.cantidad_disponible)
+      this.cantidadElegida = this.selectedProduct.cantidad_disponible;
+  }
+
   addToCart() {
-    if (this.cantidadElegida > 0 && this.selectedProduct) {
-      if (this.cantidadElegida > this.selectedProduct.cantidad_disponible) {
-        alert(`La cantidad seleccionada supera el stock disponible (${this.selectedProduct.cantidad_disponible}).`);
-        return;
-      }
-
-      const index = this.carrito.findIndex(item =>
-        item.id_prod === this.selectedProduct.id_prod &&
-        item.id_stock === this.selectedProduct.id_stock
-      );
-
-      if (index !== -1) {
-        const nuevaCantidad = this.carrito[index].elegido + this.cantidadElegida;
-        this.carrito[index].elegido = Math.min(nuevaCantidad, this.selectedProduct.cantidad_disponible);
-      } else {
-        const productoCarrito = {
-          id_user: this.user.id_user,
-          id_prod: this.selectedProduct.id_prod,
-          id_stock: this.selectedProduct.id_stock,
-          valor_unitario: this.selectedProduct.valor_unitario,
-          elegido: this.cantidadElegida,
-          nom_prod: this.selectedProduct.nom_prod,
-          cantidad_disponible: this.selectedProduct.cantidad_disponible
-        };
-        this.carrito.push(productoCarrito);
-      }
-
-      this.closeModal();
-      this.checkCarrito();
+    if (!this.selectedProduct) return;
+    if (this.cantidadElegida < 1 || this.cantidadElegida > this.selectedProduct.cantidad_disponible) {
+      alert(`Cantidad inválida. Disponible: ${this.selectedProduct.cantidad_disponible}`);
+      return;
     }
+    const index = this.carrito.findIndex(item =>
+      item.id_prod === this.selectedProduct.id_prod &&
+      item.id_stock === this.selectedProduct.id_stock
+    );
+    if (index !== -1) {
+      const nuevaCantidad = this.carrito[index].elegido + this.cantidadElegida;
+      this.carrito[index].elegido = Math.min(nuevaCantidad, this.selectedProduct.cantidad_disponible);
+    } else {
+      const productoCarrito = {
+        id_user: this.user.id_user,
+        id_prod: this.selectedProduct.id_prod,
+        id_stock: this.selectedProduct.id_stock,
+        valor_unitario: this.selectedProduct.valor_unitario,
+        elegido: this.cantidadElegida,
+        nom_prod: this.selectedProduct.nom_prod,
+        cantidad_disponible: this.selectedProduct.cantidad_disponible
+      };
+      this.carrito.push(productoCarrito);
+    }
+    this.closeModal();
   }
 
   toggleCarrito() {
@@ -97,17 +99,15 @@ export class DashboardUserComponent implements OnInit {
     if (nuevaCantidad < 1) {
       item.elegido = 1;
     } else if (nuevaCantidad > item.cantidad_disponible) {
+      alert(`No puedes seleccionar más de ${item.cantidad_disponible} unidades de "${item.nom_prod}"`);
       item.elegido = item.cantidad_disponible;
     } else {
       item.elegido = nuevaCantidad;
     }
-
-    this.checkCarrito();
   }
 
   removeFromCart(index: number) {
     this.carrito.splice(index, 1);
-    this.checkCarrito();
   }
 
   reservar() {
@@ -115,7 +115,16 @@ export class DashboardUserComponent implements OnInit {
       alert('El carrito está vacío.');
       return;
     }
-
+    for (let item of this.carrito) {
+      if (item.elegido > item.cantidad_disponible) {
+        alert(`La cantidad seleccionada para el producto "${item.nom_prod}" supera el stock disponible (${item.cantidad_disponible}).`);
+        return;
+      }
+      if (item.elegido < 1) {
+        alert(`La cantidad seleccionada para el producto "${item.nom_prod}" no puede ser menor a 1.`);
+        return;
+      }
+    }
     this.api.postReserva(this.carrito).subscribe({
       next: (res: any) => {
         if (res.code === 200 && res.data?.cod_compra) {
@@ -123,6 +132,7 @@ export class DashboardUserComponent implements OnInit {
           alert(`Productos reservados correctamente. Código de compra: ${this.codigoCompra}`);
           this.carrito = [];
           this.mostrarCarrito = false;
+          this.getProduct();
         } else {
           alert('Error inesperado en la respuesta del servidor.');
         }
@@ -139,12 +149,12 @@ export class DashboardUserComponent implements OnInit {
       alert('No hay código de compra disponible.');
       return;
     }
-
     this.api.confirmReserve(this.codigoCompra).subscribe({
       next: (res) => {
         if (res.code === 200) {
           alert('Compra confirmada con éxito.');
           this.codigoCompra = null;
+          this.getProduct();
         } else {
           alert('No se pudo confirmar la compra.');
         }
@@ -156,63 +166,54 @@ export class DashboardUserComponent implements OnInit {
     });
   }
 
+  cancelarCompra() {
+    if (!this.codigoCompra) {
+      alert('No hay código de compra disponible.');
+      return;
+    }
+    if (confirm('¿Estás seguro de cancelar la compra?')) {
+      this.api.cancelarReserve(this.codigoCompra).subscribe({
+        next: (res) => {
+          if (res.code === 200) {
+            alert('Compra cancelada con éxito.');
+            this.codigoCompra = null;
+            this.getProduct();
+          } else {
+            alert('No se pudo cancelar la compra.');
+          }
+        },
+        error: (err) => {
+          alert('Error al cancelar la compra.');
+          console.error(err);
+        }
+      });
+    }
+  }
+
   cerrarCarrito() {
     this.mostrarCarrito = false;
   }
 
-  validarCantidad() {
-    if (this.cantidadElegida.toString().length > 3) {
-      this.cantidadElegida = Number(this.cantidadElegida.toString().slice(0, 3));
-    }
-
-    if (this.cantidadElegida > this.selectedProduct?.cantidad_disponible) {
-      this.cantidadElegida = this.selectedProduct?.cantidad_disponible;
-    }
-
-    if (this.cantidadElegida < 1) {
-      this.cantidadElegida = 1;
-    }
-  }
-
-  validarCantidadCarrito(index: number) {
-    const item = this.carrito[index];
-
-    if (item.elegido > item.cantidad_disponible) {
-      item.elegido = item.cantidad_disponible;
-    }
-
-    if (item.elegido < 1) {
-      item.elegido = 1;
-    }
-  }
-
-  checkCarrito() {
-    if (this.carrito.length === 0) {
-      this.mostrarCarrito = false;
-    }
+  isReservaValida(): boolean {
+    if (this.carrito.length === 0) return false;
+    return this.carrito.every(item => item.elegido >= 1 && item.elegido <= item.cantidad_disponible);
   }
 
   buscarProducto() {
     const nombreBuscado = this.busqueda.trim().toLowerCase();
-
     if (!nombreBuscado) {
       alert('Ingresa un nombre para buscar.');
       return;
     }
-
     const productoEncontrado = this.products.find(product =>
       product.nom_prod.toLowerCase().includes(nombreBuscado)
     );
-
     if (productoEncontrado) {
-      this.openModal(productoEncontrado);
+      this.mostrarProductoNoEncontrado = false;
+      this.products = [productoEncontrado];
     } else {
       this.mostrarProductoNoEncontrado = true;
-      setTimeout(() => {
-        this.mostrarProductoNoEncontrado = false;
-      }, 3000); 
+      this.products = [];
     }
-
-    this.busqueda = '';
   }
 }

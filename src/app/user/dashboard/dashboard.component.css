@@ -88,37 +88,59 @@
   justify-content: center;
 }
 
+/* Botones: tamaño y estilo uniforme */
 button {
-  background: linear-gradient(135deg, #007bff, #0056d2);
-  color: #fff;
-  padding: 0.6rem 1.2rem;
-  border: none;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
   border-radius: 25px;
   font-weight: 600;
-  font-size: 1rem;
   cursor: pointer;
+  border: none;
+  color: white;
   transition: background 0.3s ease, transform 0.2s ease;
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
 }
 
 button:hover {
-  background: linear-gradient(135deg, #0056d2, #003ea6);
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
+/* Botón comprar (verde) */
 .button-buy {
   background: linear-gradient(135deg, #28a745, #218838);
-  color: #fff;
-  padding: 0.5rem 1.2rem;
-  font-weight: bold;
-  font-size: 0.95rem;
-  border-radius: 20px;
-  transition: background 0.3s ease, transform 0.2s ease;
-  border: none;
 }
 
 .button-buy:hover {
   background: linear-gradient(135deg, #218838, #1e7e34);
-  transform: scale(1.05);
+}
+
+/* Botón cancelar (gris) */
+.btn-cancelar {
+  background: linear-gradient(135deg, #6c757d, #495057);
+}
+
+.btn-cancelar:hover {
+  background: linear-gradient(135deg, #495057, #343a40);
+}
+
+/* Botón eliminar (rojo) */
+.btm-delete {
+  background: linear-gradient(135deg, #dc3545, #a71d2a);
+}
+
+.btm-delete:hover {
+  background: linear-gradient(135deg, #a71d2a, #6e141a);
+}
+
+/* Botones generales (ej: buscar, añadir en modal, reservar) */
+button:not(.button-buy):not(.btn-cancelar):not(.btm-delete) {
+  background: linear-gradient(135deg, #007bff, #0056d2);
+}
+
+button:not(.button-buy):not(.btn-cancelar):not(.btm-delete):hover {
+  background: linear-gradient(135deg, #0056d2, #003ea6);
 }
 
 input[type="number"] {
@@ -171,7 +193,6 @@ input[type="number"]:focus {
   background: #eaeaea;
   border-radius: 10px;
 }
-
 
 .modal {
   position: fixed;
@@ -280,14 +301,15 @@ input[type="number"]:focus {
 }
 
 .search-container button {
-  padding: 0.5rem 1.2rem;
+  padding: 0.6rem 1.5rem;
   border: none;
-  border-radius: 20px;
+  border-radius: 25px;
   background: linear-gradient(135deg, #007bff, #0056d2);
   color: white;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease;
+  min-width: 120px;
 }
 
 .search-container button:hover {
@@ -301,4 +323,3 @@ input[type="number"]:focus {
   font-weight: bold;
   margin-top: 1rem;
 }
-

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ApiService } from '../../services/app.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class UsersComponent implements OnInit {
   users: any[] = [];
   search: any = {};
 
+  registerForm!: FormGroup;
   editForm!: FormGroup;
   deleteForm!: FormGroup;
   buscarForm!: FormGroup;
@@ -34,6 +35,17 @@ export class UsersComponent implements OnInit {
   }
 
   initForms(): void {
+    this.registerForm = this.fb.group({
+      nombre: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
+      apellido: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
+      correo: ['', [
+        Validators.required,
+        Validators.email,
+        Validators.pattern('^[a-zA-Z0-9._%+-]+@(gmail\\.com|yahoo\\.com|hotmail\\.com|ecci\\.edu\\.co)$')
+      ]],
+      contrasena: ['', [Validators.required, Validators.minLength(4)]]
+    });
+
     this.editForm = this.fb.group({
       id_user: [0],
       nombre: [''],
@@ -62,6 +74,24 @@ export class UsersComponent implements OnInit {
         this.showErrorMessage('Error al obtener los usuarios.');
       }
     });
+  }
+
+  crearUsuario(): void {
+    if (this.registerForm.valid) {
+      const { nombre, apellido, correo, contrasena } = this.registerForm.value;
+      this.api.create_user(nombre, apellido, correo, contrasena, 1).subscribe({
+        next: () => {
+          this.getUsers();
+          this.registerForm.reset();
+          this.showSuccessMessage('Usuario creado exitosamente.');
+        },
+        error: (err) => {
+          this.showErrorMessage(err.error?.msg || 'Error al registrar usuario. Inténtalo de nuevo.');
+        }
+      });
+    } else {
+      this.showErrorMessage('Por favor completa todos los campos correctamente.');
+    }
   }
 
   updateUser(): void {
