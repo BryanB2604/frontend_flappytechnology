@@ -11,10 +11,10 @@
 <div *ngIf="selectedFilter === 'crear'" class="section-form">
   <h2>Crear Stock</h2>
   <form [formGroup]="stockForm" (ngSubmit)="createStock()" class="form-group">
-    <input type="number" formControlName="fk_prod" placeholder="ID Producto" min="1" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
-    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
-    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
-    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
+    <input type="number" formControlName="fk_prod" placeholder="ID Producto" min="1" maxlength="8" oninput="this.value=this.value.slice(0,8)" required />
+    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" min="0" maxlength="8" oninput="this.value=this.value.slice(0,8)" required />
+    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" min="0" maxlength="8" oninput="this.value=this.value.slice(0,8)" required />
+    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" min="0" maxlength="8" oninput="this.value=this.value.slice(0,8)" required />
     <input type="date" formControlName="ultima_actualizacion" required />
     <input type="time" formControlName="hora_actualizacion" required />
     <button type="submit" [disabled]="stockForm.invalid">Crear</button>
@@ -31,11 +31,11 @@
 <div *ngIf="selectedFilter === 'actualizar'" class="section-form">
   <h2>Actualizar Stock</h2>
   <form [formGroup]="stockForm" (ngSubmit)="updateStock()" class="form-group">
-    <input type="number" formControlName="id" placeholder="ID" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
-    <input type="number" formControlName="fk_prod" placeholder="ID Producto" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
-    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
-    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
-    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" required min="0" maxlength="5" oninput="this.value=this.value.slice(0,5)">
+    <input type="number" formControlName="id" placeholder="ID" required min="0" maxlength="8" oninput="this.value=this.value.slice(0,8)">
+    <input type="number" formControlName="fk_prod" placeholder="ID Producto" required min="0" maxlength="8" oninput="this.value=this.value.slice(0,8)">
+    <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total" required min="0" maxlength="8" oninput="this.value=this.value.slice(0,8)">
+    <input type="number" formControlName="cantidad_disponible" placeholder="Cantidad Disponible" required min="0" maxlength="8" oninput="this.value=this.value.slice(0,8)">
+    <input type="number" formControlName="cantidad_reservada" placeholder="Cantidad Reservada" required min="0" maxlength="8" oninput="this.value=this.value.slice(0,8)">
     <input type="date" formControlName="ultima_actualizacion" placeholder="Última Actualización" required>
     <input type="time" formControlName="hora_actualizacion" placeholder="Hora de Actualización" required>
     <button type="submit" [disabled]="stockForm.invalid">Actualizar</button>
@@ -52,7 +52,7 @@
 <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
   <h2>Eliminar Stock</h2>
   <form [formGroup]="deleteForm" (ngSubmit)="deleteStock()" class="form-group">
-    <input type="number" formControlName="id" placeholder="ID del Stock a Eliminar" min="1" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
+    <input type="number" formControlName="id" placeholder="ID del Stock a Eliminar" min="1" maxlength="8" oninput="this.value=this.value.slice(0,8)" required />
     <button type="submit" [disabled]="deleteForm.invalid">Eliminar</button>
   </form>
   <div *ngIf="mensaje" class="mensaje-success">
@@ -67,7 +67,7 @@
 <div *ngIf="selectedFilter === 'buscar'" class="section-form">
   <h2>Buscar Stock</h2>
   <form [formGroup]="searchForm" (ngSubmit)="searchStock()" class="form-group">
-    <input type="number" formControlName="id" placeholder="ID del Stock a Buscar" min="1" maxlength="5" oninput="this.value=this.value.slice(0,5)" required />
+    <input type="number" formControlName="id" placeholder="ID del Stock a Buscar" min="1" maxlength="8" oninput="this.value=this.value.slice(0,8)" required />
     <button type="submit" [disabled]="searchForm.invalid">Buscar</button>
   </form>
 

@@ -67,7 +67,7 @@ export class ApiService {
   // Crear producto
   createProduct(nombre: string, descripcion: string, valor_unitario: number, proveedor: string): Observable<any> {
     const body = { nombre, descripcion, valor_unitario, proveedor };
-    return this.http.post(`${this.baseUrl}/productos/createProductoConStock`, body);
+    return this.http.post(`${this.baseUrl}/productos/createProducto`, body);
   }
 
   // Actualizar producto
@@ -86,16 +86,16 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/productos/getallProductosToFront`);
   }
 
-  // Crear producto
+  // Crear producto con stock
   createProductSocket(nombre: string, descripcion: string, valor_unitario: number, proveedor: string, img: string, cantidad_total: number, cantidad_disponible: number, cantidad_reservada: number, ultima_actualizacion: string, hora_actualizacion: string): Observable<any> {
     const body = { nombre, descripcion, valor_unitario, proveedor, img, cantidad_total, cantidad_disponible, cantidad_reservada, ultima_actualizacion, hora_actualizacion };
     return this.http.post(`${this.baseUrl}/productos/createProductoConStock`, body);
   }
 
-  // Actualizar producto
-  updateProductSocket(id_prod: number,nombre: string, descripcion: string, valor_unitario: number, proveedor: string, img: string, cantidad_total: number, id_stock:number): Observable<any> {
-    const body = {id_prod, nombre, descripcion, valor_unitario, proveedor, img, cantidad_total, id_stock};
-    return this.http.put(`${this.baseUrl}/productos/updateProductoById/${id_stock}`, body);
+  // Actualizar producto con Stock
+  updateProductSocket(id_prod: number,nombre: string, descripcion: string, valor_unitario: number, proveedor: string, img: string, id_stock:number, cantidad_total: number): Observable<any> {
+    const body = {id_prod, nombre, descripcion, valor_unitario, proveedor, img, id_stock, cantidad_total};
+    return this.http.put(`${this.baseUrl}/productos/updateProductoConStock`, body);
   }
   
   // Obtener todos las ventas
