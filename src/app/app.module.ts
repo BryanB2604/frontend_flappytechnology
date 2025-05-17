@@ -19,7 +19,6 @@ import { ProductsComponent } from './core/products/products.component';
 import { UsersComponent } from './core/users/users.component';
 import { SalesComponent } from './core/sales/sales.component';
 import { GeneralComponent } from './core/general/general.component';
-import { NavAdminComponent } from './core/nav-admin/nav-admin.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 @NgModule({
@@ -37,7 +36,6 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     UsersComponent,
     SalesComponent,
     GeneralComponent,
-    NavAdminComponent,
     ResetPasswordComponent
   ],
   imports: [

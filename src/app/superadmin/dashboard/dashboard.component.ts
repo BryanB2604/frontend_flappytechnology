@@ -8,9 +8,9 @@ import { Component } from '@angular/core';
 })
 export class DashboardSuperAdminComponent {
 
-  vistaSeleccionada: 'productos' | 'ventas' | 'usuarios' | 'socket' | 'general' = 'productos';
+  vistaSeleccionada: 'ventas' | 'usuarios' | 'general' = 'general';
 
-  seleccionarVista(vista: 'productos' | 'ventas' | 'usuarios' | 'socket' | 'general'): void {
+  seleccionarVista(vista: 'ventas' | 'usuarios' | 'general' ): void {
     this.vistaSeleccionada = vista;
   }
   
