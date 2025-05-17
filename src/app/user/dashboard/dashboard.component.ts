@@ -21,6 +21,9 @@ export class DashboardUserComponent implements OnInit {
   codigoCompra: string | null = null;
   mostrarCarrito = false;
 
+  timeoutModal: any;
+  timeoutCodigoCompra: any;
+
   constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit() {
@@ -44,11 +47,30 @@ export class DashboardUserComponent implements OnInit {
     this.selectedProduct = product;
     this.cantidadElegida = 1;
     this.showModal = true;
+    this.clearTimeoutModal();
+    this.timeoutModal = setTimeout(() => {
+      this.closeModal();
+    }, 5 * 60 * 1000); // 5 minutos
   }
 
   closeModal() {
     this.selectedProduct = null;
     this.showModal = false;
+    this.clearTimeoutModal();
+  }
+
+  clearTimeoutModal() {
+    if (this.timeoutModal) {
+      clearTimeout(this.timeoutModal);
+      this.timeoutModal = null;
+    }
+  }
+
+  clearTimeoutCodigoCompra() {
+    if (this.timeoutCodigoCompra) {
+      clearTimeout(this.timeoutCodigoCompra);
+      this.timeoutCodigoCompra = null;
+    }
   }
 
   validarCantidadModal() {
@@ -133,6 +155,12 @@ export class DashboardUserComponent implements OnInit {
           this.carrito = [];
           this.mostrarCarrito = false;
           this.getProduct();
+
+          this.clearTimeoutCodigoCompra();
+          this.timeoutCodigoCompra = setTimeout(() => {
+            this.codigoCompra = null;
+            alert('Tiempo de reserva agotado. El código ha expirado.');
+          }, 5 * 60 * 1000); // 5 minutos
         } else {
           alert('Error inesperado en la respuesta del servidor.');
         }
@@ -154,6 +182,7 @@ export class DashboardUserComponent implements OnInit {
         if (res.code === 200) {
           alert('Compra confirmada con éxito.');
           this.codigoCompra = null;
+          this.clearTimeoutCodigoCompra();
           this.getProduct();
         } else {
           alert('No se pudo confirmar la compra.');
@@ -168,25 +197,31 @@ export class DashboardUserComponent implements OnInit {
 
   cancelarCompra() {
     if (!this.codigoCompra) {
-      alert('No hay código de compra disponible.');
       return;
     }
-    if (confirm('¿Estás seguro de cancelar la compra?')) {
-      this.api.cancelarReserve(this.codigoCompra).subscribe({
-        next: (res) => {
-          if (res.code === 200) {
-            alert('Compra cancelada con éxito.');
-            this.codigoCompra = null;
-            this.getProduct();
-          } else {
-            alert('No se pudo cancelar la compra.');
-          }
-        },
-        error: (err) => {
-          alert('Error al cancelar la compra.');
-          console.error(err);
+    this.api.cancelarReserve(this.codigoCompra).subscribe({
+      next: (res) => {
+        if (res.code === 200) {
+          alert('Compra cancelada automáticamente.');
+          this.codigoCompra = null;
+          this.clearTimeoutCodigoCompra();
+          this.getProduct();
+          this.verificarCarritoVacioTrasCancelar();
+        } else {
+          alert('No se pudo cancelar la compra.');
         }
-      });
+      },
+      error: (err) => {
+        alert('Error al cancelar la compra.');
+        console.error(err);
+      }
+    });
+  }
+
+  verificarCarritoVacioTrasCancelar() {
+    if (this.carrito.length === 0 && !this.codigoCompra) {
+      alert('Se agotó el tiempo para reservar el producto.');
+      this.cerrarCarrito();
     }
   }
 

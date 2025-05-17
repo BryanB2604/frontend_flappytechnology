@@ -42,6 +42,13 @@
 
           <button type="submit" class="update-btn">Actualizar</button>
         </form>
+          <div *ngIf="mensaje" class="mensaje-success">
+            {{ mensaje }}
+          </div>
+
+          <div *ngIf="error" class="mensaje-error">
+            {{ error }}
+          </div>
       </div>
 
       <!-- <div *ngIf="mostrarEliminar" class="form-container">

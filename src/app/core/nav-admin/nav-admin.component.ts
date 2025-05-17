@@ -125,6 +125,16 @@ export class NavAdminComponent implements OnInit {
       return;
     }
 
+    // Validar contraseña solo si se ingresó alguna
+    const password = form.contrasena || '';
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$/;
+
+    if (password.length > 0 && !passwordRegex.test(password)) {
+      this.error = 'La contraseña debe tener al menos 6 caracteres, una mayúscula y un carácter especial.';
+      this.mensaje = '';
+      return;
+    }
+
     if (confirm('¿Estás seguro de actualizar este usuario?')) {
       this.api.updateUser(
         form.id_user,
@@ -137,7 +147,7 @@ export class NavAdminComponent implements OnInit {
         next: () => {
           this.getUsers();
           this.editForm.reset();
-          this.mostrarActualizar = false; // ✅ Cierra el formulario al actualizar
+          this.mostrarActualizar = false;
           this.error = '';
           this.mensaje = 'Usuario actualizado correctamente.';
         },
