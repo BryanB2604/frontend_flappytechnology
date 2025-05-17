@@ -26,13 +26,23 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   resetearContrasena() {
+    const pattern = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$/;
+
     if (!this.nuevaContrasena || !this.confirmarContrasena) {
       this.error = 'Por favor llena todos los campos.';
+      this.mensaje = '';
+      return;
+    }
+
+    if (!pattern.test(this.nuevaContrasena)) {
+      this.error = 'La nueva contraseña debe tener al menos 6 caracteres, una mayúscula y un carácter especial.';
+      this.mensaje = '';
       return;
     }
 
     if (this.nuevaContrasena !== this.confirmarContrasena) {
       this.error = 'Las contraseñas no coinciden.';
+      this.mensaje = '';
       return;
     }
 
