@@ -1,81 +1,157 @@
-.container{
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+.container {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 img.fondo {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: -1;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
 }
 
 .titulo {
-    color: var(--Dark_Gray);
+  color: var(--Dark_Gray);
 }
+
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 .login-card {
-    background: var(--Light_Gray);
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    text-align: center;
-    width: 320px;
+  background: var(--Light_Gray);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 320px;
 }
 
 .login-card .logo {
-    width: 100%;
-    margin-bottom: 1%;
+  width: 100%;
+  margin-bottom: 1%;
 }
 
 .login-card input {
-    width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    border: 1px solid var(--Dark-Blue);
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--Dark-Blue);
 }
 
 .login-card button {
-    width: 45%;
-    padding: 0.75rem;
-    margin: 0.2rem;
-    background-color: var(--Blue-Vivid);
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
+  width: 45%;
+  padding: 0.75rem;
+  margin: 0.2rem;
+  background-color: var(--Blue-Vivid);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
 
-/* Estilos generales */
+/* Validaciones */
 .error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  
-  input.ng-invalid.ng-touched {
-    border-color: red;
-  }
-  
-  /* Estilos generales */
-.error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  
-  input.ng-invalid.ng-touched {
-    border-color: red;
-  }
-  
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+input.ng-invalid.ng-touched {
+  border-color: red;
+}
+
+/* ========== MODAL STYLES ========== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 30px 25px;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: var(--Dark_Gray);
+}
+
+.modal-content p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--Dark-Blue);
+  transition: border-color 0.3s;
+}
+
+.modal-content input:focus {
+  outline: none;
+  border-color: var(--Blue-Vivid);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 10px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Botón verificar */
+.modal-buttons button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+.modal-buttons button:first-child:hover {
+  background-color: #218838;
+}
+
+/* Botón cancelar */
+.modal-buttons .btm-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.modal-buttons .btm-delete:hover {
+  background-color: #a71d2a;
+}

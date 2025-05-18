@@ -19,6 +19,18 @@ export class ApiService {
     });
   }
 
+  // Crear usuario y solicitar verificación
+  create_user_validacion(nombre: string, apellido: string, correo: string, contrasena: string, tipo_user: number): Observable<any> {
+    const body = { nombre, apellido, correo, contrasena, tipo_user };
+    return this.http.post<any>(`${this.baseUrl}/auth/solicitar-verificacion`, body);
+  }
+
+  create_user_configuracion(token: string, codigo: string): Observable<any> {
+    const body = { token: token.trim(), codigoIngresado: codigo.trim() };
+    console.log('BODY para enviar:', body);
+    return this.http.post<any>(`${this.baseUrl}/auth/verificar-codigo`, body);
+  }
+
   // Crear Usuario
   create_user(nombre: string, apellido: string, correo: string, contrasena: string, tipo_user: number) {
     const body = { nombre, apellido, correo, contrasena, tipo_user };

@@ -4,30 +4,27 @@
   <div class="login-container">
     <div class="login-card">
       <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo" (click)="gotHome()">
-      <h2 class="titulo">Registrarse</h2>
+      <h2 class="titulo">{{ paso === 1 ? 'Registrarse' : 'Verifica tu correo' }}</h2>
 
-      <form [formGroup]="registerForm" (ngSubmit)="crearUsuario()">
-        
+      <form *ngIf="paso === 1" [formGroup]="registerForm" (ngSubmit)="solicitarCodigo()">
         <input formControlName="nombre" type="text" placeholder="Nombre" required maxlength="30"
-          pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$" title="Solo letras, sin caracteres especiales. Máximo 30 caracteres.">
-
+          pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$">
         <input formControlName="apellido" type="text" placeholder="Apellido" required maxlength="30"
-          pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$" title="Solo letras, sin caracteres especiales. Máximo 30 caracteres.">
-
-        <!-- Correo electrónico -->
+          pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$">
         <input formControlName="correo" type="email" placeholder="Correo electrónico" required maxlength="40"
-          pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|ecci\.edu\.co)$"
-          title="El correo debe ser válido y pertenecer a los dominios: @gmail.com, @yahoo.com, @hotmail.com o @ecci.edu.co" />
-
-       <input formControlName="contrasena" type="password" placeholder="Contraseña" required
-          pattern="^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$"
-          title="Debe tener al menos 6 caracteres, una mayúscula y un carácter especial." />
-
-
-        <button type="submit" [disabled]="!registerForm.valid">Registrarse</button>
-
+          pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|ecci\.edu\.co)$">
+        <input formControlName="contrasena" type="password" placeholder="Contraseña" required
+          pattern="^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$">
+        <button type="submit" [disabled]="!registerForm.valid">Solicitar Código</button>
         <button type="button" (click)="goToLogin()">Volver al login</button>
+      </form>
 
+      <!-- Paso 2: Verificación del código -->
+      <form *ngIf="paso === 2" [formGroup]="codigoForm" (ngSubmit)="verificarCodigo()">
+        <p>Hemos enviado un código de verificación a tu correo.</p>
+        <input formControlName="codigo" type="text" placeholder="Código de verificación" maxlength="10" required>
+        <button type="submit" [disabled]="!codigoForm.valid">Verificar Código</button>
+        <button type="button" (click)="volverRegistro()">Modificar datos</button>
       </form>
 
       <div *ngIf="error" class="error-message">{{ error }}</div>

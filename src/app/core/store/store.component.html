@@ -40,7 +40,7 @@
       <div 
         class="card" 
         *ngFor="let product of productsFiltrados"
-        (click)="user && user.tipo_user === 1 ? openModal(product) : goToLogin()"
+        (click)="openModal(product)"
       >
         <div class="card_img">
           <img [src]="'productos/' + product.img + '.png'" alt="{{ product.nom_prod }}" />
@@ -50,11 +50,9 @@
           <div>${{ product.valor_unitario }}</div>
         </div>
         <div class="btn-buy" (click)="$event.stopPropagation()">
-          <button class="button-buy" *ngIf="!user || user.tipo_user !== 1" (click)="goToLogin()">Agregar al carrito</button>
-          <button class="button-buy" *ngIf="user && user.tipo_user === 1" (click)="openModal(product)">Agregar al carrito</button>
+          <button class="button-buy" (click)="openModal(product)">Agregar al carrito</button>
         </div>
       </div>
-
     </div>
   </div>
 </div>
@@ -90,7 +88,6 @@
   </div>
 </div>
 
-
 <div class="modal" *ngIf="showModal">
   <div class="modal-content">
     <h2>{{ selectedProduct?.nom_prod }}</h2>
@@ -114,7 +111,8 @@
           ¡Cantidad máxima: {{ selectedProduct.cantidad_disponible }}!
         </p>
         <div class="modal-buttons">
-          <button (click)="addToCart()">Añadir</button>
+          <button *ngIf="user && user.tipo_user === 1" (click)="addToCart()">Añadir</button>
+          <button *ngIf="!user || user.tipo_user !== 1" (click)="goToLogin()">Añadir</button>
           <button class="btm-delete" (click)="closeModal()">Cancelar</button>
         </div>
       </div>

@@ -1,16 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../services/app.service'; 
+import { ApiService } from '../../services/app.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-
-export interface User {
-  id_user: number;
-  nombre: string;
-  apellido: string;
-  correo: string;
-  contrasena: string;
-  tipo_user: number;
-}
 
 @Component({
   selector: 'app-register',
@@ -21,7 +12,11 @@ export interface User {
 export class RegisterComponent implements OnInit {
 
   registerForm!: FormGroup;
+  codigoForm!: FormGroup;
+
+  paso: number = 1;
   error: string = '';
+  token: string = '';
 
   constructor(private api: ApiService, private router: Router) {}
 
@@ -34,25 +29,69 @@ export class RegisterComponent implements OnInit {
         Validators.email,
         Validators.pattern('^[a-zA-Z0-9._%+-]+@(gmail\\.com|yahoo\\.com|hotmail\\.com|ecci\\.edu\\.co)$')
       ]),
-      contrasena: new FormControl('', [Validators.required, Validators.minLength(4)]),
+      contrasena: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$')
+      ])
+    });
+
+    this.codigoForm = new FormGroup({
+      codigo: new FormControl('', [Validators.required, Validators.maxLength(10)])
     });
   }
 
-  crearUsuario() {
-    if (this.registerForm?.valid) {
+  solicitarCodigo() {
+    if (this.registerForm.valid) {
       const { nombre, apellido, correo, contrasena } = this.registerForm.value;
-      this.api.create_user(nombre, apellido, correo, contrasena, 1).subscribe({
+      this.api.create_user_validacion(nombre, apellido, correo, contrasena, 1).subscribe({
+        next: (res) => {
+          this.token = res.data?.token?.trim() || '';
+
+          console.log('Token recibido:', this.token); 
+
+          if (this.token) {
+            this.paso = 2;
+            this.error = '';
+          } else {
+            this.error = 'No se recibió un token válido.';
+          }
+        },
+        error: (err) => {
+          console.error('Error al solicitar verificación:', err);
+          this.error = err.error?.msg || 'No se pudo enviar el código de verificación.';
+        }
+      });
+    } else {
+      this.error = 'Completa todos los campos correctamente.';
+    }
+  }
+
+  verificarCodigo() {
+    if (this.codigoForm.valid && this.token) {
+      const codigo = this.codigoForm.value.codigo.trim();
+      const token = this.token.trim();
+
+      console.log('Enviando token:', token);
+      console.log('Código ingresado:', codigo);
+
+      this.api.create_user_configuracion(token, codigo).subscribe({
         next: () => {
           this.router.navigate(['/login']);
         },
         error: (err) => {
-          console.error('Error al registrar usuario:', err);
-          this.error = err.error?.msg || 'Error al registrar usuario. Inténtalo de nuevo.';
+          console.error('Error al verificar código:', err);
+          this.error = err.error?.msg || 'Código incorrecto o expirado.';
         }
       });
     } else {
-      this.error = 'Por favor completa todos los campos correctamente.';
+      this.error = 'Código inválido.';
     }
+  }
+
+  volverRegistro() {
+    this.paso = 1;
+    this.token = '';
+    this.codigoForm.reset();
   }
 
   goToLogin() {
@@ -62,5 +101,4 @@ export class RegisterComponent implements OnInit {
   gotHome() {
     this.router.navigate(['']);
   }
-
 }
