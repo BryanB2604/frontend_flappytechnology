@@ -46,6 +46,12 @@ export class StoreComponent implements OnInit {
     const userFromStorage = localStorage.getItem('usuario');
     this.user = userFromStorage ? JSON.parse(userFromStorage) : null;
     this.getProduct();
+
+    // Cargar carrito guardado desde localStorage al iniciar
+    const carritoGuardado = localStorage.getItem('carrito');
+    if (carritoGuardado) {
+      this.carrito = JSON.parse(carritoGuardado);
+    }
   }
 
   getProductHome() {
@@ -114,7 +120,7 @@ export class StoreComponent implements OnInit {
     this.clearTimeoutModal();
     this.timeoutModal = setTimeout(() => {
       this.closeModal();
-    }, 5 * 60 * 1000);
+    }, 5 * 60 * 1000); // 5 minutos
   }
 
   closeModal() {
@@ -166,6 +172,9 @@ export class StoreComponent implements OnInit {
       };
       this.carrito.push(productoCarrito);
     }
+
+    this.guardarCarritoLocalStorage();  // Guardamos el carrito cada vez que se modifica
+
     this.closeModal();
   }
 
@@ -186,10 +195,12 @@ export class StoreComponent implements OnInit {
     } else {
       item.elegido = nuevaCantidad;
     }
+    this.guardarCarritoLocalStorage();  // Guardamos el carrito al actualizar cantidad
   }
 
   removeFromCart(index: number) {
     this.carrito.splice(index, 1);
+    this.guardarCarritoLocalStorage();  // Guardamos el carrito al eliminar un producto
   }
 
   reservar() {
@@ -202,13 +213,13 @@ export class StoreComponent implements OnInit {
       next: (res: any) => {
         if (res.code === 200 && res.data?.cod_compra) {
           this.codigoCompra = res.data.cod_compra;
-          this.carrito = [];
+          // NO vaciamos el carrito aquí para mantenerlo hasta confirmar
           this.mostrarCarrito = false;
           this.getProduct();
           this.clearTimeoutCodigoCompra();
           this.timeoutCodigoCompra = setTimeout(() => {
             this.codigoCompra = null;
-          }, 5 * 60 * 1000);
+          }, 5 * 60 * 1000); // 5 minutos
         }
       },
       error: (err) => {}
@@ -222,6 +233,8 @@ export class StoreComponent implements OnInit {
         if (res.code === 200) {
           this.codigoCompra = null;
           this.clearTimeoutCodigoCompra();
+          this.carrito = [];  // Solo borramos carrito al confirmar compra
+          localStorage.removeItem('carrito'); // Limpiamos localStorage
           this.getProduct();
         }
       },
@@ -237,17 +250,11 @@ export class StoreComponent implements OnInit {
           this.codigoCompra = null;
           this.clearTimeoutCodigoCompra();
           this.getProduct();
-          this.verificarCarritoVacioTrasCancelar();
+          // NO vaciamos el carrito para que el usuario pueda modificar y reservar de nuevo
         }
       },
       error: (err) => {}
     });
-  }
-
-  verificarCarritoVacioTrasCancelar() {
-    if (this.carrito.length === 0 && !this.codigoCompra) {
-      this.cerrarCarrito();
-    }
   }
 
   cerrarCarrito() {
@@ -257,5 +264,9 @@ export class StoreComponent implements OnInit {
   isReservaValida(): boolean {
     if (this.carrito.length === 0) return false;
     return this.carrito.every(item => item.elegido >= 1 && item.elegido <= item.cantidad_disponible);
+  }
+
+  guardarCarritoLocalStorage() {
+    localStorage.setItem('carrito', JSON.stringify(this.carrito));
   }
 }

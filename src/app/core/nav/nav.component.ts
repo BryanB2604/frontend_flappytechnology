@@ -164,7 +164,8 @@ export class NavComponent implements OnInit {
   }
 
   cerrarSesion(): void {
-    localStorage.removeItem('usuario');
+    localStorage.removeItem('usuario');  
+    localStorage.removeItem('carrito');  
     this.usuario = null;
     this.mostrarInfo = false;
     this.mostrarActualizar = false;

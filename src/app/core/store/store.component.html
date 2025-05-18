@@ -37,7 +37,11 @@
         <i *ngIf="user && user.tipo_user === 1" class="fa-solid fa-cart-shopping" (click)="toggleCarrito()"></i>
       </div>
 
-      <div class="card" *ngFor="let product of productsFiltrados">
+      <div 
+        class="card" 
+        *ngFor="let product of productsFiltrados"
+        (click)="user && user.tipo_user === 1 ? openModal(product) : goToLogin()"
+      >
         <div class="card_img">
           <img [src]="'productos/' + product.img + '.png'" alt="{{ product.nom_prod }}" />
         </div>
@@ -45,11 +49,12 @@
           <div>{{ product.nom_prod }}</div>
           <div>${{ product.valor_unitario }}</div>
         </div>
-        <div class="btn-buy">
+        <div class="btn-buy" (click)="$event.stopPropagation()">
           <button class="button-buy" *ngIf="!user || user.tipo_user !== 1" (click)="goToLogin()">Agregar al carrito</button>
           <button class="button-buy" *ngIf="user && user.tipo_user === 1" (click)="openModal(product)">Agregar al carrito</button>
         </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -88,13 +93,12 @@
 
 <div class="modal" *ngIf="showModal">
   <div class="modal-content">
-    <h2>Agregar al carrito</h2>
+    <h2>{{ selectedProduct?.nom_prod }}</h2>
     <div class="modal-body">
       <div class="modal-img-container">
         <img [src]="'productos/' + selectedProduct?.img + '.png'" alt="{{ selectedProduct?.nom_prod }}" class="modal-img" />
       </div>
       <div class="modal-info">
-        <p><strong>Producto:</strong> {{ selectedProduct?.nom_prod }}</p>
         <p><strong>Descripción:</strong> {{ selectedProduct?.descripcion }}</p>
         <label for="cantidad">Cantidad:</label>
         <input
