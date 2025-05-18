@@ -24,10 +24,14 @@
       <h3>Recuperar contraseña</h3>
       <input type="email" [(ngModel)]="correoRecuperacion" placeholder="Ingresa tu correo" name="correoRecuperacion" />
       <button (click)="enviarRecuperacion()">Enviar</button>
-      <button class="cerrar" (click)="mostrarModalRecuperacion = false">Cerrar</button>
+      <button class="cerrar" (click)="cerrarModalRecuperacion()">Cerrar</button>
 
       <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
       <div class="error" *ngIf="errorRecuperacion">{{ errorRecuperacion }}</div>
     </div>
+  </div>
+
+  <div class="toast-notificacion" *ngIf="mostrarNotificacion">
+    {{ notificacion }}
   </div>
 </div>

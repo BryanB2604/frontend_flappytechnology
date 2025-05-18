@@ -47,7 +47,7 @@ export class RegisterComponent implements OnInit {
         next: (res) => {
           this.token = res.data?.token?.trim() || '';
 
-          console.log('Token recibido:', this.token); 
+          console.log('Token recibido:', this.token);
 
           if (this.token) {
             this.paso = 2;
@@ -100,5 +100,13 @@ export class RegisterComponent implements OnInit {
 
   gotHome() {
     this.router.navigate(['']);
+  }
+
+  cancelarRegistro() {
+    this.token = '';
+    this.registerForm.reset();
+    this.codigoForm.reset();
+    this.paso = 1;
+    this.error = '';
   }
 }

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   selector: 'app-login',
   standalone: false,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css'] 
 })
 export class LoginComponent {
 
@@ -18,6 +18,10 @@ export class LoginComponent {
   correoRecuperacion: string = '';
   mensaje: string = '';
   errorRecuperacion: string = '';
+
+  // Para notificación toast
+  notificacion: string = '';
+  mostrarNotificacion: boolean = false;
 
   constructor(private api: ApiService, private router: Router) {}
 
@@ -62,18 +66,47 @@ export class LoginComponent {
   enviarRecuperacion() {
     if (!this.correoRecuperacion) {
       this.errorRecuperacion = 'Por favor ingresa tu correo.';
+      setTimeout(() => {
+        this.errorRecuperacion = '';
+      }, 5000);
       return;
     }
 
     this.api.solicitarRecuperacion({ email: this.correoRecuperacion }).subscribe({
       next: (res) => {
-        this.mensaje = res.msg;
+        // Mostrar mensaje dentro del modal
+        this.mensaje = 'Se ha enviado el link para recuperar la contraseña a tu correo.';
         this.errorRecuperacion = '';
+
+        // Mostrar notificación toast fuera del modal
+        this.mostrarToast('Se ha enviado el link para recuperar la contraseña a tu correo.');
+
+        // Cerrar modal después de mostrar la notificación (opcional)
+        this.cerrarModalRecuperacion();
       },
       error: () => {
         this.errorRecuperacion = 'No se pudo enviar el correo. Intenta nuevamente.';
         this.mensaje = '';
+        setTimeout(() => {
+          this.errorRecuperacion = '';
+        }, 5000);
       }
     });
+  }
+
+  cerrarModalRecuperacion() {
+    this.mostrarModalRecuperacion = false;
+    this.mensaje = '';
+    this.errorRecuperacion = '';
+    this.correoRecuperacion = '';
+  }
+
+  mostrarToast(mensaje: string) {
+    this.notificacion = mensaje;
+    this.mostrarNotificacion = true;
+    setTimeout(() => {
+      this.mostrarNotificacion = false;
+      this.notificacion = '';
+    }, 5000);
   }
 }
