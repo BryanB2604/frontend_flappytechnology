@@ -18,16 +18,17 @@ export interface Product {
   styleUrls: ['./store.component.css']
 })
 export class StoreComponent implements OnInit {
-
-  // Variables de HomeComponent
   productsHome: Product[] = [];
-
-  // Variables de DashboardUserComponent
   products: any[] = [];
+  productsFiltrados: any[] = [];
   carrito: any[] = [];
   user: any;
   busqueda: string = '';
   mostrarProductoNoEncontrado: boolean = false;
+
+  filtroPrecioMin: number | null = null;
+  filtroPrecioMax: number | null = null;
+  ordenAlfabetico: string = '';
 
   showModal = false;
   selectedProduct: any = null;
@@ -41,25 +42,18 @@ export class StoreComponent implements OnInit {
   constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit() {
-    // Carga de productos de HomeComponent
     this.getProductHome();
-
-    // Carga de productos y usuario de DashboardUserComponent
     const userFromStorage = localStorage.getItem('usuario');
     this.user = userFromStorage ? JSON.parse(userFromStorage) : null;
     this.getProduct();
   }
 
-  // Métodos de HomeComponent
   getProductHome() {
     this.api.getProductFront().subscribe({
       next: (res) => {
         this.productsHome = res.data;
-        console.log('Productos cargados HomeComponent:', this.productsHome);
       },
-      error: (err) => {
-        console.error('Error al obtener productos HomeComponent', err);
-      }
+      error: (err) => {}
     });
   }
 
@@ -67,17 +61,50 @@ export class StoreComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  // Métodos de DashboardUserComponent
-
   getProduct() {
     this.api.getProductFront().subscribe({
       next: (res) => {
         this.products = res.data;
+        this.productsFiltrados = [...this.products];
       },
-      error: (err) => {
-        console.error('Error al obtener productos DashboardUserComponent:', err);
-      }
+      error: (err) => {}
     });
+  }
+
+  aplicarFiltros() {
+    let resultado = [...this.products];
+
+    if (this.busqueda.trim() !== '') {
+      const nombreBuscado = this.busqueda.trim().toLowerCase();
+      resultado = resultado.filter(product =>
+        product.nom_prod.toLowerCase().includes(nombreBuscado)
+      );
+    }
+
+    if (this.filtroPrecioMin != null) {
+      resultado = resultado.filter(product =>
+        product.valor_unitario >= this.filtroPrecioMin!
+      );
+    }
+
+    if (this.filtroPrecioMax != null) {
+      resultado = resultado.filter(product =>
+        product.valor_unitario <= this.filtroPrecioMax!
+      );
+    }
+
+    if (this.ordenAlfabetico === 'asc') {
+      resultado.sort((a, b) => a.nom_prod.localeCompare(b.nom_prod));
+    } else if (this.ordenAlfabetico === 'desc') {
+      resultado.sort((a, b) => b.nom_prod.localeCompare(a.nom_prod));
+    }
+
+    this.productsFiltrados = resultado;
+    this.mostrarProductoNoEncontrado = this.productsFiltrados.length === 0;
+  }
+
+  buscarProducto() {
+    this.aplicarFiltros();
   }
 
   openModal(product: any) {
@@ -87,7 +114,7 @@ export class StoreComponent implements OnInit {
     this.clearTimeoutModal();
     this.timeoutModal = setTimeout(() => {
       this.closeModal();
-    }, 5 * 60 * 1000); // 5 minutos
+    }, 5 * 60 * 1000);
   }
 
   closeModal() {
@@ -119,10 +146,7 @@ export class StoreComponent implements OnInit {
 
   addToCart() {
     if (!this.selectedProduct) return;
-    if (this.cantidadElegida < 1 || this.cantidadElegida > this.selectedProduct.cantidad_disponible) {
-      alert(`Cantidad inválida. Disponible: ${this.selectedProduct.cantidad_disponible}`);
-      return;
-    }
+    if (this.cantidadElegida < 1 || this.cantidadElegida > this.selectedProduct.cantidad_disponible) return;
     const index = this.carrito.findIndex(item =>
       item.id_prod === this.selectedProduct.id_prod &&
       item.id_stock === this.selectedProduct.id_stock
@@ -158,7 +182,6 @@ export class StoreComponent implements OnInit {
     if (nuevaCantidad < 1) {
       item.elegido = 1;
     } else if (nuevaCantidad > item.cantidad_disponible) {
-      alert(`No puedes seleccionar más de ${item.cantidad_disponible} unidades de "${item.nom_prod}"`);
       item.elegido = item.cantidad_disponible;
     } else {
       item.elegido = nuevaCantidad;
@@ -170,94 +193,59 @@ export class StoreComponent implements OnInit {
   }
 
   reservar() {
-    if (this.carrito.length === 0) {
-      alert('El carrito está vacío.');
-      return;
-    }
+    if (this.carrito.length === 0) return;
     for (let item of this.carrito) {
-      if (item.elegido > item.cantidad_disponible) {
-        alert(`La cantidad seleccionada para el producto "${item.nom_prod}" supera el stock disponible (${item.cantidad_disponible}).`);
-        return;
-      }
-      if (item.elegido < 1) {
-        alert(`La cantidad seleccionada para el producto "${item.nom_prod}" no puede ser menor a 1.`);
-        return;
-      }
+      if (item.elegido > item.cantidad_disponible) return;
+      if (item.elegido < 1) return;
     }
     this.api.postReserva(this.carrito).subscribe({
       next: (res: any) => {
         if (res.code === 200 && res.data?.cod_compra) {
           this.codigoCompra = res.data.cod_compra;
-          alert(`Productos reservados correctamente. Código de compra: ${this.codigoCompra}`);
           this.carrito = [];
           this.mostrarCarrito = false;
           this.getProduct();
-
           this.clearTimeoutCodigoCompra();
           this.timeoutCodigoCompra = setTimeout(() => {
             this.codigoCompra = null;
-            alert('Tiempo de reserva agotado. El código ha expirado.');
-          }, 5 * 60 * 1000); // 5 minutos
-        } else {
-          alert('Error inesperado en la respuesta del servidor.');
+          }, 5 * 60 * 1000);
         }
       },
-      error: (err) => {
-        alert('Error al reservar productos.');
-        console.error(err);
-      }
+      error: (err) => {}
     });
   }
 
   confirmarCompra() {
-    if (!this.codigoCompra) {
-      alert('No hay código de compra disponible.');
-      return;
-    }
+    if (!this.codigoCompra) return;
     this.api.confirmReserve(this.codigoCompra).subscribe({
       next: (res) => {
         if (res.code === 200) {
-          alert('Compra confirmada con éxito.');
           this.codigoCompra = null;
           this.clearTimeoutCodigoCompra();
           this.getProduct();
-        } else {
-          alert('No se pudo confirmar la compra.');
         }
       },
-      error: (err) => {
-        alert('Error al confirmar la compra.');
-        console.error(err);
-      }
+      error: (err) => {}
     });
   }
 
   cancelarCompra() {
-    if (!this.codigoCompra) {
-      return;
-    }
+    if (!this.codigoCompra) return;
     this.api.cancelarReserve(this.codigoCompra).subscribe({
       next: (res) => {
         if (res.code === 200) {
-          alert('Compra cancelada automáticamente.');
           this.codigoCompra = null;
           this.clearTimeoutCodigoCompra();
           this.getProduct();
           this.verificarCarritoVacioTrasCancelar();
-        } else {
-          alert('No se pudo cancelar la compra.');
         }
       },
-      error: (err) => {
-        alert('Error al cancelar la compra.');
-        console.error(err);
-      }
+      error: (err) => {}
     });
   }
 
   verificarCarritoVacioTrasCancelar() {
     if (this.carrito.length === 0 && !this.codigoCompra) {
-      alert('Se agotó el tiempo para reservar el producto.');
       this.cerrarCarrito();
     }
   }
@@ -269,23 +257,5 @@ export class StoreComponent implements OnInit {
   isReservaValida(): boolean {
     if (this.carrito.length === 0) return false;
     return this.carrito.every(item => item.elegido >= 1 && item.elegido <= item.cantidad_disponible);
-  }
-
-  buscarProducto() {
-    const nombreBuscado = this.busqueda.trim().toLowerCase();
-    if (!nombreBuscado) {
-      alert('Ingresa un nombre para buscar.');
-      return;
-    }
-    const productoEncontrado = this.products.find(product =>
-      product.nom_prod.toLowerCase().includes(nombreBuscado)
-    );
-    if (productoEncontrado) {
-      this.mostrarProductoNoEncontrado = false;
-      this.products = [productoEncontrado];
-    } else {
-      this.mostrarProductoNoEncontrado = true;
-      this.products = [];
-    }
   }
 }
