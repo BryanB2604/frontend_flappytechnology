@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { ApiService } from '../../services/app.service';
 
 @Component({
@@ -10,15 +11,14 @@ import { ApiService } from '../../services/app.service';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-
   usuario: any = null;
   mostrarInfo = false;
   mostrarActualizar = false;
   users: any[] = [];
-
   editForm!: FormGroup;
   mensaje = '';
   error = '';
+  rutaActualEsHomeOQuienes = false;
 
   constructor(
     private api: ApiService,
@@ -33,6 +33,25 @@ export class NavComponent implements OnInit {
       this.getUsers();
       this.initForms();
     }
+
+    const urlActual = this.router.url;
+    this.setRuta(urlActual);
+
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        const url = event.urlAfterRedirects || event.url;
+        this.setRuta(url);
+      });
+  }
+
+  setRuta(url: string): void {
+    this.rutaActualEsHomeOQuienes =
+      url === '/' ||
+      url === '/user' ||
+      url.startsWith('/user') ||
+      url === '/quienes-somos' ||
+      url === '/tienda';
   }
 
   verificarUsuario(): void {
@@ -71,10 +90,21 @@ export class NavComponent implements OnInit {
   initForms(): void {
     this.editForm = this.fb.group({
       id_user: [{ value: 0, disabled: true }],
-      nombre: ['', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$/)]],
-      apellido: ['', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$/)]],
+      nombre: ['', [
+        Validators.required,
+        Validators.maxLength(30),
+        Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$/)
+      ]],
+      apellido: ['', [
+        Validators.required,
+        Validators.maxLength(30),
+        Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$/)
+      ]],
       correo: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-      contrasena: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$/)]]
+      contrasena: ['', [
+        Validators.required,
+        Validators.pattern(/^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$/)
+      ]]
     });
   }
 
@@ -112,12 +142,10 @@ export class NavComponent implements OnInit {
         this.usuario.tipo_user
       ).subscribe({
         next: () => {
-          // Actualizar variable local y localStorage con los nuevos datos
           this.usuario = {
             ...this.usuario,
             nombre: form.nombre,
             apellido: form.apellido,
-            // correo no cambia porque está deshabilitado
           };
           localStorage.setItem('usuario', JSON.stringify(this.usuario));
 
@@ -142,5 +170,4 @@ export class NavComponent implements OnInit {
     this.mostrarActualizar = false;
     this.router.navigate(['/login']);
   }
-
 }

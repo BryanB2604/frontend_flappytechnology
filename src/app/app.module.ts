@@ -20,6 +20,10 @@ import { UsersComponent } from './core/users/users.component';
 import { SalesComponent } from './core/sales/sales.component';
 import { GeneralComponent } from './core/general/general.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { FooterComponent } from './core/footer/footer.component';
+import { WhoareweComponent } from './core/whoarewe/whoarewe.component';
+import { StoreComponent } from './core/store/store.component';
+import { BeginComponent } from './core/begin/begin.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +40,11 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     UsersComponent,
     SalesComponent,
     GeneralComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    FooterComponent,
+    WhoareweComponent,
+    StoreComponent,
+    BeginComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +55,7 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     CommonModule
   ],
   providers: [
-    provideHttpClient(withInterceptorsFromDi()) // ✅ Recomendado en Angular 17+
+    provideHttpClient(withInterceptorsFromDi()) 
   ],
   bootstrap: [AppComponent]
 })

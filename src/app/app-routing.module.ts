@@ -9,15 +9,20 @@ import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { DashboardSuperAdminComponent } from './superadmin/dashboard/dashboard.component';
 import { DashboardUserComponent } from './user/dashboard/dashboard.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { WhoareweComponent } from './core/whoarewe/whoarewe.component';
+import { StoreComponent } from './core/store/store.component';
+import { BeginComponent } from './core/begin/begin.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: BeginComponent },
   { path: 'login', component: LoginComponent }, 
   { path: 'register', component: RegisterComponent }, 
   { path: 'admin', component: DashboardComponent }, 
   { path: 'superadmin', component: DashboardSuperAdminComponent }, 
   { path: 'user', component: DashboardUserComponent },
-  { path: 'reset-password', component: ResetPasswordComponent }
+  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'quienes-somos', component: WhoareweComponent },
+  { path: 'tienda', component: StoreComponent }
 ];
 
 @NgModule({

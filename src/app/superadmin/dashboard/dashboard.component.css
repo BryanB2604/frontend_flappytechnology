@@ -3,7 +3,6 @@
     font-size:calc(var(--font-size) + 100%);
     justify-content: space-around;
     font-weight: 600;
-    margin: 0;
     padding: 0;
     background: var(--Blue-Vivid);
   }

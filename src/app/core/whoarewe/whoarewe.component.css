@@ -1,0 +1,53 @@
+.container {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+img.fondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.quienes-container {
+    max-width: 800px;
+    margin: 8% 0 2% 0;
+    padding: 2%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    color: #1f2937;
+    font-family: "Inter", sans-serif;
+    z-index: 1;
+}
+
+.quienes-container h1 {
+  color: #111827;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.quienes-container h2 {
+  color: #2563eb;
+  font-size: 1.4rem;
+  margin-top: 2rem;
+}
+
+.quienes-container p,
+.quienes-container li {
+  line-height: 1.7;
+  margin-bottom: 0.8rem;
+}
+
+.quienes-container ul {
+  padding-left: 1.5rem;
+}

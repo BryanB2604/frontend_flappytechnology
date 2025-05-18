@@ -5,7 +5,12 @@
   background-color: #003366;
   padding: 10px 20px;
   color: white;
-  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 7%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .logo_nav {
@@ -93,4 +98,28 @@ input {
   margin-top: 10px;
   color: red;
   font-weight: bold;
+}
+
+.link{
+  color: white;
+  text-decoration: none;
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s;
+}
+
+.link:hover{
+  color: #cbd5e1;
+}
+
+.section-filter{
+  display: flex;
+}
+
+.section-filter div{
+  display: flex;
 }

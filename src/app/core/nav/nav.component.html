@@ -1,6 +1,20 @@
 <nav class="nav">
-  <div routerLink="">
+  <div>
     <img src="logo/logo_white.png" alt="logo" class="logo_nav" />
+  </div>
+
+  <div class="section-filter">
+     <div *ngIf="rutaActualEsHomeOQuienes" routerLink="" class="link">
+      Inicio
+    </div>
+
+    <div *ngIf="rutaActualEsHomeOQuienes" routerLink="/quienes-somos" class="link">
+      Nosotros
+    </div>
+
+    <div *ngIf="rutaActualEsHomeOQuienes" routerLink="/tienda" class="link">
+      Tienda
+    </div>
   </div>
 
   <div class="user-icon-container">
@@ -30,7 +44,7 @@
 
           <input formControlName="apellido" type="text" placeholder="Apellido" />
           <div *ngIf="editForm.get('apellido')?.touched && editForm.get('apellido')?.invalid" class="mensaje-error">
-            Apellido inválido. Debe tener entre letras.
+            Apellido inválido. Debe tener letras.
           </div>
 
           <input formControlName="correo" type="email" placeholder="Correo electrónico" readonly />

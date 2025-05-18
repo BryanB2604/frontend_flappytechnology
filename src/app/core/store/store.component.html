@@ -1,0 +1,142 @@
+<div class="container">
+  <div class="header">
+    <div class="title">Productos</div>
+
+    <div *ngIf="user && user.tipo_user === 1" class="search-container">
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (keyup.enter)="buscarProducto()"
+        placeholder="Buscar producto por nombre"
+      />
+      <button (click)="buscarProducto()">Buscar</button>
+    </div>
+
+    <div *ngIf="user && user.tipo_user === 1 && mostrarProductoNoEncontrado" class="alerta-no-encontrado">
+      Producto no encontrado.
+    </div>
+
+    <i
+      *ngIf="user && user.tipo_user === 1"
+      class="fa-solid fa-cart-shopping"
+      (click)="toggleCarrito()"
+      style="cursor:pointer"
+    ></i>
+  </div>
+
+  <div class="product">
+    <div class="card" *ngFor="let product of products">
+      <div class="card_img">
+        <img [src]="'productos/' + product.img + '.png'" alt="{{ product.nom_prod }}" />
+      </div>
+      <div class="card_info">
+        <div>{{ product.nom_prod }}</div>
+        <div>${{ product.valor_unitario }}</div>
+      </div>
+
+      <div class="btn-buy">
+        <button
+          class="button-buy"
+          *ngIf="!user || user.tipo_user !== 1"
+          (click)="goToLogin()"
+        >
+          Agregar al carrito
+        </button>
+
+        <button
+          class="button-buy"
+          *ngIf="user && user.tipo_user === 1"
+          (click)="openModal(product)"
+        >
+          Agregar al carrito
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="showModal && user && user.tipo_user === 1">
+  <div class="modal-content">
+    <h2>Agregar al carrito</h2>
+    <div class="modal-body">
+      <div class="modal-img-container">
+        <img
+          [src]="'productos/' + selectedProduct?.img + '.png'"
+          alt="{{ selectedProduct?.nom_prod }}"
+          class="modal-img"
+        />
+      </div>
+      <div class="modal-info">
+        <p><strong>Producto:</strong> {{ selectedProduct?.nom_prod }}</p>
+        <p><strong>Descripción:</strong> {{ selectedProduct?.descripcion }}</p>
+
+        <label for="cantidad">Cantidad:</label>
+        <input
+          id="cantidad"
+          type="number"
+          [(ngModel)]="cantidadElegida"
+          [min]="1"
+          [max]="selectedProduct?.cantidad_disponible"
+          maxlength="3"
+          (change)="validarCantidadModal()"
+          oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)"
+        />
+
+        <p *ngIf="cantidadElegida > selectedProduct?.cantidad_disponible" class="error-message">
+          ¡Cantidad máxima: {{ selectedProduct.cantidad_disponible }}!
+        </p>
+
+        <div class="modal-buttons">
+          <button (click)="addToCart()">Añadir</button>
+          <button class="btm-delete" (click)="closeModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="carrito-overlay" *ngIf="mostrarCarrito && user && user.tipo_user === 1">
+  <div class="carrito-modal">
+    <button class="btm-delete" (click)="cerrarCarrito()">×</button>
+
+    <h3>Carrito de compras</h3>
+
+    <div *ngFor="let item of carrito; let i = index" class="carrito-item">
+      <p><strong>{{ item.nom_prod }}</strong></p>
+      <p>Precio unitario: ${{ item.valor_unitario }}</p>
+
+      <label>Cantidad:</label>
+      <input
+        type="number"
+        [(ngModel)]="item.elegido"
+        [min]="1"
+        [max]="item.cantidad_disponible"
+        maxlength="3"
+        (change)="actualizarCantidad(i, item.elegido)"
+        oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)"
+      />
+
+      <p *ngIf="item.elegido > item.cantidad_disponible" class="error-message">
+        ¡Cantidad máxima: {{ item.cantidad_disponible }}!
+      </p>
+
+      <p>Subtotal: ${{ item.valor_unitario * item.elegido }}</p>
+      <button class="btm-delete" (click)="removeFromCart(i)">Eliminar</button>
+    </div>
+
+    <div class="total-section">
+      <p>Total: <strong>${{ calcularTotal() }}</strong></p>
+    </div>
+
+    <button [disabled]="!isReservaValida()" (click)="reservar()">Reservar</button>
+  </div>
+</div>
+
+<div class="confirm-reserve" *ngIf="codigoCompra && user && user.tipo_user === 1">
+  <p>Código generado: <strong>{{ codigoCompra }}</strong></p>
+  <p>¿Deseas confirmar esta Reserva?</p>
+  <button (click)="confirmarCompra()">Confirmar Reserva</button>
+  <button class="btm-delete" (click)="cancelarCompra()">Cancelar Reserva</button>
+</div>
+
+<app-footer></app-footer>
