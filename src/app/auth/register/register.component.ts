@@ -16,6 +16,7 @@ export class RegisterComponent implements OnInit {
 
   paso: number = 1;
   error: string = '';
+  mensajeExito: string = '';
   token: string = '';
 
   constructor(private api: ApiService, private router: Router) {}
@@ -46,9 +47,6 @@ export class RegisterComponent implements OnInit {
       this.api.create_user_validacion(nombre, apellido, correo, contrasena, 1).subscribe({
         next: (res) => {
           this.token = res.data?.token?.trim() || '';
-
-          console.log('Token recibido:', this.token);
-
           if (this.token) {
             this.paso = 2;
             this.error = '';
@@ -71,9 +69,6 @@ export class RegisterComponent implements OnInit {
       const codigo = this.codigoForm.value.codigo.trim();
       const token = this.token.trim();
 
-      console.log('Enviando token:', token);
-      console.log('Código ingresado:', codigo);
-
       this.api.create_user_configuracion(token, codigo).subscribe({
         next: () => {
           this.router.navigate(['/login']);
@@ -88,10 +83,32 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  reenviarCodigo() {
+    const { nombre, apellido, correo, contrasena } = this.registerForm.value;
+
+    this.api.create_user_validacion(nombre, apellido, correo, contrasena, 1).subscribe({
+      next: (res) => {
+        this.token = res.data?.token?.trim() || '';
+        this.error = '';
+        this.mensajeExito = 'Código reenviado exitosamente.';
+
+        // Mostrar mensaje solo por 3 segundos
+        setTimeout(() => {
+          this.mensajeExito = '';
+        }, 3000);
+      },
+      error: (err) => {
+        console.error('Error al reenviar código:', err);
+        this.error = err.error?.msg || 'No se pudo reenviar el código.';
+      }
+    });
+  }
+
   volverRegistro() {
     this.paso = 1;
     this.token = '';
     this.codigoForm.reset();
+    this.mensajeExito = '';
   }
 
   goToLogin() {
@@ -108,5 +125,6 @@ export class RegisterComponent implements OnInit {
     this.codigoForm.reset();
     this.paso = 1;
     this.error = '';
+    this.mensajeExito = '';
   }
 }

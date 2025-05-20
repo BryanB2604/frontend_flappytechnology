@@ -10,11 +10,13 @@
       <div class="filter-precio-orden">
         <label>
           Precio mínimo:
-          <input type="number" [(ngModel)]="filtroPrecioMin" (change)="aplicarFiltros()" />
+          <input type="number" [(ngModel)]="filtroPrecioMin" (change)="aplicarFiltros()" 
+            min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)"/>
         </label>
         <label>
           Precio máximo:
-          <input type="number" [(ngModel)]="filtroPrecioMax" (change)="aplicarFiltros()" />
+          <input type="number" [(ngModel)]="filtroPrecioMax" (change)="aplicarFiltros()" 
+            min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)"/>
         </label>
         <label>
           Ordenar por:

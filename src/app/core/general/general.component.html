@@ -76,7 +76,7 @@
       [ngClass]="{'input-error': editForm.get('descripcion')?.invalid && editForm.get('descripcion')?.touched}" />
 
     <input type="number" formControlName="valor_unitario" placeholder="Nuevo Valor Unitario"
-      min="0" max="99999999" oninput="this.value=this.value.slice(0,8)"
+      min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)"
       [ngClass]="{'input-error': editForm.get('valor_unitario')?.invalid && editForm.get('valor_unitario')?.touched}" />
     <div *ngIf="editForm.get('valor_unitario')?.invalid && editForm.get('valor_unitario')?.touched" class="mensaje-error">
       Solo números positivos (máx. 8 dígitos).
@@ -87,7 +87,7 @@
       [ngClass]="{'input-error': editForm.get('proveedor')?.invalid && editForm.get('proveedor')?.touched}" />
 
     <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total"
-      min="0" max="99999999" oninput="this.value=this.value.slice(0,8)"
+      min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)"
       [ngClass]="{'input-error': editForm.get('cantidad_total')?.invalid && editForm.get('cantidad_total')?.touched}" />
 
     <input type="text" formControlName="img" placeholder="Imagen URL"

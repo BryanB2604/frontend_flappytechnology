@@ -27,7 +27,7 @@
 
     <input type="number" formControlName="valor_unitario" placeholder="Valor Unitario"
       [ngClass]="{'input-error': createForm.get('valor_unitario')?.invalid && createForm.get('valor_unitario')?.touched}"
-      required min="0" max="99999999" oninput="this.value=this.value.slice(0,8)">
+      required min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)">
     <div *ngIf="createForm.get('valor_unitario')?.invalid && createForm.get('valor_unitario')?.touched" class="mensaje-error">
       Solo números positivos.
     </div>

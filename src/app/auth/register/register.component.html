@@ -6,6 +6,7 @@
       <img src="logo/logo.png" alt="Logo Flappy Technology" class="logo" (click)="gotHome()">
       <h2 class="titulo">{{ paso === 1 ? 'Registrarse' : 'Verifica tu correo' }}</h2>
 
+      <!-- Paso 1: Registro -->
       <form *ngIf="paso === 1" [formGroup]="registerForm" (ngSubmit)="solicitarCodigo()">
         <input formControlName="nombre" type="text" placeholder="Nombre" required maxlength="30"
           pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,30}$">
@@ -20,15 +21,21 @@
         <button type="button" (click)="cancelarRegistro()">Cancelar registro</button>
       </form>
 
+      <!-- Paso 2: Verificación -->
       <form *ngIf="paso === 2" [formGroup]="codigoForm" (ngSubmit)="verificarCodigo()">
         <p>Hemos enviado un código de verificación a tu correo.</p>
         <input formControlName="codigo" type="text" placeholder="Código de verificación" maxlength="10" required>
         <button type="submit" [disabled]="!codigoForm.valid">Verificar Código</button>
+        <button type="button" (click)="reenviarCodigo()">Reenviar código</button>
         <button type="button" (click)="volverRegistro()">Modificar datos</button>
         <button type="button" (click)="cancelarRegistro()">Cancelar registro</button>
       </form>
 
+      <!-- Mensaje de error -->
       <div *ngIf="error" class="error-message">{{ error }}</div>
+
+      <!-- Mensaje de éxito temporal -->
+      <div *ngIf="mensajeExito" class="success-message">{{ mensajeExito }}</div>
     </div>
   </div>
 </div>
