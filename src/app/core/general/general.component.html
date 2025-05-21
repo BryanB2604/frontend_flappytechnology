@@ -6,6 +6,7 @@
   </div>
 </div>
 
+<!-- Formulario Crear Producto -->
 <div *ngIf="selectedFilter === 'crear'" class="section-form">
   <h2>Crear Producto</h2>
   <form [formGroup]="createForm" (ngSubmit)="createProduct()" class="form-group">
@@ -52,13 +53,21 @@
     <input formControlName="ultima_actualizacion" type="date"
       [ngClass]="{'input-error': createForm.get('ultima_actualizacion')?.invalid && createForm.get('ultima_actualizacion')?.touched}" />
 
-    <button type="submit">Crear</button>
+    <!-- Nuevo campo img -->
+    <input formControlName="img" placeholder="URL Imagen" type="text" required
+      [ngClass]="{'input-error': createForm.get('img')?.invalid && createForm.get('img')?.touched}" />
+    <div *ngIf="createForm.get('img')?.invalid && createForm.get('img')?.touched" class="mensaje-error">
+      URL de imagen requerida.
+    </div>
+
+    <button type="submit" [disabled]="createForm.invalid">Crear</button>
   </form>
 
   <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
   <div *ngIf="error" class="mensaje-error">{{ error }}</div>
 </div>
 
+<!-- Formulario Editar Producto -->
 <div *ngIf="selectedFilter === 'editar'" class="section-form">
   <h2>Editar Producto</h2>
   <form [formGroup]="editForm" (ngSubmit)="updateProduct()" class="form-group">
@@ -97,12 +106,13 @@
       min="0" max="99999999" oninput="this.value=this.value.slice(0,8)"
       [ngClass]="{'input-error': editForm.get('id_stock')?.invalid && editForm.get('id_stock')?.touched}" />
 
-    <button type="submit">Actualizar</button>
+    <button type="submit" [disabled]="editForm.invalid">Actualizar</button>
   </form>
 
   <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
   <div *ngIf="error" class="mensaje-error">{{ error }}</div>
 </div>
+
 
 <div class="section-form">
   <h2>Productos con socket</h2>
@@ -114,6 +124,7 @@
         <th>Descripción</th>
         <th>Valor Unitario</th>
         <th>Proveedor</th>
+        <th>Img</th>
         <th>ID Stock</th>
         <th>Cantidad Disponible</th>
         <th>Cantidad Reservada</th>
@@ -128,6 +139,7 @@
         <td>{{ prod.descripcion }}</td>
         <td>{{ prod.valor_unitario | currency:'COP' }}</td>
         <td>{{ prod.proveedor }}</td>
+        <td>{{ prod.img }}</td>
         <td>{{ prod.id_stock }}</td>
         <td>{{ prod.cantidad_disponible }}</td>
         <td>{{ prod.cantidad_reservada }}</td>

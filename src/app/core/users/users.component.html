@@ -60,6 +60,20 @@
       Debe tener al menos 6 caracteres, una mayúscula y un carácter especial.
     </div>
 
+    <!-- Tipo de Usuario -->
+    <input id="tipo_user" type="number" formControlName="tipo_user" placeholder="Tipo de Usuario (1, 2 o 3)" required min="1" max="3"
+      oninput="this.value=this.value.slice(0,1)"
+      [ngClass]="{'input-error': registerForm.get('tipo_user')?.invalid && registerForm.get('tipo_user')?.touched}" />
+    <div *ngIf="registerForm.get('tipo_user')?.errors?.['required'] && registerForm.get('tipo_user')?.touched" class="mensaje-error">
+      Tipo de usuario es obligatorio (1, 2 o 3).
+    </div>
+    <div *ngIf="registerForm.get('tipo_user')?.errors?.['max'] && registerForm.get('tipo_user')?.touched" class="mensaje-error">
+      El tipo de usuario no puede ser mayor a 3.
+    </div>
+    <div *ngIf="registerForm.get('tipo_user')?.errors?.['min'] && registerForm.get('tipo_user')?.touched" class="mensaje-error">
+      El tipo de usuario no puede ser menor a 1.
+    </div>
+
     <button type="submit" [disabled]="registerForm.invalid">Registrar</button>
   </form>
 

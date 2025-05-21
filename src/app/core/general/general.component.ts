@@ -28,23 +28,24 @@ export class GeneralComponent implements OnInit {
 
   initForms(): void {
     this.createForm = this.fb.group({
-      nombre: [''],
-      descripcion: [''],
-      valor_unitario: [0],
-      proveedor: [''],
-      cantidad_disponible: [0],
-      cantidad_reservada: [0],
+      nombre: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
+      descripcion: ['', [Validators.required, Validators.maxLength(300)]],
+      valor_unitario: [0, [Validators.required, Validators.min(0), Validators.max(99999999)]],
+      proveedor: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
+      cantidad_disponible: [0, [Validators.min(0), Validators.max(99999999)]],
+      cantidad_reservada: [0, [Validators.min(0), Validators.max(99999999)]],
       hora_actualizacion: [''],
       ultima_actualizacion: [''],
+      img: ['', Validators.required]  // Agregado campo img con validación requerida
     });
 
     this.editForm = this.fb.group({
-      id_prod: [0],
-      nombre: [''],
-      descripcion: [''],
-      valor_unitario: [0],
-      proveedor: [''],
-      cantidad_total: [0],
+      id_prod: [0, Validators.required],
+      nombre: ['', Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')],
+      descripcion: ['', Validators.maxLength(300)],
+      valor_unitario: [0, [Validators.min(0), Validators.max(999999999999999)]],
+      proveedor: ['', Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')],
+      cantidad_total: [0, [Validators.min(0), Validators.max(999999999999999)]],
       img: [''],
       id_stock: [0, Validators.required],
     });
@@ -80,8 +81,8 @@ export class GeneralComponent implements OnInit {
         f.descripcion,
         f.valor_unitario,
         f.proveedor,
-        '',
-        0,
+        f.img,               // Aquí se envía el campo img
+        0,                   // cantidad_total (puedes ajustar si lo quieres pedir en createForm)
         f.cantidad_disponible,
         f.cantidad_reservada,
         f.ultima_actualizacion,
@@ -96,6 +97,8 @@ export class GeneralComponent implements OnInit {
           this.showErrorMessage(err.error.msg);
         },
       });
+    } else {
+      this.showErrorMessage('Formulario inválido. Por favor, revisa los campos.');
     }
   }
 

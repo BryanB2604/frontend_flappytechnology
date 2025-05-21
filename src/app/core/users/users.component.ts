@@ -43,7 +43,8 @@ export class UsersComponent implements OnInit {
         Validators.email,
         Validators.pattern('^[a-zA-Z0-9._%+-]+@(gmail\\.com|yahoo\\.com|hotmail\\.com|ecci\\.edu\\.co)$')
       ]],
-      contrasena: ['', [Validators.required, Validators.minLength(4)]]
+      contrasena: ['', [Validators.required, Validators.minLength(4)]],
+      tipo_user: [0]
     });
 
     this.editForm = this.fb.group({
@@ -78,8 +79,8 @@ export class UsersComponent implements OnInit {
 
   crearUsuario(): void {
     if (this.registerForm.valid) {
-      const { nombre, apellido, correo, contrasena } = this.registerForm.value;
-      this.api.create_user(nombre, apellido, correo, contrasena, 1).subscribe({
+      const { nombre, apellido, correo, contrasena, tipo_user } = this.registerForm.value;
+      this.api.create_user(nombre, apellido, correo, contrasena, tipo_user).subscribe({
         next: () => {
           this.getUsers();
           this.registerForm.reset();
