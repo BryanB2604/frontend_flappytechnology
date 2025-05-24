@@ -11,12 +11,12 @@
         <label>
           Precio mínimo:
           <input type="number" [(ngModel)]="filtroPrecioMin" (change)="aplicarFiltros()" 
-            min="0" max="9999" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4)" />
+            min="0" max="9999999999" oninput="if(this.value.length > 10) this.value = this.value.slice(0,10)" />
         </label>
         <label>
           Precio máximo:
           <input type="number" [(ngModel)]="filtroPrecioMax" (change)="aplicarFiltros()" 
-            min="0" max="9999" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4)" />
+            min="0" max="9999999999" oninput="if(this.value.length > 10) this.value = this.value.slice(0,10)" />
         </label>
         <label>
           Ordenar por:
@@ -84,7 +84,7 @@
         [min]="1"
         [max]="item.cantidad_total"
         (change)="actualizarCantidad(i, item.elegido)"
-        oninput="if(this.value.length > 4) this.value = this.value.slice(0,4)" />
+        oninput="if(this.value.length > 6) this.value = this.value.slice(0,6)" />
       <p *ngIf="item.elegido > item.cantidad_total" class="error-message">
         ¡Cantidad máxima: {{ item.cantidad_total }}!
       </p>
@@ -133,7 +133,7 @@
           [min]="1"
           [max]="selectedProduct?.cantidad_total"
           (change)="validarCantidadModal()"
-          oninput="if(this.value.length > 4) this.value = this.value.slice(0,4)" />
+          oninput="if(this.value.length > 6) this.value = this.value.slice(0,6)" />
         <p *ngIf="cantidadElegida < 1 || cantidadElegida > selectedProduct?.cantidad_total" class="error-message" style="margin-top: 8px;">
           Por favor, ingrese una cantidad válida entre 1 y {{ selectedProduct?.cantidad_total }} para añadir al carrito.
         </p>

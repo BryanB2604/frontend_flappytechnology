@@ -70,13 +70,22 @@ export class StoreComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  getProduct() {
-    this.api.getProductFront().subscribe({
-      next: (res) => {
-        this.products = res.data.filter((p: any) => p.cantidad_total > 0);
-        this.productsFiltrados = [...this.products];
-      },
-      error: (err) => {}
+  getProduct(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.api.getProductFront().subscribe({
+        next: (res) => {
+          const nuevosProductos = res.data.filter((p: any) => p.cantidad_total > 0);
+          const hayCambios = JSON.stringify(this.products) !== JSON.stringify(nuevosProductos);
+          if (hayCambios) {
+            this.products = nuevosProductos;
+            this.productsFiltrados = [...this.products];
+          }
+          resolve();
+        },
+        error: (err) => {
+          resolve(); 
+        }
+      });
     });
   }
 
@@ -231,8 +240,10 @@ export class StoreComponent implements OnInit {
     this.guardarCarritoLocalStorage();
   }
 
-  reservar() {
+  async reservar() {
     this.mensajeReservaError = null;
+
+    await this.getProduct();
 
     if (this.carrito.length === 0) {
       this.mensajeReservaError = 'El carrito está vacío. Agregue productos antes de reservar.';
@@ -253,11 +264,10 @@ export class StoreComponent implements OnInit {
         if (res.code === 200 && res.data?.cod_compra) {
           this.codigoCompra = res.data.cod_compra;
           this.mostrarCarrito = false;
-          this.getProduct();
           this.clearTimeoutCodigoCompra();
           this.timeoutCodigoCompra = setTimeout(() => {
             this.codigoCompra = null;
-          }, 5 * 60 * 1000); // 5 minutos para limpiar código de compra
+          }, 5 * 60 * 1000);
         } else {
           this.mensajeReservaError = res.msg || 'Error al realizar la reserva, intente de nuevo.';
           this.limpiarMensajeErrorDespuesDe5Segundos();
