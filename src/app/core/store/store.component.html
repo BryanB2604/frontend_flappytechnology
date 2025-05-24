@@ -122,11 +122,41 @@
   </div>
 </div>
 
-<div class="confirm-reserve" *ngIf="codigoCompra">
-  <p>Código generado: <strong>{{ codigoCompra }}</strong></p>
-  <p>¿Deseas confirmar esta Reserva?</p>
-  <button (click)="confirmarCompra()">Confirmar Reserva</button>
-  <button class="btm-delete" (click)="cancelarCompra()">Cancelar Reserva</button>
+<div class="confirm-reserve-fullscreen" *ngIf="codigoCompra">
+  <div class="confirm-reserve-content">
+    <h2>Confirmación de Reserva</h2>
+    <p>Código generado: <strong>{{ codigoCompra }}</strong></p>
+
+    <table class="table-carrito">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Precio Unitario</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of carrito">
+          <td>{{ item.nom_prod }}</td>
+          <td>${{ item.valor_unitario }}</td>
+          <td>{{ item.elegido }}</td>
+          <td>${{ item.valor_unitario * item.elegido }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3"><strong>Total</strong></td>
+          <td><strong>${{ calcularTotal() }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="confirm-buttons">
+      <button class="btn-confirmar" (click)="confirmarCompra()">Confirmar Reserva</button>
+      <button class="btn-cancelar" (click)="cancelarCompra()">Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <app-footer></app-footer>
