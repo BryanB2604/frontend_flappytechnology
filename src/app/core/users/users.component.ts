@@ -27,11 +27,23 @@ export class UsersComponent implements OnInit {
   mensajeVisible: boolean = false;
   errorVisible: boolean = false;
 
+  private refreshIntervalId: any; 
+
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.getUsers();
     this.initForms();
+
+    this.refreshIntervalId = setInterval(() => {
+      this.getUsers();
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshIntervalId) {
+      clearInterval(this.refreshIntervalId);
+    }
   }
 
   initForms(): void {

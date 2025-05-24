@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../services/app.service';
 
@@ -8,7 +8,7 @@ import { ApiService } from '../../services/app.service';
   templateUrl: './general.component.html',
   styleUrls: ['./general.component.css'],
 })
-export class GeneralComponent implements OnInit {
+export class GeneralComponent implements OnInit, OnDestroy {
   products: any[] = [];
   createForm!: FormGroup;
   editForm!: FormGroup;
@@ -18,12 +18,23 @@ export class GeneralComponent implements OnInit {
   selectedFilter: string = '';
   mensajeVisible: boolean = false;
   errorVisible: boolean = false;
+  private intervalId: any;
 
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.getProduct();
     this.initForms();
+
+    this.intervalId = setInterval(() => {
+      this.getProduct();
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   initForms(): void {
@@ -32,11 +43,11 @@ export class GeneralComponent implements OnInit {
       descripcion: ['', [Validators.required, Validators.maxLength(300)]],
       valor_unitario: [0, [Validators.required, Validators.min(0), Validators.max(99999999)]],
       proveedor: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
-      cantidad_disponible: [0, [Validators.min(0), Validators.max(99999999)]],
+      cantidad_total: [0, [Validators.required, Validators.min(0), Validators.max(99999999)]],
       cantidad_reservada: [0, [Validators.min(0), Validators.max(99999999)]],
       hora_actualizacion: [''],
       ultima_actualizacion: [''],
-      img: ['', Validators.required]  // Campo img requerido
+      img: ['', Validators.required]
     });
 
     this.editForm = this.fb.group({
@@ -76,14 +87,16 @@ export class GeneralComponent implements OnInit {
   createProduct(): void {
     if (this.createForm.valid) {
       const f = this.createForm.value;
+      const cantidadTotal = f.cantidad_total;
+
       this.api.createProductSocket(
         f.nombre,
         f.descripcion,
         f.valor_unitario,
         f.proveedor,
         f.img,
-        0,
-        f.cantidad_disponible,
+        0, // id_stock en 0 para nuevo producto
+        cantidadTotal, // cantidad_disponible = cantidad_total
         f.cantidad_reservada,
         f.ultima_actualizacion,
         f.hora_actualizacion

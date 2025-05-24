@@ -28,10 +28,21 @@ export class SalesComponent implements OnInit {
   errorVisible: boolean | undefined;
 
   constructor(private api: ApiService, private fb: FormBuilder) {}
+  intervalId: any;
 
   ngOnInit(): void {
     this.loadSales();
     this.initForms();
+
+    this.intervalId = setInterval(() => {
+      this.loadSales();
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   initForms(): void {
