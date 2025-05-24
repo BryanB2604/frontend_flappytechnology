@@ -9,6 +9,7 @@ export interface Product {
   valor_unitario: number;
   proveedor: string;
   img: string;
+  cantidad_total: number; // asegúrate que venga del backend para stock
 }
 
 @Component({
@@ -39,6 +40,9 @@ export class StoreComponent implements OnInit {
   timeoutModal: any;
   timeoutCodigoCompra: any;
 
+  mensajeError: string | null = null; // Mensajes claros para usuario
+  mensajeReservaError: string | null = null;
+
   constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit() {
@@ -56,7 +60,7 @@ export class StoreComponent implements OnInit {
   getProductHome() {
     this.api.getProductFront().subscribe({
       next: (res) => {
-        this.productsHome = res.data;
+        this.productsHome = res.data.filter((p: any) => p.cantidad_total > 0);
       },
       error: (err) => {}
     });
@@ -69,7 +73,7 @@ export class StoreComponent implements OnInit {
   getProduct() {
     this.api.getProductFront().subscribe({
       next: (res) => {
-        this.products = res.data;
+        this.products = res.data.filter((p: any) => p.cantidad_total > 0);
         this.productsFiltrados = [...this.products];
       },
       error: (err) => {}
@@ -104,7 +108,9 @@ export class StoreComponent implements OnInit {
       resultado.sort((a, b) => b.nom_prod.localeCompare(a.nom_prod));
     }
 
-    this.productsFiltrados = resultado;
+    // Filtrar productos sin stock incluso luego del filtro
+    this.productsFiltrados = resultado.filter(p => p.cantidad_total > 0);
+
     this.mostrarProductoNoEncontrado = this.productsFiltrados.length === 0;
   }
 
@@ -115,15 +121,18 @@ export class StoreComponent implements OnInit {
   openModal(product: any) {
     this.selectedProduct = product;
     this.cantidadElegida = 1;
+    this.mensajeError = null;
     this.showModal = true;
     this.clearTimeoutModal();
     this.timeoutModal = setTimeout(() => {
       this.closeModal();
-    }, 5 * 60 * 1000);
+    }, 5 * 60 * 1000); // 5 minutos
   }
 
   closeModal() {
     this.selectedProduct = null;
+    this.cantidadElegida = 1;
+    this.mensajeError = null;
     this.showModal = false;
     this.clearTimeoutModal();
   }
@@ -142,16 +151,48 @@ export class StoreComponent implements OnInit {
     }
   }
 
-  validarCantidadModal() {
+  validarCantidadModal(): void {
     if (!this.selectedProduct) return;
-    if (this.cantidadElegida < 1) this.cantidadElegida = 1;
-    if (this.cantidadElegida > this.selectedProduct.cantidad_disponible)
-      this.cantidadElegida = this.selectedProduct.cantidad_disponible;
+
+    if (this.cantidadElegida < 1) {
+      this.cantidadElegida = 1;
+    } else if (this.cantidadElegida > this.selectedProduct.cantidad_total) {
+      this.cantidadElegida = this.selectedProduct.cantidad_total;
+    }
+  }
+
+  isReservaValida(): boolean {
+    if (!this.carrito.length) return false;
+
+    return this.carrito.every(item =>
+      item.elegido >= 1 &&
+      item.elegido <= item.cantidad_total &&
+      item.cantidad_total > 0
+    );
   }
 
   addToCart() {
-    if (!this.selectedProduct || !this.user?.id_user) return;
-    if (this.cantidadElegida < 1 || this.cantidadElegida > this.selectedProduct.cantidad_disponible) return;
+    this.mensajeError = null;
+    if (!this.selectedProduct) {
+      this.mensajeError = 'No hay producto seleccionado.';
+      return;
+    }
+    if (!this.user?.id_user) {
+      this.mensajeError = 'Debe iniciar sesión para agregar productos al carrito.';
+      return;
+    }
+    if (this.cantidadElegida < 1) {
+      this.mensajeError = 'La cantidad debe ser al menos 1.';
+      return;
+    }
+    if (this.cantidadElegida > this.selectedProduct.cantidad_total) {
+      this.mensajeError = `La cantidad máxima disponible es ${this.selectedProduct.cantidad_total}.`;
+      return;
+    }
+    if (this.selectedProduct.cantidad_total <= 0) {
+      this.mensajeError = 'El producto no tiene stock disponible.';
+      return;
+    }
 
     const index = this.carrito.findIndex(item =>
       item.id_prod === this.selectedProduct.id_prod &&
@@ -160,7 +201,7 @@ export class StoreComponent implements OnInit {
 
     if (index !== -1) {
       const nuevaCantidad = this.carrito[index].elegido + this.cantidadElegida;
-      this.carrito[index].elegido = Math.min(nuevaCantidad, this.selectedProduct.cantidad_disponible);
+      this.carrito[index].elegido = Math.min(nuevaCantidad, this.selectedProduct.cantidad_total);
     } else {
       const productoCarrito = {
         id_user: this.user.id_user,
@@ -169,13 +210,60 @@ export class StoreComponent implements OnInit {
         valor_unitario: this.selectedProduct.valor_unitario,
         elegido: this.cantidadElegida,
         nom_prod: this.selectedProduct.nom_prod,
-        cantidad_disponible: this.selectedProduct.cantidad_disponible
+        cantidad_total: this.selectedProduct.cantidad_total
       };
       this.carrito.push(productoCarrito);
     }
 
     this.guardarCarritoLocalStorage();
     this.closeModal();
+  }
+
+  actualizarCantidad(index: number, nuevaCantidad: number) {
+    const item = this.carrito[index];
+    if (nuevaCantidad < 1) {
+      item.elegido = 1;
+    } else if (nuevaCantidad > item.cantidad_total) {
+      item.elegido = item.cantidad_total;
+    } else {
+      item.elegido = nuevaCantidad;
+    }
+    this.guardarCarritoLocalStorage();
+  }
+
+  reservar() {
+    this.mensajeReservaError = null;
+
+    if (this.carrito.length === 0) {
+      this.mensajeReservaError = 'El carrito está vacío. Agregue productos antes de reservar.';
+      return;
+    }
+
+    for (let item of this.carrito) {
+      if (item.elegido > item.cantidad_total || item.elegido < 1) {
+        this.mensajeReservaError = `La cantidad elegida para "${item.nom_prod}" no es válida.`;
+        return;
+      }
+    }
+
+    this.api.postReserva(this.carrito).subscribe({
+      next: (res: any) => {
+        if (res.code === 200 && res.data?.cod_compra) {
+          this.codigoCompra = res.data.cod_compra;
+          this.mostrarCarrito = false;
+          this.getProduct();
+          this.clearTimeoutCodigoCompra();
+          this.timeoutCodigoCompra = setTimeout(() => {
+            this.codigoCompra = null;
+          }, 5 * 60 * 1000); // 5 minutos para limpiar código de compra
+        } else {
+          this.mensajeReservaError = 'Error al realizar la reserva, intente de nuevo.';
+        }
+      },
+      error: (err) => {
+        this.mensajeReservaError = 'Error de red o servidor al reservar.';
+      }
+    });
   }
 
   toggleCarrito() {
@@ -186,46 +274,14 @@ export class StoreComponent implements OnInit {
     return this.carrito.reduce((acc, item) => acc + item.valor_unitario * item.elegido, 0);
   }
 
-  actualizarCantidad(index: number, nuevaCantidad: number) {
-    const item = this.carrito[index];
-    if (nuevaCantidad < 1) {
-      item.elegido = 1;
-    } else if (nuevaCantidad > item.cantidad_disponible) {
-      item.elegido = item.cantidad_disponible;
-    } else {
-      item.elegido = nuevaCantidad;
-    }
-    this.guardarCarritoLocalStorage();
-  }
-
   removeFromCart(index: number) {
     this.carrito.splice(index, 1);
     this.guardarCarritoLocalStorage();
   }
 
-  reservar() {
-    if (this.carrito.length === 0) return;
-    for (let item of this.carrito) {
-      if (item.elegido > item.cantidad_disponible || item.elegido < 1) return;
-    }
-    this.api.postReserva(this.carrito).subscribe({
-      next: (res: any) => {
-        if (res.code === 200 && res.data?.cod_compra) {
-          this.codigoCompra = res.data.cod_compra;
-          this.mostrarCarrito = false;
-          this.getProduct();
-          this.clearTimeoutCodigoCompra();
-          this.timeoutCodigoCompra = setTimeout(() => {
-            this.codigoCompra = null;
-          }, 5 * 60 * 1000);
-        }
-      },
-      error: (err) => {}
-    });
-  }
-
   confirmarCompra() {
     if (!this.codigoCompra) return;
+
     this.api.confirmReserve(this.codigoCompra).subscribe({
       next: (res) => {
         if (res.code === 200) {
@@ -242,13 +298,14 @@ export class StoreComponent implements OnInit {
 
   cancelarCompra() {
     if (!this.codigoCompra) return;
+
     this.api.cancelarReserve(this.codigoCompra).subscribe({
       next: (res) => {
         if (res.code === 200) {
           this.codigoCompra = null;
           this.clearTimeoutCodigoCompra();
           this.getProduct();
-          this.guardarCarritoLocalStorage();  // Mantener el carrito para reintentar reserva
+          this.guardarCarritoLocalStorage();
         }
       },
       error: (err) => {}
@@ -257,11 +314,6 @@ export class StoreComponent implements OnInit {
 
   cerrarCarrito() {
     this.mostrarCarrito = false;
-  }
-
-  isReservaValida(): boolean {
-    if (this.carrito.length === 0) return false;
-    return this.carrito.every(item => item.elegido >= 1 && item.elegido <= item.cantidad_disponible);
   }
 
   guardarCarritoLocalStorage() {

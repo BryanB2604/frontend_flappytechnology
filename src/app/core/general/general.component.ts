@@ -36,7 +36,7 @@ export class GeneralComponent implements OnInit {
       cantidad_reservada: [0, [Validators.min(0), Validators.max(99999999)]],
       hora_actualizacion: [''],
       ultima_actualizacion: [''],
-      img: ['', Validators.required]  // Agregado campo img con validación requerida
+      img: ['', Validators.required]  // Campo img requerido
     });
 
     this.editForm = this.fb.group({
@@ -81,8 +81,8 @@ export class GeneralComponent implements OnInit {
         f.descripcion,
         f.valor_unitario,
         f.proveedor,
-        f.img,               // Aquí se envía el campo img
-        0,                   // cantidad_total (puedes ajustar si lo quieres pedir en createForm)
+        f.img,
+        0,
         f.cantidad_disponible,
         f.cantidad_reservada,
         f.ultima_actualizacion,

@@ -85,25 +85,22 @@
       [ngClass]="{'input-error': editForm.get('descripcion')?.invalid && editForm.get('descripcion')?.touched}" />
 
     <input type="number" formControlName="valor_unitario" placeholder="Nuevo Valor Unitario"
-      min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)"
+      min="0" max="999999999999999"
       [ngClass]="{'input-error': editForm.get('valor_unitario')?.invalid && editForm.get('valor_unitario')?.touched}" />
-    <div *ngIf="editForm.get('valor_unitario')?.invalid && editForm.get('valor_unitario')?.touched" class="mensaje-error">
-      Solo números positivos (máx. 8 dígitos).
-    </div>
 
     <input type="text" formControlName="proveedor" placeholder="Nuevo Proveedor"
       maxlength="30" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
       [ngClass]="{'input-error': editForm.get('proveedor')?.invalid && editForm.get('proveedor')?.touched}" />
 
     <input type="number" formControlName="cantidad_total" placeholder="Cantidad Total"
-      min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)"
+      min="0" max="999999999999999"
       [ngClass]="{'input-error': editForm.get('cantidad_total')?.invalid && editForm.get('cantidad_total')?.touched}" />
 
-    <input type="text" formControlName="img" placeholder="Imagen URL"
+    <input type="text" formControlName="img" placeholder="URL Imagen" 
       [ngClass]="{'input-error': editForm.get('img')?.invalid && editForm.get('img')?.touched}" />
 
-    <input type="number" formControlName="id_stock" placeholder="ID del Stock"
-      min="0" max="99999999" oninput="this.value=this.value.slice(0,8)"
+    <input type="number" formControlName="id_stock" placeholder="ID Stock"
+      min="0" max="999999999999999"
       [ngClass]="{'input-error': editForm.get('id_stock')?.invalid && editForm.get('id_stock')?.touched}" />
 
     <button type="submit" [disabled]="editForm.invalid">Actualizar</button>
@@ -126,7 +123,7 @@
         <th>Proveedor</th>
         <th>Img</th>
         <th>ID Stock</th>
-        <th>Cantidad Disponible</th>
+        <th>Cantidad Total</th>
         <th>Cantidad Reservada</th>
         <th>Hora Actualización</th>
         <th>Última Actualización</th>
@@ -141,7 +138,7 @@
         <td>{{ prod.proveedor }}</td>
         <td>{{ prod.img }}</td>
         <td>{{ prod.id_stock }}</td>
-        <td>{{ prod.cantidad_disponible }}</td>
+        <td>{{ prod.cantidad_total }}</td>
         <td>{{ prod.cantidad_reservada }}</td>
         <td>{{ prod.hora_actualizacion }}</td>
         <td>{{ prod.ultima_actualizacion }}</td>

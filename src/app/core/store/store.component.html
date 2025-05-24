@@ -11,12 +11,12 @@
         <label>
           Precio mínimo:
           <input type="number" [(ngModel)]="filtroPrecioMin" (change)="aplicarFiltros()" 
-            min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)"/>
+            min="0" max="9999" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4)" />
         </label>
         <label>
           Precio máximo:
           <input type="number" [(ngModel)]="filtroPrecioMax" (change)="aplicarFiltros()" 
-            min="0" max="999999999999999" oninput="this.value=this.value.slice(0,15)"/>
+            min="0" max="9999" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4)" />
         </label>
         <label>
           Ordenar por:
@@ -43,7 +43,9 @@
         class="card" 
         *ngFor="let product of productsFiltrados"
         (click)="openModal(product)"
+        [hidden]="product.cantidad_total === 0"
       >
+
         <div class="card_img">
           <img [src]="'productos/' + product.img + '.png'" alt="{{ product.nom_prod }}" />
         </div>
@@ -52,13 +54,21 @@
           <div>${{ product.valor_unitario }}</div>
         </div>
         <div class="btn-buy" (click)="$event.stopPropagation()">
-          <button class="button-buy" (click)="openModal(product)">Agregar al carrito</button>
+          <button 
+            class="button-buy" 
+            (click)="openModal(product)"
+            [disabled]="product.cantidad_total === 0"
+            title="No hay stock disponible"
+          >
+            Agregar al carrito
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Carrito -->
 <div class="carrito-overlay" *ngIf="mostrarCarrito">
   <div class="carrito-modal">
     <button class="btm-delete close-btn" (click)="cerrarCarrito()">×</button>
@@ -72,12 +82,11 @@
         type="number"
         [(ngModel)]="item.elegido"
         [min]="1"
-        [max]="item.cantidad_disponible"
-        maxlength="3"
+        [max]="item.cantidad_total"
         (change)="actualizarCantidad(i, item.elegido)"
-        oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)" />
-      <p *ngIf="item.elegido > item.cantidad_disponible" class="error-message">
-        ¡Cantidad máxima: {{ item.cantidad_disponible }}!
+        oninput="if(this.value.length > 4) this.value = this.value.slice(0,4)" />
+      <p *ngIf="item.elegido > item.cantidad_total" class="error-message">
+        ¡Cantidad máxima: {{ item.cantidad_total }}!
       </p>
       <p>Subtotal: ${{ item.valor_unitario * item.elegido }}</p>
       <button class="btm-delete_2" (click)="removeFromCart(i)">Eliminar</button>
@@ -86,10 +95,23 @@
     <div class="total-section">
       <p>Total: <strong>${{ calcularTotal() }}</strong></p>
     </div>
-    <button [disabled]="!isReservaValida()" (click)="reservar()">Reservar</button>
+
+    <!-- Mensaje de error claro si no es válida la reserva -->
+    <div *ngIf="!isReservaValida()" class="error-message" style="margin-bottom:10px;">
+      Por favor, corrija las cantidades antes de reservar.
+    </div>
+
+    <button 
+      [disabled]="!isReservaValida()" 
+      (click)="reservar()" 
+      title="Debe corregir cantidades para reservar"
+    >
+      Reservar
+    </button>
   </div>
 </div>
 
+<!-- Modal Producto -->
 <div class="modal" *ngIf="showModal">
   <div class="modal-content">
     <h2>{{ selectedProduct?.nom_prod }}</h2>
@@ -105,15 +127,21 @@
           type="number"
           [(ngModel)]="cantidadElegida"
           [min]="1"
-          [max]="selectedProduct?.cantidad_disponible"
-          maxlength="3"
+          [max]="selectedProduct?.cantidad_total"
           (change)="validarCantidadModal()"
-          oninput="if(this.value.length > 3) this.value = this.value.slice(0,3)" />
-        <p *ngIf="cantidadElegida > selectedProduct?.cantidad_disponible" class="error-message">
-          ¡Cantidad máxima: {{ selectedProduct.cantidad_disponible }}!
+          oninput="if(this.value.length > 4) this.value = this.value.slice(0,4)" />
+        <p *ngIf="cantidadElegida < 1 || cantidadElegida > selectedProduct?.cantidad_total" class="error-message" style="margin-top: 8px;">
+          Por favor, ingrese una cantidad válida entre 1 y {{ selectedProduct?.cantidad_total }} para añadir al carrito.
         </p>
         <div class="modal-buttons">
-          <button *ngIf="user && user.tipo_user === 1" (click)="addToCart()">Añadir</button>
+          <button
+            *ngIf="user && user.tipo_user === 1"
+            (click)="cantidadElegida >= 1 && cantidadElegida <= selectedProduct?.cantidad_total ? addToCart() : null"
+            [disabled]="cantidadElegida < 1 || cantidadElegida > selectedProduct?.cantidad_total"
+            title="Ingrese una cantidad válida para añadir"
+          >
+            Añadir
+          </button>
           <button *ngIf="!user || user.tipo_user !== 1" (click)="goToLogin()">Añadir</button>
           <button class="btm-delete" (click)="closeModal()">Cancelar</button>
         </div>
@@ -122,6 +150,7 @@
   </div>
 </div>
 
+<!-- Confirmación Reserva -->
 <div class="confirm-reserve-fullscreen" *ngIf="codigoCompra">
   <div class="confirm-reserve-content">
     <h2>Confirmación de Reserva</h2>
@@ -153,9 +182,20 @@
     </table>
 
     <div class="confirm-buttons">
-      <button class="btn-confirmar" (click)="confirmarCompra()">Confirmar Reserva</button>
+      <button 
+        class="btn-confirmar" 
+        (click)="carrito.length > 0 && isReservaValida() ? confirmarCompra() : null" 
+        [disabled]="carrito.length === 0 || !isReservaValida()"
+        title="Debe agregar productos válidos al carrito y corregir cantidades"
+      >
+        Confirmar Reserva
+      </button>
       <button class="btn-cancelar" (click)="cancelarCompra()">Cancelar</button>
     </div>
+
+    <p *ngIf="carrito.length === 0 || !isReservaValida()" class="error-message" style="margin-top: 8px;">
+      Debe agregar productos válidos al carrito y verificar las cantidades antes de confirmar la reserva.
+    </p>
   </div>
 </div>
 
