@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../services/app.service';
 
 @Component({
   selector: 'app-users',
   standalone: false,
   templateUrl: './users.component.html',
-  styleUrl: './users.component.css'
+  styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
 
   users: any[] = [];
   search: any = {};
@@ -32,11 +32,14 @@ export class UsersComponent implements OnInit {
   constructor(private api: ApiService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.getUsers();
     this.initForms();
+    this.getUsers();  // Carga todos los usuarios sin filtro al inicio
 
+    // Refresca la lista periódicamente sin filtro
     this.refreshIntervalId = setInterval(() => {
-      this.getUsers();
+      if (!this.usuarioEncontrado) { // Solo refrescar si no hay búsqueda activa
+        this.getUsers();
+      }
     }, 30000);
   }
 
@@ -48,15 +51,18 @@ export class UsersComponent implements OnInit {
 
   initForms(): void {
     this.registerForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
-      apellido: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
+      nombre: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$')]],
+      apellido: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$')]],
       correo: ['', [
         Validators.required,
         Validators.email,
         Validators.pattern('^[a-zA-Z0-9._%+-]+@(gmail\\.com|yahoo\\.com|hotmail\\.com|ecci\\.edu\\.co)$')
       ]],
-      contrasena: ['', [Validators.required, Validators.minLength(4)]],
-      tipo_user: [0]
+      contrasena: ['', [
+        Validators.required,
+        Validators.pattern('^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$')
+      ]],
+      tipo_user: [0, [Validators.required, Validators.min(1), Validators.max(3)]]
     });
 
     this.editForm = this.fb.group({
@@ -73,7 +79,7 @@ export class UsersComponent implements OnInit {
     });
 
     this.buscarForm = this.fb.group({
-      id_user: [0]
+      id_user: [null]  
     });
   }
 
@@ -81,6 +87,8 @@ export class UsersComponent implements OnInit {
     this.api.getUser().subscribe({
       next: (res) => {
         this.users = res.data;
+        this.search = {};
+        this.usuarioEncontrado = false;
       },
       error: (err) => {
         console.error('Error al obtener usuarios', err);
@@ -146,32 +154,46 @@ export class UsersComponent implements OnInit {
       return;
     }
 
-    if (confirm('¿Estás seguro de eliminar este usuario?')) {
-      this.api.deleteUser(id).subscribe({
+    if (confirm('¿Estás seguro de desactivar este usuario?')) {
+      this.api.updateUser(
+        id,
+        userExiste.nombre,
+        userExiste.apellido,
+        userExiste.correo,
+        userExiste.contrasena,
+        0  // Cambiamos tipo_user a 0 para desactivar
+      ).subscribe({
         next: () => {
           this.getUsers();
-          this.deleteForm.reset();
-          this.showSuccessMessage('Usuario eliminado correctamente.');
+          this.showSuccessMessage('Usuario desactivado correctamente.');
         },
         error: (err) => {
-          console.error('Error al eliminar usuario', err);
-          this.showErrorMessage('Error al eliminar el usuario.');
+          console.error('Error al desactivar usuario', err);
+          this.showErrorMessage('Error al desactivar el usuario.');
         }
       });
     }
   }
 
   buscarUsuarioPorId(id: number): void {
+    if (!id) {
+      // Si no hay ID, mostramos todos los usuarios sin filtro
+      this.getUsers();
+      return;
+    }
+
     this.api.searchUser(id).subscribe({
       next: (res) => {
-        if (res && res.data) {
+        if (res && res.data && res.data.id_user) {
           this.search = res.data;
           this.usuarioEncontrado = true;
           this.error = '';
+          this.users = []; // Vacía la lista para mostrar solo el usuario buscado
         } else {
           this.search = {};
           this.usuarioEncontrado = false;
           this.showErrorMessage(`Usuario con ID ${id} no encontrado.`);
+          this.getUsers(); // Opcional: Mostrar todos si no se encuentra
         }
       },
       error: (err) => {
@@ -179,6 +201,7 @@ export class UsersComponent implements OnInit {
         this.search = {};
         this.usuarioEncontrado = false;
         this.showErrorMessage('Ocurrió un error al buscar el usuario.');
+        this.getUsers(); // Opcional: Mostrar todos en caso de error
       }
     });
   }

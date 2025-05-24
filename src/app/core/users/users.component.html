@@ -4,6 +4,7 @@
     <button (click)="selectFilter('crear')">Crear Usuario</button>
     <button (click)="selectFilter('editar')">Editar Usuario</button>
     <button (click)="selectFilter('buscar')">Buscar Usuario</button>
+    <button (click)="selectFilter('eliminar')">Eliminar Usuario</button>
   </div>
 </div>
 
@@ -11,7 +12,6 @@
 <div *ngIf="selectedFilter === 'crear'" class="section-form">
   <h2>Crear Usuario</h2>
   <form [formGroup]="registerForm" (ngSubmit)="crearUsuario()" class="form-group">
-
     <!-- Nombre -->
     <input formControlName="nombre" type="text" placeholder="Nombre" required maxlength="30"
       pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
@@ -126,10 +126,11 @@
       Solo letras, sin caracteres especiales.
     </div>
 
-    <!-- Correo -->
+    <!-- Correo DESHABILITADO para evitar cambio -->
     <input type="email" formControlName="correo" placeholder="Correo electrónico" maxlength="40" required
       pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|ecci\.edu\.co)$"
       title="El correo debe ser válido y pertenecer a los dominios: @gmail.com, @yahoo.com, @hotmail.com o @ecci.edu.co"
+      [disabled]="true"
       [ngClass]="{'input-error': editForm.get('correo')?.invalid && editForm.get('correo')?.touched}" />
     <div *ngIf="editForm.get('correo')?.errors?.['required'] && editForm.get('correo')?.touched" class="mensaje-error">
       El correo es obligatorio.
@@ -139,7 +140,7 @@
     </div>
 
     <!-- Contraseña -->
-    <input formControlName="contrasena" type="password" placeholder="Contraseña" required
+    <input type="password" formControlName="contrasena" placeholder="Contraseña" required
       pattern="^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$"
       title="Debe tener al menos 6 caracteres, una mayúscula y un carácter especial."
       [ngClass]="{'input-error': editForm.get('contrasena')?.invalid && editForm.get('contrasena')?.touched}" />
@@ -150,15 +151,18 @@
       Debe tener al menos 6 caracteres, una mayúscula y un carácter especial.
     </div>
 
-    <!-- Tipo de usuario -->
-    <input type="number" formControlName="tipo_user" placeholder="Tipo de Usuario" required max="99999"
-      oninput="this.value=this.value.slice(0,5)"
+    <!-- Tipo de Usuario -->
+    <input id="tipo_user_edit" type="number" formControlName="tipo_user" placeholder="Tipo de Usuario (1, 2 o 3)" required min="1" max="3"
+      oninput="this.value=this.value.slice(0,1)"
       [ngClass]="{'input-error': editForm.get('tipo_user')?.invalid && editForm.get('tipo_user')?.touched}" />
     <div *ngIf="editForm.get('tipo_user')?.errors?.['required'] && editForm.get('tipo_user')?.touched" class="mensaje-error">
-      El tipo de usuario es obligatorio.
+      Tipo de usuario es obligatorio (1, 2 o 3).
     </div>
     <div *ngIf="editForm.get('tipo_user')?.errors?.['max'] && editForm.get('tipo_user')?.touched" class="mensaje-error">
-      El tipo no puede ser mayor a 99999.
+      El tipo de usuario no puede ser mayor a 3.
+    </div>
+    <div *ngIf="editForm.get('tipo_user')?.errors?.['min'] && editForm.get('tipo_user')?.touched" class="mensaje-error">
+      El tipo de usuario no puede ser menor a 1.
     </div>
 
     <button type="submit" [disabled]="editForm.invalid">Actualizar</button>
@@ -218,6 +222,27 @@
 
   <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
   <div *ngIf="error" class="mensaje-error">{{ error }}</div>
+</div>
+
+<!-- DESACTIVAR USUARIO -->
+<div *ngIf="selectedFilter === 'eliminar'" class="section-form">
+  <h2>Eliminar Usuario</h2>
+  <form [formGroup]="deleteForm" (ngSubmit)="deleteUser(deleteForm.value.id_user)" class="form-group">
+    
+    <!-- ID Usuario -->
+    <input type="number" formControlName="id_user" placeholder="ID del Usuario" required max="99999"
+      oninput="this.value=this.value.slice(0,5)"
+      [ngClass]="{'input-error': deleteForm.get('id_user')?.invalid && deleteForm.get('id_user')?.touched}" />
+    <div *ngIf="deleteForm.get('id_user')?.errors?.['required'] && deleteForm.get('id_user')?.touched" class="mensaje-error">
+      El ID del usuario es obligatorio.
+    </div>
+    <div *ngIf="deleteForm.get('id_user')?.errors?.['max'] && deleteForm.get('id_user')?.touched" class="mensaje-error">
+      El ID no puede ser mayor a 99999.
+    </div>
+
+    <button type="submit" [disabled]="deleteForm.invalid">Desactivar</button>
+  </form>
+
 </div>
 
 <!-- LISTADO DE USUARIOS -->

@@ -163,9 +163,43 @@ export class NavComponent implements OnInit {
     }
   }
 
+  // Método modificado con console.log para debug
+  deactivateUser(): void {
+    console.log('deactivateUser clicked');
+    if (!this.usuario) return;
+
+    if (!confirm('¿Estás seguro de desactivar este usuario? Esta acción es reversible solo cambiando el tipo de usuario.')) {
+      return;
+    }
+
+    this.api.updateUser(
+      this.usuario.id_user,
+      this.usuario.nombre,
+      this.usuario.apellido,
+      this.usuario.correo,
+      '', // Contraseña vacía para no cambiarla
+      0 // Cambiar tipo_user a 0 para desactivar
+    ).subscribe({
+      next: () => {
+        // Actualizar usuario localmente
+        this.usuario.tipo_user = 0;
+        localStorage.setItem('usuario', JSON.stringify(this.usuario));
+        this.getUsers();
+        this.mostrarInfo = false;
+        alert('Usuario desactivado correctamente.');
+        
+        // Redirigir al login
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        alert('Error al desactivar el usuario.');
+      }
+    });
+  }
+
   cerrarSesion(): void {
-    localStorage.removeItem('usuario');  
-    localStorage.removeItem('carrito');  
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('carrito');
     this.usuario = null;
     this.mostrarInfo = false;
     this.mostrarActualizar = false;

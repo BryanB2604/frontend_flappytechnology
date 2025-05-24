@@ -4,7 +4,7 @@
   </div>
 
   <div class="section-filter">
-     <div *ngIf="rutaActualEsHomeOQuienes" routerLink="" class="link">
+    <div *ngIf="rutaActualEsHomeOQuienes" routerLink="" class="link">
       Inicio
     </div>
 
@@ -29,7 +29,9 @@
       <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
 
       <div class="gestion-buttons">
-        <button class="action-btn" (click)="toggleActualizar()">Actualizar usuario</button>
+        <button class="action-btn" (click)="toggleActualizar()">Actualizar usuario</button> 
+<button class="action-btn" (click)="deactivateUser()">Desactivar usuario</button>
+
       </div>
 
       <div *ngIf="mostrarActualizar" class="form-container">
