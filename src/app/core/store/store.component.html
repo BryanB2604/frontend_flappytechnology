@@ -96,7 +96,11 @@
       <p>Total: <strong>${{ calcularTotal() }}</strong></p>
     </div>
 
-    <!-- Mensaje de error claro si no es válida la reserva -->
+    <!-- Mensajes de error en la reserva -->
+    <div *ngIf="mensajeReservaError" class="error-message" style="margin-bottom:10px;">
+      {{ mensajeReservaError }}
+    </div>
+
     <div *ngIf="!isReservaValida()" class="error-message" style="margin-bottom:10px;">
       Por favor, corrija las cantidades antes de reservar.
     </div>

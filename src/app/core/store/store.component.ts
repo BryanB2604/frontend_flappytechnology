@@ -236,12 +236,14 @@ export class StoreComponent implements OnInit {
 
     if (this.carrito.length === 0) {
       this.mensajeReservaError = 'El carrito está vacío. Agregue productos antes de reservar.';
+      this.limpiarMensajeErrorDespuesDe5Segundos();
       return;
     }
 
     for (let item of this.carrito) {
       if (item.elegido > item.cantidad_total || item.elegido < 1) {
         this.mensajeReservaError = `La cantidad elegida para "${item.nom_prod}" no es válida.`;
+        this.limpiarMensajeErrorDespuesDe5Segundos();
         return;
       }
     }
@@ -257,13 +259,25 @@ export class StoreComponent implements OnInit {
             this.codigoCompra = null;
           }, 5 * 60 * 1000); // 5 minutos para limpiar código de compra
         } else {
-          this.mensajeReservaError = 'Error al realizar la reserva, intente de nuevo.';
+          this.mensajeReservaError = res.msg || 'Error al realizar la reserva, intente de nuevo.';
+          this.limpiarMensajeErrorDespuesDe5Segundos();
         }
       },
       error: (err) => {
-        this.mensajeReservaError = 'Error de red o servidor al reservar.';
+        if (err.error && err.error.msg) {
+          this.mensajeReservaError = err.error.msg;
+        } else {
+          this.mensajeReservaError = 'Error de red o servidor al reservar.';
+        }
+        this.limpiarMensajeErrorDespuesDe5Segundos();
       }
     });
+  }
+
+  limpiarMensajeErrorDespuesDe5Segundos() {
+    setTimeout(() => {
+      this.mensajeReservaError = null;
+    }, 5000);
   }
 
   toggleCarrito() {
