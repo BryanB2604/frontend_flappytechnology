@@ -163,7 +163,6 @@ export class NavComponent implements OnInit {
     }
   }
 
-  // Método modificado con console.log para debug
   deactivateUser(): void {
     console.log('deactivateUser clicked');
     if (!this.usuario) return;

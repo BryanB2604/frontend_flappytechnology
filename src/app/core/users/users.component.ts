@@ -51,8 +51,8 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   initForms(): void {
     this.registerForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$')]],
-      apellido: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$')]],
+      nombre: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
+      apellido: ['', [Validators.required, Validators.pattern('^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]{1,30}$')]],
       correo: ['', [
         Validators.required,
         Validators.email,
@@ -66,7 +66,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     });
 
     this.editForm = this.fb.group({
-      id_user: [0],
+      id_user: [null, [Validators.required, Validators.max(99999)]],
       nombre: [''],
       apellido: [''],
       correo: [''],
@@ -75,7 +75,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     });
 
     this.deleteForm = this.fb.group({
-      id_user: [0]
+      id_user: [null, Validators.required]
     });
 
     this.buscarForm = this.fb.group({
@@ -127,11 +127,11 @@ export class UsersComponent implements OnInit, OnDestroy {
     if (confirm('¿Estás seguro de actualizar este usuario?')) {
       this.api.updateUser(
         form.id_user,
-        form.nombre,
-        form.apellido,
-        form.correo,
-        form.contrasena,
-        form.tipo_user
+        form.nombre || userExiste.nombre,
+        form.apellido || userExiste.apellido,
+        form.correo || userExiste.correo,
+        form.contrasena || userExiste.contrasena,
+        form.tipo_user || userExiste.tipo_user
       ).subscribe({
         next: () => {
           this.getUsers();

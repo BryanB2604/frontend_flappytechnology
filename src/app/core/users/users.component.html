@@ -12,7 +12,6 @@
 <div *ngIf="selectedFilter === 'crear'" class="section-form">
   <h2>Crear Usuario</h2>
   <form [formGroup]="registerForm" (ngSubmit)="crearUsuario()" class="form-group">
-    <!-- Nombre -->
     <input formControlName="nombre" type="text" placeholder="Nombre" required maxlength="30"
       pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
       title="Solo letras, sin caracteres especiales. Máximo 30 caracteres."
@@ -24,7 +23,6 @@
       Solo letras, sin caracteres especiales.
     </div>
 
-    <!-- Apellido -->
     <input formControlName="apellido" type="text" placeholder="Apellido" required maxlength="30"
       pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
       title="Solo letras, sin caracteres especiales. Máximo 30 caracteres."
@@ -36,19 +34,17 @@
       Solo letras, sin caracteres especiales.
     </div>
 
-    <!-- Correo -->
-    <input formControlName="correo" type="email" placeholder="Correo electrónico" required maxlength="40"
+    <input formControlName="correo" type="email" placeholder="Correo electrónico" required
       pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|ecci\.edu\.co)$"
-      title="El correo debe ser válido y pertenecer a los dominios: @gmail.com, @yahoo.com, @hotmail.com o @ecci.edu.co"
+      title="Solo correos gmail, yahoo, hotmail o ecci.edu.co"
       [ngClass]="{'input-error': registerForm.get('correo')?.invalid && registerForm.get('correo')?.touched}" />
     <div *ngIf="registerForm.get('correo')?.errors?.['required'] && registerForm.get('correo')?.touched" class="mensaje-error">
       El correo es obligatorio.
     </div>
     <div *ngIf="registerForm.get('correo')?.errors?.['pattern'] && registerForm.get('correo')?.touched" class="mensaje-error">
-      El correo debe ser de los dominios permitidos.
+      El correo debe ser gmail, yahoo, hotmail o ecci.edu.co.
     </div>
 
-    <!-- Contraseña -->
     <input formControlName="contrasena" type="password" placeholder="Contraseña" required
       pattern="^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$"
       title="Debe tener al menos 6 caracteres, una mayúscula y un carácter especial."
@@ -57,215 +53,124 @@
       La contraseña es obligatoria.
     </div>
     <div *ngIf="registerForm.get('contrasena')?.errors?.['pattern'] && registerForm.get('contrasena')?.touched" class="mensaje-error">
-      Debe tener al menos 6 caracteres, una mayúscula y un carácter especial.
+      Contraseña no cumple los requisitos.
     </div>
 
-    <!-- Tipo de Usuario -->
-    <input id="tipo_user" type="number" formControlName="tipo_user" placeholder="Tipo de Usuario (1, 2 o 3)" required min="1" max="3"
-      oninput="this.value=this.value.slice(0,1)"
-      [ngClass]="{'input-error': registerForm.get('tipo_user')?.invalid && registerForm.get('tipo_user')?.touched}" />
+    <select formControlName="tipo_user" required
+      [ngClass]="{'input-error': registerForm.get('tipo_user')?.invalid && registerForm.get('tipo_user')?.touched}">
+      <option value="0" disabled>Seleccione tipo de usuario</option>
+      <option value="1">Administrador</option>
+      <option value="2">Editor</option>
+      <option value="3">Usuario</option>
+    </select>
     <div *ngIf="registerForm.get('tipo_user')?.errors?.['required'] && registerForm.get('tipo_user')?.touched" class="mensaje-error">
-      Tipo de usuario es obligatorio (1, 2 o 3).
-    </div>
-    <div *ngIf="registerForm.get('tipo_user')?.errors?.['max'] && registerForm.get('tipo_user')?.touched" class="mensaje-error">
-      El tipo de usuario no puede ser mayor a 3.
-    </div>
-    <div *ngIf="registerForm.get('tipo_user')?.errors?.['min'] && registerForm.get('tipo_user')?.touched" class="mensaje-error">
-      El tipo de usuario no puede ser menor a 1.
+      Seleccione un tipo de usuario.
     </div>
 
-    <button type="submit" [disabled]="registerForm.invalid">Registrar</button>
+    <button type="submit" [disabled]="registerForm.invalid">Crear Usuario</button>
   </form>
-
-  <div *ngIf="mensaje" class="mensaje-success">
-    {{ mensaje }}
-  </div>
-
-  <div *ngIf="error" class="mensaje-error">
-    {{ error }}
-  </div>
 </div>
 
 <!-- EDITAR USUARIO -->
 <div *ngIf="selectedFilter === 'editar'" class="section-form">
   <h2>Editar Usuario</h2>
   <form [formGroup]="editForm" (ngSubmit)="updateUser()" class="form-group">
-
-    <!-- ID Usuario -->
-    <input type="number" formControlName="id_user" placeholder="ID del Usuario" required max="99999"
-      oninput="this.value=this.value.slice(0,5)"
+    <input formControlName="id_user" type="number" placeholder="ID del Usuario" required min="1" max="99999"
       [ngClass]="{'input-error': editForm.get('id_user')?.invalid && editForm.get('id_user')?.touched}" />
     <div *ngIf="editForm.get('id_user')?.errors?.['required'] && editForm.get('id_user')?.touched" class="mensaje-error">
-      El ID del usuario es obligatorio.
+      El ID es obligatorio.
     </div>
     <div *ngIf="editForm.get('id_user')?.errors?.['max'] && editForm.get('id_user')?.touched" class="mensaje-error">
-      El ID no puede ser mayor a 99999.
+      ID debe ser menor o igual a 99999.
     </div>
 
-    <!-- Nombre -->
-    <input type="text" formControlName="nombre" placeholder="Nombre" maxlength="30" required
+    <input formControlName="nombre" type="text" placeholder="Nuevo Nombre (opcional)" maxlength="30"
       pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
-      title="Solo letras, sin caracteres especiales. Máximo 30 caracteres."
+      title="Solo letras, sin caracteres especiales."
       [ngClass]="{'input-error': editForm.get('nombre')?.invalid && editForm.get('nombre')?.touched}" />
-    <div *ngIf="editForm.get('nombre')?.errors?.['required'] && editForm.get('nombre')?.touched" class="mensaje-error">
-      El nombre es obligatorio.
-    </div>
-    <div *ngIf="editForm.get('nombre')?.errors?.['pattern'] && editForm.get('nombre')?.touched" class="mensaje-error">
-      Solo letras, sin caracteres especiales.
-    </div>
-
-    <!-- Apellido -->
-    <input type="text" formControlName="apellido" placeholder="Apellido" maxlength="30" required
+    <input formControlName="apellido" type="text" placeholder="Nuevo Apellido (opcional)" maxlength="30"
       pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,30}$"
-      title="Solo letras, sin caracteres especiales. Máximo 30 caracteres."
+      title="Solo letras, sin caracteres especiales."
       [ngClass]="{'input-error': editForm.get('apellido')?.invalid && editForm.get('apellido')?.touched}" />
-    <div *ngIf="editForm.get('apellido')?.errors?.['required'] && editForm.get('apellido')?.touched" class="mensaje-error">
-      El apellido es obligatorio.
-    </div>
-    <div *ngIf="editForm.get('apellido')?.errors?.['pattern'] && editForm.get('apellido')?.touched" class="mensaje-error">
-      Solo letras, sin caracteres especiales.
-    </div>
-
-    <!-- Correo DESHABILITADO para evitar cambio -->
-    <input type="email" formControlName="correo" placeholder="Correo electrónico" maxlength="40" required
+    <input formControlName="correo" type="email" placeholder="Nuevo Correo (opcional)"
       pattern="^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|ecci\.edu\.co)$"
-      title="El correo debe ser válido y pertenecer a los dominios: @gmail.com, @yahoo.com, @hotmail.com o @ecci.edu.co"
-      [disabled]="true"
+      title="Solo correos gmail, yahoo, hotmail o ecci.edu.co"
       [ngClass]="{'input-error': editForm.get('correo')?.invalid && editForm.get('correo')?.touched}" />
-    <div *ngIf="editForm.get('correo')?.errors?.['required'] && editForm.get('correo')?.touched" class="mensaje-error">
-      El correo es obligatorio.
-    </div>
-    <div *ngIf="editForm.get('correo')?.errors?.['pattern'] && editForm.get('correo')?.touched" class="mensaje-error">
-      El correo debe ser de los dominios permitidos.
-    </div>
-
-    <!-- Contraseña -->
-    <input type="password" formControlName="contrasena" placeholder="Contraseña" required
+    <input formControlName="contrasena" type="password" placeholder="Nueva Contraseña (opcional)"
       pattern="^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$"
       title="Debe tener al menos 6 caracteres, una mayúscula y un carácter especial."
       [ngClass]="{'input-error': editForm.get('contrasena')?.invalid && editForm.get('contrasena')?.touched}" />
-    <div *ngIf="editForm.get('contrasena')?.errors?.['required'] && editForm.get('contrasena')?.touched" class="mensaje-error">
-      La contraseña es obligatoria.
-    </div>
-    <div *ngIf="editForm.get('contrasena')?.errors?.['pattern'] && editForm.get('contrasena')?.touched" class="mensaje-error">
-      Debe tener al menos 6 caracteres, una mayúscula y un carácter especial.
-    </div>
+    <select formControlName="tipo_user">
+      <option value="0">Desactivar</option>
+      <option value="1">Usuario</option>
+      <option value="2">Gerente</option>
+      <option value="3">Administrador</option>
+    </select>
 
-    <!-- Tipo de Usuario -->
-    <input id="tipo_user_edit" type="number" formControlName="tipo_user" placeholder="Tipo de Usuario (1, 2 o 3)" required min="1" max="3"
-      oninput="this.value=this.value.slice(0,1)"
-      [ngClass]="{'input-error': editForm.get('tipo_user')?.invalid && editForm.get('tipo_user')?.touched}" />
-    <div *ngIf="editForm.get('tipo_user')?.errors?.['required'] && editForm.get('tipo_user')?.touched" class="mensaje-error">
-      Tipo de usuario es obligatorio (1, 2 o 3).
-    </div>
-    <div *ngIf="editForm.get('tipo_user')?.errors?.['max'] && editForm.get('tipo_user')?.touched" class="mensaje-error">
-      El tipo de usuario no puede ser mayor a 3.
-    </div>
-    <div *ngIf="editForm.get('tipo_user')?.errors?.['min'] && editForm.get('tipo_user')?.touched" class="mensaje-error">
-      El tipo de usuario no puede ser menor a 1.
-    </div>
-
-    <button type="submit" [disabled]="editForm.invalid">Actualizar</button>
+    <button type="submit" [disabled]="editForm.get('id_user')?.invalid">Actualizar Usuario</button>
   </form>
-
-  <div *ngIf="mensaje" class="mensaje-success">
-    {{ mensaje }}
-  </div>
-
-  <div *ngIf="error" class="mensaje-error">
-    {{ error }}
-  </div>
 </div>
 
 <!-- BUSCAR USUARIO -->
 <div *ngIf="selectedFilter === 'buscar'" class="section-form">
-  <h2>Buscar Usuario</h2>
+  <h2>Buscar Usuario por ID</h2>
   <form [formGroup]="buscarForm" (ngSubmit)="buscarUsuarioPorId(buscarForm.value.id_user)" class="form-group">
-
-    <input type="number" formControlName="id_user" placeholder="ID del Usuario a Buscar" max="99999"
-      oninput="this.value=this.value.slice(0,5)"
-      [ngClass]="{'input-error': buscarForm.get('id_user')?.invalid && buscarForm.get('id_user')?.touched}" />
-    <div *ngIf="buscarForm.get('id_user')?.errors?.['required'] && buscarForm.get('id_user')?.touched" class="mensaje-error">
-      El ID del usuario es obligatorio.
-    </div>
-    <div *ngIf="buscarForm.get('id_user')?.errors?.['max'] && buscarForm.get('id_user')?.touched" class="mensaje-error">
-      El ID no puede ser mayor a 99999.
-    </div>
-
-    <button type="submit" [disabled]="buscarForm.invalid">Buscar</button>
+    <input formControlName="id_user" type="number" placeholder="ID del Usuario" min="1" max="99999" />
+    <button type="submit">Buscar</button>
   </form>
 
-  <div *ngIf="usuarioEncontrado">
-    <div class="section-form">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Correo</th>
-            <th>Tipo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ search.id_user }}</td>
-            <td>{{ search.nombre }}</td>
-            <td>{{ search.apellido }}</td>
-            <td>{{ search.correo }}</td>
-            <td>{{ search.tipo_user }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div *ngIf="usuarioEncontrado && search.id_user">
+    <h3>Usuario Encontrado:</h3>
+    <p><strong>ID:</strong> {{ search.id_user }}</p>
+    <p><strong>Nombre:</strong> {{ search.nombre }}</p>
+    <p><strong>Apellido:</strong> {{ search.apellido }}</p>
+    <p><strong>Correo:</strong> {{ search.correo }}</p>
+    <p><strong>Tipo Usuario:</strong> {{ search.tipo_user }}</p>
   </div>
-
-  <div *ngIf="mensaje" class="mensaje-success">{{ mensaje }}</div>
-  <div *ngIf="error" class="mensaje-error">{{ error }}</div>
 </div>
 
-<!-- DESACTIVAR USUARIO -->
+<!-- ELIMINAR USUARIO -->
 <div *ngIf="selectedFilter === 'eliminar'" class="section-form">
-  <h2>Eliminar Usuario</h2>
+  <h2>Eliminar (Desactivar) Usuario</h2>
   <form [formGroup]="deleteForm" (ngSubmit)="deleteUser(deleteForm.value.id_user)" class="form-group">
-    
-    <!-- ID Usuario -->
-    <input type="number" formControlName="id_user" placeholder="ID del Usuario" required max="99999"
-      oninput="this.value=this.value.slice(0,5)"
+    <input formControlName="id_user" type="number" placeholder="ID del Usuario" required min="1" max="99999"
       [ngClass]="{'input-error': deleteForm.get('id_user')?.invalid && deleteForm.get('id_user')?.touched}" />
     <div *ngIf="deleteForm.get('id_user')?.errors?.['required'] && deleteForm.get('id_user')?.touched" class="mensaje-error">
-      El ID del usuario es obligatorio.
+      El ID es obligatorio.
     </div>
-    <div *ngIf="deleteForm.get('id_user')?.errors?.['max'] && deleteForm.get('id_user')?.touched" class="mensaje-error">
-      El ID no puede ser mayor a 99999.
-    </div>
-
-    <button type="submit" [disabled]="deleteForm.invalid">Desactivar</button>
+    <button type="submit" [disabled]="deleteForm.invalid">Eliminar Usuario</button>
   </form>
-
 </div>
 
-<!-- LISTADO DE USUARIOS -->
-<div class="section-form">
-  <h2>Usuarios</h2>
+<!-- Mensajes de éxito y error -->
+<div *ngIf="mensajeVisible" class="mensaje-exito">
+  {{ mensaje }}
+</div>
+<div *ngIf="errorVisible" class="mensaje-error">
+  {{ error }}
+</div>
+
+<div *ngIf="!usuarioEncontrado" class="section-form">
+  <h2>Lista de Usuarios</h2>
   <table>
     <thead>
       <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Correo</th>
-        <th>Tipo</th>
+        <th>ID</th><th>Nombre</th><th>Apellido</th><th>Correo</th><th>Tipo Usuario</th><th>Acciones</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let u of users">
-        <td>{{ u.id_user }}</td>
-        <td>{{ u.nombre }}</td>
-        <td>{{ u.apellido }}</td>
-        <td>{{ u.correo }}</td>
-        <td>{{ u.tipo_user }}</td>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id_user }}</td>
+        <td>{{ user.nombre }}</td>
+        <td>{{ user.apellido }}</td>
+        <td>{{ user.correo }}</td>
+        <td>{{ user.tipo_user }}</td>
+        <td>
+          <button (click)="editForm.patchValue(user); selectFilter('editar')">Editar</button>
+          <button (click)="deleteUser(user.id_user)">Eliminar</button>
+        </td>
       </tr>
     </tbody>
   </table>
 </div>
+
